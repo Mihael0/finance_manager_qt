@@ -1,0 +1,2 @@
+# finance_manager_qt
+finance_manager_qt
