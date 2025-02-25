@@ -5,12 +5,14 @@ QT += widgets
 
 TEMPLATE = lib
 
-TARGET = myapp
+TARGET = financemanager
 SUBDIRS += ui
 
 FORMS += ui/mainwindow.ui
 SOURCES += \
+    excel.cpp \
     mainwindow.cpp \
     
 HEADERS += \
+    excel.h \
     mainwindow.h \

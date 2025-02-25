@@ -6,9 +6,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->currentMonth->setFrame(false);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+void MainWindow::on_registerExpense_clicked()
+{
+
+}
+
