@@ -2,7 +2,7 @@
 
 using namespace libxl;
 
-void Excel::_CreateNewExcelBook(void){
+void Excel::_CreateNewExcelBook(std::string BookName){
     Book* book = xlCreateBook(); // xlCreateXMLBook() for xlsx
     if(book)
     {
@@ -12,7 +12,8 @@ void Excel::_CreateNewExcelBook(void){
             sheet->writeStr(2, 1, "Hello, World !");
             sheet->writeNum(3, 1, 1000);
         }
-        book->save("../data/example.xls");
+        std::string dirToStoreExcels = "../data/" + BookName + ".xls";
+        book->save(dirToStoreExcels.c_str());
         book->release();
     }
 }
