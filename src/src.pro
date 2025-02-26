@@ -12,7 +12,9 @@ FORMS += ui/mainwindow.ui
 SOURCES += \
     excel.cpp \
     mainwindow.cpp \
-    
+    timeutils.cpp
+
 HEADERS += \
     excel.h \
     mainwindow.h \
+    timeutils.h

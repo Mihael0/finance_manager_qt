@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>170</y>
+      <y>150</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -27,25 +27,12 @@
      <string>Input your daily expenses below</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="registerExpense">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>280</y>
-      <width>131</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Register Expense</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="currentMonth">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>230</y>
-      <width>113</width>
+      <x>430</x>
+      <y>190</y>
+      <width>101</width>
       <height>26</height>
      </rect>
     </property>
@@ -56,17 +43,72 @@
    <widget class="QLineEdit" name="dailyExpenses">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>230</y>
+      <x>310</x>
+      <y>190</y>
       <width>113</width>
       <height>26</height>
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="nextDay">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>230</y>
+      <width>131</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next Day</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="previousDay">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>260</y>
+      <width>131</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Previous Day</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>741</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>This is the window that will be used for daily input. It will be called &quot;Continue from Previous Day&quot;</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="startOfCurrentMonth">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>190</y>
+      <width>101</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
    <zorder>label</zorder>
-   <zorder>registerExpense</zorder>
    <zorder>dailyExpenses</zorder>
    <zorder>currentMonth</zorder>
+   <zorder>nextDay</zorder>
+   <zorder>previousDay</zorder>
+   <zorder>label_2</zorder>
+   <zorder>startOfCurrentMonth</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

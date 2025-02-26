@@ -15,11 +15,14 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    void InitializeCurrentMonth(void) const;
     ~MainWindow();
 
 private slots:
 
-    void on_registerExpense_clicked();
+    void on_dailyExpenses_returnPressed();
+
+    void on_nextDay_clicked();
 
 private:
     Ui::MainWindow *ui;
