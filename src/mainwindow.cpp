@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "timeutils.h"
 
+static TimeUtils Time;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -10,13 +12,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->startOfCurrentMonth->setFrame(false);
     InitializeCurrentMonth();
-    TimeUtils::instance().SetAppTimeToStartOfMonth();
-    ui->startOfCurrentMonth->setText(TimeUtils::instance().GetLocalAppTime().toString("dd-MM-yyyy"));
+    ui->startOfCurrentMonth->setText(Time.GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
 void MainWindow::InitializeCurrentMonth(void) const{
     ui->currentMonth->setFrame(false);
-    ui->currentMonth->setText(TimeUtils::instance().GetCurrentTime().toString("dd-MM-yyyy"));
+    ui->currentMonth->setText(Time.GetCurrentTime().toString("dd-MM-yyyy"));
 }
 
 MainWindow::~MainWindow()
@@ -26,13 +27,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_dailyExpenses_returnPressed()
 {
+    // Excel takes in the inputted float number.
 
 }
 
 
 void MainWindow::on_nextDay_clicked()
 {
-    TimeUtils::instance().IncrementDayOfAppTime(1);
-    ui->startOfCurrentMonth->setText(TimeUtils::instance().GetLocalAppTime().toString("dd-MM-yyyy"));
+    // Increment the current day by 1.
+    Time.IncrementDayOfLocalAppTime();
+    ui->startOfCurrentMonth->setText(Time.GetLocalAppTime().toString("dd-MM-yyyy"));
+}
+
+
+void MainWindow::on_previousDay_clicked()
+{
+    // Decrement the current day by 1.
+    Time.DecrementDayOfLocalAppTime();
+    ui->startOfCurrentMonth->setText(Time.GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 

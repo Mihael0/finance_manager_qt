@@ -24,6 +24,8 @@ private slots:
 
     void on_nextDay_clicked();
 
+    void on_previousDay_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

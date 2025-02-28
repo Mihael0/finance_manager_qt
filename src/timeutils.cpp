@@ -1,24 +1,18 @@
 #include "timeutils.h"
 
+QDateTime TimeUtils::GetCurrentTime(void) const{
 
-const QDateTime& TimeUtils::GetCurrentTime(void) const{
-
-    return TimeUtils::_WorldClockTime;
-}
-
-void TimeUtils::SetAppTimeToStartOfMonth(void){
-    const QDateTime CurrentWorldTime = TimeUtils::GetCurrentTime();
-    QDate StartOfMonthTime = CurrentWorldTime.date();
-    StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
-    _LocalAppTime = StartOfMonthTime;
+    return TimeUtils::_worldClockTime;
 }
 
 QDate TimeUtils::GetLocalAppTime(void){
-    return _LocalAppTime;
+    return TimeUtils::_localAppTime;
 }
 
-void TimeUtils::IncrementDayOfAppTime(int increment_by){
-    // check that day is a valid day.
-    _increment_amount += increment_by;
-    _LocalAppTime.setDate(_LocalAppTime.year(),_LocalAppTime.month(),_increment_amount);
+void TimeUtils::IncrementDayOfLocalAppTime(void){
+    _SetLocalAppTime(GetLocalAppTime().addDays(1));
+}
+
+void TimeUtils::DecrementDayOfLocalAppTime(void){
+    _SetLocalAppTime(GetLocalAppTime().addDays(-1));
 }

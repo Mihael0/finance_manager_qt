@@ -2,12 +2,7 @@
 #define EXCEL_H
 #include "libxl.h"
 #include "string"
-
-
-
-typedef struct {
-
-} FontNames_t;
+#include "QDate"
 
 class Excel {
 public:
@@ -23,7 +18,7 @@ public:
 private:
     // float _DailyExpense;
     libxl::Book* _book;
-
+    QDate _currentTime;
     /**
      * Used to configure a given excel book.
      * For now it is static, which means the user cannot adjust
@@ -36,7 +31,7 @@ private:
     /**
      * Uses the created _book to store a set _DailyExpense.
      */
-    void _StoreDailyExpenseInDatabase(void){
+    void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
 
     }
 };

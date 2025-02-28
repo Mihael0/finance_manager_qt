@@ -2,24 +2,31 @@
 #define TIMEUTILS_H
 #include "QDateTime"
 
-
+/**
+ * Keeps track of all Time related operations in the Application.
+ * The class is made with the idea that there is only one static instance of it inside of mainwindow.cpp
+ */
 class TimeUtils{
 public:
-    // google this?!
-    // adjust this.
-    static TimeUtils& instance() {
-        static TimeUtils instance;  // Guaranteed to be destroyed.
-        return instance;
-    }
-
-    const QDateTime& GetCurrentTime(void) const;
-    void SetAppTimeToStartOfMonth(void);
+    QDateTime GetCurrentTime(void) const;
     QDate GetLocalAppTime(void);
-    void IncrementDayOfAppTime(int increment_by);
+    void IncrementDayOfLocalAppTime(void);
+    void DecrementDayOfLocalAppTime(void);
+    TimeUtils() {
+        _SetAppTimeToStartOfMonth();
+    }
 private:
-   // TimeUtils() {}  // Private constructor to prevent instancing
-   const QDateTime _WorldClockTime = QDateTime::currentDateTime();
-   QDate _LocalAppTime;
-   int _increment_amount = 1;
+   const QDateTime _worldClockTime = QDateTime::currentDateTime();
+   QDate _localAppTime;
+   int _incrementAmount = 1;
+
+   void _SetLocalAppTime(QDate newLocalAppTime){
+       _localAppTime = newLocalAppTime;
+   }
+   void _SetAppTimeToStartOfMonth(void){
+       QDate StartOfMonthTime = _worldClockTime.date();
+       StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
+       _localAppTime = StartOfMonthTime;
+   }
 };
 #endif // TIMEUTILS_H
