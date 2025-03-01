@@ -86,7 +86,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>This is the window that will be used for daily input. It will be called &quot;Continue from Previous Day&quot;</string>
+     <string>This window will be used for at once committing all expenses for a whole month</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="startOfCurrentMonth">

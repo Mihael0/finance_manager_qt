@@ -11,10 +11,8 @@ SUBDIRS += ui
 FORMS += ui/mainwindow.ui
 SOURCES += \
     excel.cpp \
-    mainwindow.cpp \
-    timeutils.cpp
+    mainwindow.cpp
 
 HEADERS += \
     excel.h \
-    mainwindow.h \
-    timeutils.h
+    mainwindow.h

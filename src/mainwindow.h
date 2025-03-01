@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,6 +17,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void InitializeCurrentMonth(void) const;
+    QDateTime GetCurrentTime(void) const;
+    QDate GetLocalAppTime(void);
+    void IncrementDayOfLocalAppTime(void);
+    void DecrementDayOfLocalAppTime(void);
     ~MainWindow();
 
 private slots:
@@ -28,5 +33,16 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    const QDateTime _worldClockTime = QDateTime::currentDateTime();
+    QDate _localAppTime;
+
+    void _SetLocalAppTime(QDate newLocalAppTime){
+        _localAppTime = newLocalAppTime;
+    }
+    void _SetAppTimeToStartOfMonth(void){
+        QDate StartOfMonthTime = _worldClockTime.date();
+        StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
+        _localAppTime = StartOfMonthTime;
+    }
 };
 #endif // MAINWINDOW_H
