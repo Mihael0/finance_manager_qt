@@ -52,15 +52,15 @@ QDateTime MainWindow::GetCurrentTime(void) const{
     return MainWindow::_worldClockTime;
 }
 
-QDate MainWindow::GetLocalAppTime(void){
+QDate MainWindow::GetLocalAppTime(void) const{
     return MainWindow::_localAppTime;
 }
 
 void MainWindow::IncrementDayOfLocalAppTime(void){
-    _SetLocalAppTime(GetLocalAppTime().addDays(1));
+    MainWindow::_SetLocalAppTime(MainWindow::GetLocalAppTime().addDays(1));
 }
 
 void MainWindow::DecrementDayOfLocalAppTime(void){
-    _SetLocalAppTime(GetLocalAppTime().addDays(-1));
+    MainWindow::_SetLocalAppTime(MainWindow::GetLocalAppTime().addDays(-1));
 }
 

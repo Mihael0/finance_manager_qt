@@ -18,7 +18,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void InitializeCurrentMonth(void) const;
     QDateTime GetCurrentTime(void) const;
-    QDate GetLocalAppTime(void);
+    QDate GetLocalAppTime(void) const;
     void IncrementDayOfLocalAppTime(void);
     void DecrementDayOfLocalAppTime(void);
     ~MainWindow();
@@ -39,10 +39,16 @@ private:
     void _SetLocalAppTime(QDate newLocalAppTime){
         _localAppTime = newLocalAppTime;
     }
+    /*
+     * Initializes _localAppTime to be the start of the month.
+     * Make sure this, or another initialization function of _localAppTime is called
+     * before using any of the setters/gettters of _localAppTime.
+     * Failing to do so, will lead to undefined behaviour.
+     */
     void _SetAppTimeToStartOfMonth(void){
         QDate StartOfMonthTime = _worldClockTime.date();
         StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
-        _localAppTime = StartOfMonthTime;
+        _SetLocalAppTime(StartOfMonthTime);
     }
 };
 #endif // MAINWINDOW_H
