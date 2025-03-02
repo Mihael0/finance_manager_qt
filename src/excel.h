@@ -4,36 +4,49 @@
 #include "string"
 #include "QDate"
 
+enum ExcelResponse{
+    FILE_ALREADY_EXISTS,
+    NEW_FILE_CREATED,
+    SHEET_ALREADY_EXISTS,
+    NEW_SHEET_CREATED,
+    ERROR,
+};
+
 class Excel {
 public:
-    // void StoreDailyExpense(float dailyExpense){
-        // _DailyExpense = dailyExpense;
-    // };
+    bool ExcelFileExists(QString filename);
+    ExcelResponse CreateNewExcelBook(QString bookName);
+    ExcelResponse CreateNewSheet(QString sheetName);
 
-    void _CreateNewExcelBook(std::string BookName);
-
-    // Constructor that allows the user to pick to point at an existing excel book
-    // or to create a new one.
+    ~Excel(){
+        _book->release();
+    }
 
 private:
     // float _DailyExpense;
-    libxl::Book* _book;
+    libxl::Book* _book = xlCreateBook();
     QDate _currentTime;
-    /**
-     * Used to configure a given excel book.
-     * For now it is static, which means the user cannot adjust
-     * the different configurations of the given excel book.
-     * If needed can be implemented.
-     */
-    // void _ConfigureExcelBook(libxl::Book* book){
 
-    // }
+    libxl::Book* _GetBookInstance() const{
+        return _book;
+    }
+
+    const char* _CreateFileDirectory(QString bookName){
+        QString dirToStoreExcels = "../data/" + bookName + ".xls";
+        QByteArray ba_dirToStoreExcels = dirToStoreExcels.toLocal8Bit();
+        const char *c_dirToStoreExcels = ba_dirToStoreExcels.data();
+
+        return c_dirToStoreExcels;
+    }
+    void _SaveBookInstance(const char* pathToDir){
+        _book->save(pathToDir);
+    }
     /**
      * Uses the created _book to store a set _DailyExpense.
      */
-    // void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
+    void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
 
-    // }
+    }
 };
 
 

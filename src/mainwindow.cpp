@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "QString"
+#include "excel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,10 +29,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_dailyExpenses_returnPressed()
 {
-    // Excel takes in the inputted float number.
-    // And we pass the LocalApptime.
-    // We need to have access to the created sheets
-    // Maybe like, fetch currentMonth sheet or something?
+    // CreateNewExcelBook();
+    // libxl:: Book* book = xlCreateBook();
+    // if(book){
+    //     QString filepath = "../data/" + _GetCurrentTime().toString("MM-yyyy") + ".xls";
+    //     QByteArray ba_filepath = filepath.toLocal8Bit();
+    //     const char *c_filepath = ba_filepath.data();
+    //     // Check if an excel sheet of the given month exists.
+    //     if(book->load(c_filepath)){
+    //         // what a time to be alive.
+    //         int a = 5;
+    //     }else{
+    //         int b = 10;
+    //         // what a time to not be alive.
+    //     }
+    // }
 
 }
 
