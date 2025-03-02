@@ -9,13 +9,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->startOfCurrentMonth->setFrame(false);
     _SetAppTimeToStartOfMonth();
-    InitializeCurrentMonth();
-    ui->startOfCurrentMonth->setText(MainWindow::GetLocalAppTime().toString("dd-MM-yyyy"));
+    _InitializeCurrentMonth();
+    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
-void MainWindow::InitializeCurrentMonth(void) const{
-    ui->currentMonth->setFrame(false);
-    ui->currentMonth->setText(MainWindow::GetCurrentTime().toString("dd-MM-yyyy"));
+void MainWindow::_InitializeCurrentMonth(void){
+    if(ui){
+        ui->currentMonth->setFrame(false);
+        ui->currentMonth->setText(_GetCurrentTime().toString("dd-MM-yyyy"));
+    }
 }
 
 MainWindow::~MainWindow()
@@ -35,32 +37,15 @@ void MainWindow::on_dailyExpenses_returnPressed()
 void MainWindow::on_nextDay_clicked()
 {
     // Increment the current day by 1.
-    MainWindow::IncrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(MainWindow::GetLocalAppTime().toString("dd-MM-yyyy"));
+    _IncrementDayOfLocalAppTime();
+    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
 
 void MainWindow::on_previousDay_clicked()
 {
     // Decrement the current day by 1.
-    MainWindow::DecrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(MainWindow::GetLocalAppTime().toString("dd-MM-yyyy"));
-}
-
-QDateTime MainWindow::GetCurrentTime(void) const{
-
-    return MainWindow::_worldClockTime;
-}
-
-QDate MainWindow::GetLocalAppTime(void) const{
-    return MainWindow::_localAppTime;
-}
-
-void MainWindow::IncrementDayOfLocalAppTime(void){
-    MainWindow::_SetLocalAppTime(MainWindow::GetLocalAppTime().addDays(1));
-}
-
-void MainWindow::DecrementDayOfLocalAppTime(void){
-    MainWindow::_SetLocalAppTime(MainWindow::GetLocalAppTime().addDays(-1));
+    _DecrementDayOfLocalAppTime();
+    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 

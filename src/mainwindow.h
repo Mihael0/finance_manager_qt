@@ -16,11 +16,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void InitializeCurrentMonth(void) const;
-    QDateTime GetCurrentTime(void) const;
-    QDate GetLocalAppTime(void) const;
-    void IncrementDayOfLocalAppTime(void);
-    void DecrementDayOfLocalAppTime(void);
     ~MainWindow();
 
 private slots:
@@ -39,6 +34,7 @@ private:
     void _SetLocalAppTime(QDate newLocalAppTime){
         _localAppTime = newLocalAppTime;
     }
+    void _InitializeCurrentMonth(void);
     /*
      * Initializes _localAppTime to be the start of the month.
      * Make sure this, or another initialization function of _localAppTime is called
@@ -49,6 +45,22 @@ private:
         QDate StartOfMonthTime = _worldClockTime.date();
         StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
         _SetLocalAppTime(StartOfMonthTime);
+    }
+    QDateTime _GetCurrentTime(void) const{
+
+        return _worldClockTime;
+    }
+
+    QDate _GetLocalAppTime(void) const{
+        return _localAppTime;
+    }
+
+    void _IncrementDayOfLocalAppTime(void){
+        _SetLocalAppTime(_GetLocalAppTime().addDays(1));
+    }
+
+    void _DecrementDayOfLocalAppTime(void){
+        _SetLocalAppTime(_GetLocalAppTime().addDays(-1));
     }
 };
 #endif // MAINWINDOW_H

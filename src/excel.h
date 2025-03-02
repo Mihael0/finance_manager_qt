@@ -31,9 +31,9 @@ private:
     /**
      * Uses the created _book to store a set _DailyExpense.
      */
-    void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
+    // void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
 
-    }
+    // }
 };
 
 

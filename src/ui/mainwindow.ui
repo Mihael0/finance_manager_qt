@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>150</y>
+      <y>100</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -102,6 +102,45 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>150</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Daily Expense</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>150</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Current Date</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>150</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Input Date</string>
+    </property>
+   </widget>
    <zorder>label</zorder>
    <zorder>dailyExpenses</zorder>
    <zorder>currentMonth</zorder>
@@ -109,6 +148,9 @@
    <zorder>previousDay</zorder>
    <zorder>label_2</zorder>
    <zorder>startOfCurrentMonth</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
