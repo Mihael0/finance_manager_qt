@@ -26,24 +26,17 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+// TODO: We have to check if the expense is a valid value.
+// TODO: We have to check if the month value has changed.
+// if that is the case, then we need to prompt the user if
+// they would like to create a new excel file for that given month.
+// if they say No, then they are returned to their previous value.
 void MainWindow::on_dailyExpenses_returnPressed()
 {
-    // CreateNewExcelBook();
-    // libxl:: Book* book = xlCreateBook();
-    // if(book){
-    //     QString filepath = "../data/" + _GetCurrentTime().toString("MM-yyyy") + ".xls";
-    //     QByteArray ba_filepath = filepath.toLocal8Bit();
-    //     const char *c_filepath = ba_filepath.data();
-    //     // Check if an excel sheet of the given month exists.
-    //     if(book->load(c_filepath)){
-    //         // what a time to be alive.
-    //         int a = 5;
-    //     }else{
-    //         int b = 10;
-    //         // what a time to not be alive.
-    //     }
-    // }
+    QString bookName = _GetCurrentTime().toString("MM-yyyy");
+    QString sheetName = "DailyExpenses";
+    Excel DailyExpense{bookName, sheetName,MONTHLY_EXPENSE};
+    float dailyExpense = ui->dailyExpenses->text().toFloat();
 
 }
 
