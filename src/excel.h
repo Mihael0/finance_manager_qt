@@ -139,9 +139,6 @@ private:
     libxl::Book* _GetBookInstance() const{
         return _book;
     }
-    // void _SetFilePath(QString bookName){
-    //     dirToStoreExcels = "../data/" + bookName + ".xls";
-    //     _filePath = dirToStoreExcels.c_str();
 
     // }
     // // This function saves the _book into the given path.
