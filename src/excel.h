@@ -12,6 +12,7 @@ enum ExcelResponse{
     SHEET_DOES_NOT_EXIST,
     SHEET_FOUND,
     OPERATION_AS_USUAL,
+    SHEET_NOT_FOUND,
     ERROR,
 };
 
@@ -34,7 +35,7 @@ typedef struct{
 class Excel {
 public:
     bool ExcelFileExists(void) const;
-    void StoreDailyExpense(float expense);
+    void StoreDailyExpense(double expense);
     ExcelResponse GetResponseState(void);
     Excel(QString bookName, QString sheetName){
         _CreateNewExcelBook(bookName, sheetName, EMPTY_EXCEL);
@@ -48,15 +49,24 @@ public:
 
 private:
     libxl::Book* _book = xlCreateBook();
-    libxl::Sheet* _sheet = nullptr;
+    libxl::Sheet* _sheet;
+    libxl::Format* _format;
     QString _bookName = "";
     QString _excelDirectoryPath = "";
-    const char* _charFilePath;
-    int _numberOfSheets = -1;
     QString _projectDirectoryForExcels = "../data/";
     QString _xlsFileExtenstion = ".xls";
     ExcelResponse _responseState = OPERATION_AS_USUAL;
+    const char* error = _GetBookInstance()->errorMessage();
 
+    libxl::Format* _GetFormat(){
+        return _format;
+    }
+
+    void _SetFormat(){
+        _format = _GetBookInstance()->addFormat();
+        _format->setBorder();
+
+    }
     void _ConfigureExcelDirectoryPath(QString bookName){
         _SetBookName(bookName);
         _SetExcelDirectoryPath();
@@ -72,18 +82,14 @@ private:
 
     void _SetExcelDirectoryPath(void){
         _excelDirectoryPath = _projectDirectoryForExcels + _GetBookName() + _xlsFileExtenstion;
-        // Update the char pointer version fo the path.
-        // This conversation is done due to many of the libxl functions
-        // requiring char pointers as inputs to their parameters.
-        _charFilePath = _excelDirectoryPath.toLocal8Bit().constData();
     }
 
-    QString _GetExcelDirectoryPath(void) const{
+    const QString _GetExcelDirectoryPath(void) const{
         return _excelDirectoryPath;
     }
 
     const char* _GetExcelDirectoryAsCharPtr(void) const{
-        return _charFilePath;
+        return _excelDirectoryPath.toLocal8Bit().data();
     }
 
     ExcelResponse _CreateNewExcelBook(QString bookName, QString sheetName, ExcelBookType excelType){
@@ -95,108 +101,103 @@ private:
             return GetResponseState();
         }
 
-        // switch(excelType){
-        // case MONTHLY_EXPENSE:
-        //     _SetResponseState(_CreateMonthlyExpenseBook(sheetName));
-        //     break;
-        // case MONTHLY_SUMMARY:
-        //     break;
-        // case RECURRING_EXPENSE:
-        //     break;
-        // // Empty excel
-        // default:
-        //     break;
-        // }
+        switch(excelType){
+        case MONTHLY_EXPENSE:
+            _SetResponseState(_CreateMonthlyExpenseBook(sheetName));
+            break;
+        case MONTHLY_SUMMARY:
+            break;
+        case RECURRING_EXPENSE:
+            break;
+        // Empty excel
+        default:
+            break;
+        }
 
         return GetResponseState();
     }
-    // ExcelResponse _CreateNewSheet(QString sheetName){
-    //     if(!_GetBookInstance()){
-    //         return ERROR;
-    //     }
-    //     // This function call is required to be able to call _book->sheetCount() and _book->getSheetName()
-    //     _GetBookInstance()->loadInfo(_filePath);
 
-    //     if(_GetBookInstance()->sheetCount() == 0){
-    //         // Create a new sheet of the given name.
-    //         _GetBookInstance()->addSheet(_ConvertQStringToCharPtr(sheetName));
-    //         _IncrementNumberOfSheets();
-    //         return NEW_SHEET_CREATED;
-    //     }
+    ExcelResponse _CreateMonthlyExpenseBook(QString sheetName){
+        if(_CreateNewSheet(sheetName) != NEW_SHEET_CREATED){
+            return _CreateNewSheet(sheetName);
+        }
+        // Set the sheet instance to the first sheet.
+        if(_SetSheetInstance(0) != SHEET_FOUND){
+            return _SetSheetInstance(0);
+        }
 
-    //     for(int i = 0; i <= _GetBookInstance()->sheetCount(); i++){
-    //         // Check if a sheet of the given name exsists.
-    //         if(_GetBookInstance()->getSheetName(i) == sheetName){
-    //             return SHEET_ALREADY_EXISTS;
-    //         }
-    //     }
-    //     _GetBookInstance()->addSheet(_ConvertQStringToCharPtr(sheetName));
-    //     _IncrementNumberOfSheets();
+        libxl::Sheet* sheet = _GetSheetInstance();
+        if(!sheet){
+            return SHEET_NOT_FOUND;
+        }
 
-    //     return NEW_SHEET_CREATED;
-    // }
+        _SetFormat();
+        sheet->writeStr(1,0,"Expenses",_GetFormat());
+        sheet->writeStr(1,1,"Date",_GetFormat());
+        sheet->writeStr(1,2,"Note",_GetFormat());
+        sheet->writeStr(1,3,"NumberOfWrittenExpenses",_GetFormat());
+        sheet->writeNum(1,4,0.0,_GetFormat());
+        _SaveExcelFile();
+
+        return NEW_FILE_CREATED;
+    }
+
+    ExcelResponse _CreateNewSheet(QString sheetName){
+        if(!_GetBookInstance()){
+            return ERROR;
+        }
+        // This function call is required to be able to call _book->sheetCount() and _book->getSheetName()
+        // _GetBookInstance()->loadInfo(_GetExcelDirectoryAsCharPtr());
+        if(_GetBookInstance()->sheetCount() == 0){
+            // Create a new sheet of the given name.
+            _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
+            return NEW_SHEET_CREATED;
+        }
+
+        for(int i = 0; i <= _GetBookInstance()->sheetCount(); i++){
+            // Check if a sheet of the given name exsists.
+            if(_GetBookInstance()->getSheetName(i) == sheetName){
+                return SHEET_ALREADY_EXISTS;
+            }
+        }
+        _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
+
+        return NEW_SHEET_CREATED;
+    }
 
     libxl::Book* _GetBookInstance() const{
         return _book;
     }
+    // This function saves the _book into the given path.
+    void _SaveExcelFile(void){
+        _GetBookInstance()->save(_GetExcelDirectoryAsCharPtr());
+    }
 
-    // }
-    // // This function saves the _book into the given path.
-    // void _SaveExcelFile(void){
-    //     _GetBookInstance()->save(_GetFilePath());
-    // }
-    // void _IncrementNumberOfSheets(){
-    //     _numberOfSheets += 1;
-    // }
-    // int _GetNumberOfSheets(void){
-    //     return _numberOfSheets;
-    // }
     void _SetResponseState(ExcelResponse response){
         _responseState = response;
     }
-    // ExcelResponse _SetSheetInstance(int sheet_number){
-    //     // This will begin indexing from 0.
-    //     // Indexing starts from 1, unless loadInfo or loadPartially is used.
-    //     // As loadInfo and loadPartially can and will be used throughout the class.
-    //     // It is difficult to know in what state this function will be called.
-    //     // To make it consitent, I have added this call here.
-    //     // To gurantee that indexing starts from 0.
-    //     // Source: https://www.libxl.com/workbook.html search "Sheet* getSheet(int index) cosnt".
-    //     _GetBookInstance()->loadInfo(_filePath);
 
-    //     if(_numberOfSheets < sheet_number){
-    //         return SHEET_DOES_NOT_EXIST;
-    //     }
-    //     _sheet = _GetBookInstance()->getSheet(sheet_number);
-    //     return SHEET_FOUND;
-    // }
-    // libxl::Sheet* _GetSheetInstance(void){
-    //     return _sheet;
-    // }
-    // ExcelResponse _CreateMonthlyExpenseBook(QString sheetName){
-    //     if(_CreateNewSheet(sheetName) != NEW_SHEET_CREATED){
-    //         return _CreateNewSheet(sheetName);
-    //     }
-    //     // Set the sheet instance to the first sheet.
-    //     if(_SetSheetInstance(0) != SHEET_FOUND){
-    //         return _SetSheetInstance(0);
-    //     }
+    // /*
+    //  * @brief Normally this function would index from 1, but if loadInfo or loadPartially are used, it will index from 0.
+    //  * As loadInfo and loadPartially can or will be used throughout the class and there is no way to enforce their use or not.
+    //  * The decision of calling loadInfo has been made, which according to the ocumentation (https://www.libxl.com/workbook.html search "Sheet* getSheet(int index) cosnt".)
+    //  * It will make it index from 0.
+    //  */
+    ExcelResponse _SetSheetInstance(int sheet_number){
 
-    //     libxl::Sheet* sheet = _GetSheetInstance();
-    //     if(!sheet){
-    //         return ERROR;
-    //     }
+        if(_GetBookInstance()->sheetCount() < sheet_number){
+            return SHEET_DOES_NOT_EXIST;
+        }
+        _sheet = _GetBookInstance()->getSheet(sheet_number);
+        if(!_sheet){
+            return SHEET_NOT_FOUND;
+        }
+        return SHEET_FOUND;
+    }
 
-    //     libxl::Format* format = _GetBookInstance()->addFormat();
-    //     format->setBorder();
-
-    //     sheet->writeStr(0,0,"Expenses",format);
-    //     sheet->writeStr(0,1,"Date",format);
-    //     sheet->writeStr(0,2,"Note",format);
-    //     _SaveExcelFile();
-
-    //     return NEW_FILE_CREATED;
-    // }
+    libxl::Sheet* _GetSheetInstance(void){
+        return _sheet;
+    }
 
     // void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
 
