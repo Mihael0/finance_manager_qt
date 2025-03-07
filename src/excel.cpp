@@ -10,6 +10,7 @@ void Excel::StoreDailyExpense(double expense, QString currentDate){
     if(!_GetBookInstance() ||!_GetSheetInstance()){
         return;
     }
+    const char* error = _GetLibxlErrorMsg();
 
     // Read the number of stored expenses
     double numberOfWrittenExpenses = _GetSheetInstance()->readNum(1,4);
@@ -19,8 +20,9 @@ void Excel::StoreDailyExpense(double expense, QString currentDate){
     // Write the date of the given expense
     const char* c_currentDate = currentDate.toLocal8Bit().data();
     _GetSheetInstance()->writeStr(numberOfWrittenExpenses, 1, c_currentDate);
+    // Update the LastOccupiedRow
+    _GetSheetInstance()->writeNum(_GetRowOfLastOccupiedRow(),_GetColumnOfLastOccupiedRow(),numberOfWrittenExpenses);
 
-    _GetSheetInstance()->writeNum(_GetRowOfNumExp(),_GetColumnOfNumExp(),numberOfWrittenExpenses);
     _SaveExcelFile();
 
 }

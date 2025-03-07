@@ -39,7 +39,6 @@ void MainWindow::on_dailyExpenses_returnPressed()
     double dailyExpense = ui->dailyExpenses->text().toFloat();
     QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
     DailyExpense.StoreDailyExpense(dailyExpense, currentDate);
-
 }
 
 void MainWindow::on_nextDay_clicked()
