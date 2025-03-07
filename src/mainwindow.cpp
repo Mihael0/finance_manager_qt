@@ -37,7 +37,8 @@ void MainWindow::on_dailyExpenses_returnPressed()
     QString sheetName = "DailyExpenses";
     Excel DailyExpense{bookName, sheetName,MONTHLY_EXPENSE};
     double dailyExpense = ui->dailyExpenses->text().toFloat();
-    DailyExpense.StoreDailyExpense(dailyExpense);
+    QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
+    DailyExpense.StoreDailyExpense(dailyExpense, currentDate);
 
 }
 
