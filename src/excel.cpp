@@ -6,19 +6,22 @@ ExcelResponse Excel::GetResponseState(void){
     return _responseState;
 }
 
-void Excel::StoreDailyExpense(double expense){
-    // Check the name of the file
-    // Leave a value of the number of filled days
-    // We create a function that checks if
-
-    if(!_GetSheetInstance()){
+void Excel::StoreDailyExpense(double expense, QString currentDate){
+    if(!_GetBookInstance() ||!_GetSheetInstance()){
         return;
     }
 
+    // Read the number of stored expenses
     double numberOfWrittenExpenses = _GetSheetInstance()->readNum(1,4);
-    const char* error = _GetBookInstance()->errorMessage();
-    numberOfWrittenExpenses += 3;
-    _GetSheetInstance()->writeNum(numberOfWrittenExpenses, 0, expense,_GetFormat());
+    numberOfWrittenExpenses += 1;
+    // Write the given expense
+    _GetSheetInstance()->writeNum(numberOfWrittenExpenses, 0, expense);
+    // Write the date of the given expense
+    const char* c_currentDate = currentDate.toLocal8Bit().data();
+    _GetSheetInstance()->writeStr(numberOfWrittenExpenses, 1, c_currentDate);
+
+    _GetSheetInstance()->writeNum(_GetRowOfNumExp(),_GetColumnOfNumExp(),numberOfWrittenExpenses);
+    _SaveExcelFile();
 
 }
 

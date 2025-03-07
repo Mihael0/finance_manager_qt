@@ -35,7 +35,7 @@ typedef struct{
 class Excel {
 public:
     bool ExcelFileExists(void) const;
-    void StoreDailyExpense(double expense);
+    void StoreDailyExpense(double expense, QString currentDate);
     ExcelResponse GetResponseState(void);
     Excel(QString bookName, QString sheetName){
         _CreateNewExcelBook(bookName, sheetName, EMPTY_EXCEL);
@@ -56,13 +56,23 @@ private:
     QString _projectDirectoryForExcels = "../data/";
     QString _xlsFileExtenstion = ".xls";
     ExcelResponse _responseState = OPERATION_AS_USUAL;
+    const int _rowOfNumExp = 1;
+    const int _columnOfNumExp = 4;
     const char* error = _GetBookInstance()->errorMessage();
 
-    libxl::Format* _GetFormat(){
+    const int _GetRowOfNumExp(void) const{
+        return _rowOfNumExp;
+    }
+
+    const int _GetColumnOfNumExp(void) const{
+        return _columnOfNumExp;
+    }
+
+    libxl::Format* _GetFormat(void) const{
         return _format;
     }
 
-    void _SetFormat(){
+    void _SetFormat(void){
         _format = _GetBookInstance()->addFormat();
         _format->setBorder();
 
@@ -97,6 +107,11 @@ private:
         _SetResponseState(OPERATION_AS_USUAL);
 
         if(ExcelFileExists()){
+            if(!_GetBookInstance()->load(_GetExcelDirectoryAsCharPtr())){
+                _SetResponseState(ERROR);
+            }
+            _SetSheetInstance(0);
+            _SetFormat();
             _SetResponseState(FILE_ALREADY_EXISTS);
             return GetResponseState();
         }
@@ -135,8 +150,10 @@ private:
         sheet->writeStr(1,0,"Expenses",_GetFormat());
         sheet->writeStr(1,1,"Date",_GetFormat());
         sheet->writeStr(1,2,"Note",_GetFormat());
-        sheet->writeStr(1,3,"NumberOfWrittenExpenses",_GetFormat());
-        sheet->writeNum(1,4,0.0,_GetFormat());
+        sheet->writeStr(1,3,"NumOfWrtExp",_GetFormat());
+        // Write the number (row-1) which is the location of the previously written value.
+        // The number is (row-1) due to having to add 1 every time we write.
+        sheet->writeNum(_GetRowOfNumExp(),_GetColumnOfNumExp(),1,_GetFormat());
         _SaveExcelFile();
 
         return NEW_FILE_CREATED;
@@ -177,14 +194,7 @@ private:
         _responseState = response;
     }
 
-    // /*
-    //  * @brief Normally this function would index from 1, but if loadInfo or loadPartially are used, it will index from 0.
-    //  * As loadInfo and loadPartially can or will be used throughout the class and there is no way to enforce their use or not.
-    //  * The decision of calling loadInfo has been made, which according to the ocumentation (https://www.libxl.com/workbook.html search "Sheet* getSheet(int index) cosnt".)
-    //  * It will make it index from 0.
-    //  */
     ExcelResponse _SetSheetInstance(int sheet_number){
-
         if(_GetBookInstance()->sheetCount() < sheet_number){
             return SHEET_DOES_NOT_EXIST;
         }

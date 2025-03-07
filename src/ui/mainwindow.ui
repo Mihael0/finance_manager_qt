@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>100</y>
+      <y>130</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QLineEdit" name="currentMonth">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>190</y>
+      <x>680</x>
+      <y>520</y>
       <width>101</width>
       <height>26</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QLineEdit" name="dailyExpenses">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>190</y>
+      <x>270</x>
+      <y>230</y>
       <width>113</width>
       <height>26</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QPushButton" name="nextDay">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>230</y>
+      <x>260</x>
+      <y>270</y>
       <width>131</width>
       <height>26</height>
      </rect>
@@ -66,8 +66,8 @@
    <widget class="QPushButton" name="previousDay">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>260</y>
+      <x>260</x>
+      <y>300</y>
       <width>131</width>
       <height>26</height>
      </rect>
@@ -92,9 +92,9 @@
    <widget class="QLineEdit" name="startOfCurrentMonth">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>190</y>
-      <width>101</width>
+      <x>400</x>
+      <y>230</y>
+      <width>111</width>
       <height>26</height>
      </rect>
     </property>
@@ -105,8 +105,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>150</y>
+      <x>280</x>
+      <y>190</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -118,27 +118,27 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>150</y>
+      <x>680</x>
+      <y>480</y>
       <width>101</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Current Date</string>
+     <string>Local Time</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>150</y>
+      <x>400</x>
+      <y>190</y>
       <width>101</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Input Date</string>
+     <string>Date of Expense</string>
     </property>
    </widget>
    <zorder>label</zorder>
