@@ -16,21 +16,18 @@ enum ExcelResponse{
     ERROR,
 };
 
+typedef struct {
+    ExcelResponse state;
+    const char* libxlState;
+} ExcelResponseState;
+
+
 enum ExcelBookType{
     MONTHLY_EXPENSE,
     MONTHLY_SUMMARY,
     RECURRING_EXPENSE,
     EMPTY_EXCEL,
 };
-
-// Libxl functions often require a char* as an input parameter.
-// For that reason, everything relating to the path of the excel file
-// will require the transformation from a QString to a QByteArray to eventually
-// a char pointer. This sturct helps organize it and make it easier to read.
-typedef struct{
-    char* charPath;
-    QByteArray binaryPath;
-} PathParameters_t;
 
 class Excel {
 public:
@@ -56,52 +53,113 @@ private:
     QString _projectDirectoryForExcels = "../data/";
     QString _xlsFileExtenstion = ".xls";
     ExcelResponse _responseState = OPERATION_AS_USUAL;
-    const int _rowOfNumExp = 1;
-    const int _columnOfNumExp = 4;
+    const int _rowOfLastOccupiedRow = 1;
+    const int _columnOfLastOccupiedRow = 4;
     const char* error = _GetBookInstance()->errorMessage();
 
-    const int _GetRowOfNumExp(void) const{
-        return _rowOfNumExp;
+    const char* _GetLibxlErrorMsg(void) const{
+        return error;
     }
-
-    const int _GetColumnOfNumExp(void) const{
-        return _columnOfNumExp;
+    /*
+     * @return the row of where the LastOccupiedValue is stored
+     */
+    const int _GetRowOfLastOccupiedRow(void) const{
+        return _rowOfLastOccupiedRow;
     }
-
-    libxl::Format* _GetFormat(void) const{
-        return _format;
+    /*
+     * @return the column of where the LastOcupiedValue is stored.
+     */
+    const int _GetColumnOfLastOccupiedRow(void) const{
+        return _columnOfLastOccupiedRow;
     }
-
+    /*
+     * @brief Adds a format to the current book, and sets the borders.
+     */
     void _SetFormat(void){
         _format = _GetBookInstance()->addFormat();
         _format->setBorder();
-
     }
+    /*
+     * @return the selected format by _SetFormat
+     */
+    libxl::Format* _GetFormat(void) const{
+        return _format;
+    }
+    /*
+     * @brief Combines the two function needed to create/access an excel file. Setting the name, and the path of the file.
+     */
     void _ConfigureExcelDirectoryPath(QString bookName){
         _SetBookName(bookName);
         _SetExcelDirectoryPath();
     }
-
+    /*
+     * @brief Sets the private variable _bookName with the variable provided. Shoud only be used during the creation of the object.
+     */
     void _SetBookName(QString bookName){
         _bookName = bookName;
     }
-
+    /*
+     * @return the name of the book provided by the user during the creation of the object.
+     */
     QString _GetBookName(void) const{
         return _bookName;
     }
-
+    /*
+     * @brief Creates the path where the excel file will be stored. It uses the provided bookName from the user and two hard coded variables.
+     */
     void _SetExcelDirectoryPath(void){
         _excelDirectoryPath = _projectDirectoryForExcels + _GetBookName() + _xlsFileExtenstion;
     }
-
+    /*
+     * @return the private variable _excelDirectoryPath.
+     */
     const QString _GetExcelDirectoryPath(void) const{
         return _excelDirectoryPath;
     }
-
+    /*
+     * @details This function is needed due to the constant needed for const char* as an input parameter for many libxl functions.
+     * @return the _excelDirectoryPath as a const char pointer.
+     */
     const char* _GetExcelDirectoryAsCharPtr(void) const{
         return _excelDirectoryPath.toLocal8Bit().data();
     }
-
+    /*
+     * @details Be careful on how you change this pointer, as pointing to the wrong file may result in undefined behaviour.
+     * @return Pointer to the _book instance.
+     */
+    libxl::Book* _GetBookInstance() const{
+        return _book;
+    }
+    /*
+     * @brief This function saves the _book into the given path.
+     */
+    void _SaveExcelFile(void){
+        _GetBookInstance()->save(_GetExcelDirectoryAsCharPtr());
+    }
+    /*
+     *
+     *
+     */
+    ExcelResponse _SetSheetInstance(int sheet_number){
+        if(_GetBookInstance()->sheetCount() < sheet_number){
+            return SHEET_DOES_NOT_EXIST;
+        }
+        _sheet = _GetBookInstance()->getSheet(sheet_number);
+        if(!_sheet){
+            return SHEET_NOT_FOUND;
+        }
+        return SHEET_FOUND;
+    }
+    /*
+     * @return a pointer to the private variable of _sheet.
+     */
+    libxl::Sheet* _GetSheetInstance(void){
+        return _sheet;
+    }
+    /*
+     *
+     *
+     */
     ExcelResponse _CreateNewExcelBook(QString bookName, QString sheetName, ExcelBookType excelType){
         _ConfigureExcelDirectoryPath(bookName);
         _SetResponseState(OPERATION_AS_USUAL);
@@ -131,7 +189,10 @@ private:
 
         return GetResponseState();
     }
-
+    /*
+     *
+     *
+     */
     ExcelResponse _CreateMonthlyExpenseBook(QString sheetName){
         if(_CreateNewSheet(sheetName) != NEW_SHEET_CREATED){
             return _CreateNewSheet(sheetName);
@@ -147,24 +208,26 @@ private:
         }
 
         _SetFormat();
+        // Creates the template for MonthlyExpense
         sheet->writeStr(1,0,"Expenses",_GetFormat());
         sheet->writeStr(1,1,"Date",_GetFormat());
         sheet->writeStr(1,2,"Note",_GetFormat());
-        sheet->writeStr(1,3,"NumOfWrtExp",_GetFormat());
+        sheet->writeStr(1,3,"lastOccupiedRow",_GetFormat());
         // Write the number (row-1) which is the location of the previously written value.
         // The number is (row-1) due to having to add 1 every time we write.
-        sheet->writeNum(_GetRowOfNumExp(),_GetColumnOfNumExp(),1,_GetFormat());
+        sheet->writeNum(_GetRowOfLastOccupiedRow(),_GetColumnOfLastOccupiedRow(),1,_GetFormat());
         _SaveExcelFile();
 
         return NEW_FILE_CREATED;
     }
-
+    /*
+     * @brief Creates a new sheet in the given book.
+     * @return
+     */
     ExcelResponse _CreateNewSheet(QString sheetName){
         if(!_GetBookInstance()){
             return ERROR;
         }
-        // This function call is required to be able to call _book->sheetCount() and _book->getSheetName()
-        // _GetBookInstance()->loadInfo(_GetExcelDirectoryAsCharPtr());
         if(_GetBookInstance()->sheetCount() == 0){
             // Create a new sheet of the given name.
             _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
@@ -181,37 +244,6 @@ private:
 
         return NEW_SHEET_CREATED;
     }
-
-    libxl::Book* _GetBookInstance() const{
-        return _book;
-    }
-    // This function saves the _book into the given path.
-    void _SaveExcelFile(void){
-        _GetBookInstance()->save(_GetExcelDirectoryAsCharPtr());
-    }
-
-    void _SetResponseState(ExcelResponse response){
-        _responseState = response;
-    }
-
-    ExcelResponse _SetSheetInstance(int sheet_number){
-        if(_GetBookInstance()->sheetCount() < sheet_number){
-            return SHEET_DOES_NOT_EXIST;
-        }
-        _sheet = _GetBookInstance()->getSheet(sheet_number);
-        if(!_sheet){
-            return SHEET_NOT_FOUND;
-        }
-        return SHEET_FOUND;
-    }
-
-    libxl::Sheet* _GetSheetInstance(void){
-        return _sheet;
-    }
-
-    // void _StoreDailyExpenseInDatabase(float dailyExpense, QDate currentTime, libxl::Book* selectedBook){
-
-    // }
 };
 
 
