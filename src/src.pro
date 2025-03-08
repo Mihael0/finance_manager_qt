@@ -11,8 +11,8 @@ SUBDIRS += ui
 FORMS += ui/mainwindow.ui
 SOURCES += \
     excel.cpp \
-    mainwindow.cpp \
-    
+    mainwindow.cpp
+
 HEADERS += \
     excel.h \
-    mainwindow.h \
+    mainwindow.h
