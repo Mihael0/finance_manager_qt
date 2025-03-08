@@ -17,7 +17,7 @@ The steps to build are:
 
 1. Open QT Creator
 2. Open Existing Project
-3. Open the directory of the project
+3. Open the directory of the project and double click on finance_manager_qt.pro.
 4. You should be able to use F5 to build and debug the project.
 
 ## Draft Requirements v1
