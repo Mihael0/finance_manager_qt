@@ -6,21 +6,19 @@
 
 enum ExcelResponse{
     FILE_ALREADY_EXISTS,
-    NEW_FILE_CREATED,
     SHEET_ALREADY_EXISTS,
-    NEW_SHEET_CREATED,
+    BOOK_INSTANCE_DOES_NOT_EXIST,
     SHEET_DOES_NOT_EXIST,
-    SHEET_FOUND,
-    OPERATION_AS_USUAL,
+    OKAY,
     SHEET_NOT_FOUND,
+    CANNOT_LOAD_FILE,
+    ERROR_CHECK_LIBXL_RESPONSE,
     ERROR,
 };
-
-typedef struct {
-    ExcelResponse state;
-    const char* libxlState;
-} ExcelResponseState;
-
+// NOTE: For now it is not expected to use more than one sheet.
+enum SheetInstances{
+    FIRST_SHEET,
+};
 
 enum ExcelBookType{
     MONTHLY_EXPENSE,
@@ -31,14 +29,22 @@ enum ExcelBookType{
 
 class Excel {
 public:
+    /*
+     * @brief Checks if the excel file exists, which is provided by _excelDirectoryPath.
+     * @return true or false depending if the file exists or not.
+     */
     bool ExcelFileExists(void) const;
+    /*
+     * @brief Checks if the excel file exists, which is provided by _excelDirectoryPath.
+     * @return true or false depending if the file exists or not.
+     */
     void StoreDailyExpense(double expense, QString currentDate);
     ExcelResponse GetResponseState(void);
     Excel(QString bookName, QString sheetName){
-        _CreateNewExcelBook(bookName, sheetName, EMPTY_EXCEL);
+        _CreateBookInstance(bookName, sheetName, EMPTY_EXCEL);
     }
     Excel(QString bookName, QString sheetName, ExcelBookType excelType){
-        _CreateNewExcelBook(bookName, sheetName, excelType);
+        _CreateBookInstance(bookName, sheetName, excelType);
     }
     ~Excel(){
         _book->release();
@@ -52,24 +58,38 @@ private:
     QString _excelDirectoryPath = "";
     QString _projectDirectoryForExcels = "../data/";
     QString _xlsFileExtenstion = ".xls";
-    ExcelResponse _responseState = OPERATION_AS_USUAL;
+    ExcelResponse _responseState = OKAY;
     const int _rowOfLastOccupiedRow = 1;
     const int _columnOfLastOccupiedRow = 4;
     const char* error = _GetBookInstance()->errorMessage();
 
+    /*
+     * @brief Sets the value of the _responseState.
+     * @detail This function MUST be called at the begining of every base function
+     * and if anything goes wrong within those functions, the corresponding ExcelResponse must be set.
+     * Base functions are those that interact directly with libxl or only make calls to setters and getters.
+     */
+    void _SetExcelResponseState(ExcelResponse newState){
+        _responseState = newState;
+    }
+    /*
+     * @brief Libxl provides an internal error message.
+     * This function returns the state of that message.
+     * @return the error message pointer of libxl
+     */
     const char* _GetLibxlErrorMsg(void) const{
         return error;
     }
     /*
      * @return the row of where the LastOccupiedValue is stored
      */
-    const int _GetRowOfLastOccupiedRow(void) const{
+    int _GetRowOfLastOccupiedRow(void) const{
         return _rowOfLastOccupiedRow;
     }
     /*
      * @return the column of where the LastOcupiedValue is stored.
      */
-    const int _GetColumnOfLastOccupiedRow(void) const{
+    int _GetColumnOfLastOccupiedRow(void) const{
         return _columnOfLastOccupiedRow;
     }
     /*
@@ -137,18 +157,24 @@ private:
         _GetBookInstance()->save(_GetExcelDirectoryAsCharPtr());
     }
     /*
-     *
-     *
+     * @brief Uses libxl to assign a _sheet instance.
+     * @return true or false depending if the operation was successful or not.
      */
-    ExcelResponse _SetSheetInstance(int sheet_number){
+    bool _SetSheetInstance(int sheet_number){
+        _SetExcelResponseState(OKAY);
+        // If the number given is larger than the sheetCount then the sheet does not exist.
         if(_GetBookInstance()->sheetCount() < sheet_number){
-            return SHEET_DOES_NOT_EXIST;
+            _SetExcelResponseState(SHEET_NOT_FOUND);
+            return false;
         }
+
         _sheet = _GetBookInstance()->getSheet(sheet_number);
         if(!_sheet){
-            return SHEET_NOT_FOUND;
+            _SetExcelResponseState(SHEET_DOES_NOT_EXIST);
+            return false;
         }
-        return SHEET_FOUND;
+
+        return true;
     }
     /*
      * @return a pointer to the private variable of _sheet.
@@ -157,27 +183,121 @@ private:
         return _sheet;
     }
     /*
-     *
-     *
+     * @brief Loads into memory the current excel file that is pointed at by _excelDirectoryPath.
+     * If the function returns false, check _GetExcelResponseState().
+     * @return true or false depending if the operation was successful or not.
      */
-    ExcelResponse _CreateNewExcelBook(QString bookName, QString sheetName, ExcelBookType excelType){
+    bool _LoadBookInstance(void){
+        _SetExcelResponseState(OKAY);
+
+        if(!_GetBookInstance()->load(_GetExcelDirectoryAsCharPtr())){
+            _SetExcelResponseState(CANNOT_LOAD_FILE);
+            return false;
+        }
+        return true;
+    }
+    /*
+     * @brief Interacts with libxl to create the template of MonthlyExpense.
+     * If the function returns false, check _GetExcelResponseState().
+     * @return true or false depending if the operation was successful or not.
+     */
+    bool _ApplyMonthlyExpenseTemplate(void){
+        _SetExcelResponseState(OKAY);
+        // If any of the following functions returns false, operation has failled.
+        if (!_GetSheetInstance()->writeStr(1, 0, "Expenses", _GetFormat()) ||
+            !_GetSheetInstance()->writeStr(1, 1, "Date", _GetFormat()) ||
+            !_GetSheetInstance()->writeStr(1, 2, "Note", _GetFormat()) ||
+            !_GetSheetInstance()->writeStr(1, 3, "lastOccupiedRow", _GetFormat()) ||
+            // Write the number (row-1) which is the location of the previously written value.
+            // The number is (row-1) due to having to add 1 every time we write.
+            !_GetSheetInstance()->writeNum(_GetRowOfLastOccupiedRow(), _GetColumnOfLastOccupiedRow(), 1, _GetFormat())) {
+            _SetExcelResponseState(ERROR_CHECK_LIBXL_RESPONSE);
+            return false;
+        }
+
+        return true;
+    }
+    /*
+     * @brief Calls all the needed functions to create an excel of type MonthlyExpense.
+     * If the function returns false, check _GetExcelResponseState().
+     * @return true or false depending if the operation was successful or not.
+     */
+    bool _CreateMonthlyExpenseBook(QString sheetName){
+
+        if(!_CreateNewSheet(sheetName)){
+            return false;
+        }
+        //NOTE: Change this function call and implementation if you expect to have more than one sheet
+        // For now the expectation is only one sheet will be used. Due to this, it has been decided
+        // to not implement multiple sheets as that will decrease performance.
+        if(!_SetSheetInstance(FIRST_SHEET)){
+            return false;
+        }
+
+        _SetFormat();
+        if(!_ApplyMonthlyExpenseTemplate()){
+            return false;
+        }
+
+        _SaveExcelFile();
+        return true;
+    }
+    /*
+     * @brief Calls the different functions required to create a new sheet.
+     * If the function returns false, check _GetExcelResponseState().
+     * @return true or false depending if the operation was successful or not.
+     */
+    bool _CreateNewSheet(QString sheetName){
+        _SetExcelResponseState(OKAY);
+
+        if(!_GetBookInstance()){
+            _SetExcelResponseState(BOOK_INSTANCE_DOES_NOT_EXIST);
+            return false;
+        }
+
+        if(_GetBookInstance()->sheetCount() == 0){
+            // Create a new sheet of the given name.
+            _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
+            return true;
+        }
+        // If there is more than one sheet.
+        for(int i = 0; i <= _GetBookInstance()->sheetCount(); i++){
+            // Check if a sheet of the given name exsists.
+            if(_GetBookInstance()->getSheetName(i) == sheetName){
+                _SetExcelResponseState(SHEET_ALREADY_EXISTS);
+                return false;
+            }
+        }
+        // If sheet of the given name is not found, then add it.
+        _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
+
+        return true;
+    }
+    /*
+     * @brief Calls the different functions required to create a new excel file or to initialize the object to point to an existing one.
+     * If the function returns false, check _GetExcelResponseState().
+     * @return true or false depending on if the operation was successful or not.
+     */
+    bool _CreateBookInstance(QString bookName, QString sheetName, ExcelBookType excelType){
         _ConfigureExcelDirectoryPath(bookName);
-        _SetResponseState(OPERATION_AS_USUAL);
 
         if(ExcelFileExists()){
-            if(!_GetBookInstance()->load(_GetExcelDirectoryAsCharPtr())){
-                _SetResponseState(ERROR);
+            if(!_LoadBookInstance()){
+                return false;
             }
-            _SetSheetInstance(0);
+
             _SetFormat();
-            _SetResponseState(FILE_ALREADY_EXISTS);
-            return GetResponseState();
+            if(!_SetSheetInstance(FIRST_SHEET)){
+                return false;
+            }
+            return true;
         }
 
         switch(excelType){
         case MONTHLY_EXPENSE:
-            _SetResponseState(_CreateMonthlyExpenseBook(sheetName));
-            break;
+            if(!_CreateMonthlyExpenseBook(sheetName)){
+                return false;
+            }
         case MONTHLY_SUMMARY:
             break;
         case RECURRING_EXPENSE:
@@ -187,64 +307,7 @@ private:
             break;
         }
 
-        return GetResponseState();
-    }
-    /*
-     *
-     *
-     */
-    ExcelResponse _CreateMonthlyExpenseBook(QString sheetName){
-        if(_CreateNewSheet(sheetName) != NEW_SHEET_CREATED){
-            return _CreateNewSheet(sheetName);
-        }
-        // Set the sheet instance to the first sheet.
-        if(_SetSheetInstance(0) != SHEET_FOUND){
-            return _SetSheetInstance(0);
-        }
-
-        libxl::Sheet* sheet = _GetSheetInstance();
-        if(!sheet){
-            return SHEET_NOT_FOUND;
-        }
-
-        _SetFormat();
-        // Creates the template for MonthlyExpense
-        sheet->writeStr(1,0,"Expenses",_GetFormat());
-        sheet->writeStr(1,1,"Date",_GetFormat());
-        sheet->writeStr(1,2,"Note",_GetFormat());
-        sheet->writeStr(1,3,"lastOccupiedRow",_GetFormat());
-        // Write the number (row-1) which is the location of the previously written value.
-        // The number is (row-1) due to having to add 1 every time we write.
-        sheet->writeNum(_GetRowOfLastOccupiedRow(),_GetColumnOfLastOccupiedRow(),1,_GetFormat());
-        _SaveExcelFile();
-
-        return NEW_FILE_CREATED;
-    }
-    /*
-     * @brief Creates a new sheet in the given book.
-     * @return
-     */
-    ExcelResponse _CreateNewSheet(QString sheetName){
-        if(!_GetBookInstance()){
-            return ERROR;
-        }
-        if(_GetBookInstance()->sheetCount() == 0){
-            // Create a new sheet of the given name.
-            _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
-            return NEW_SHEET_CREATED;
-        }
-
-        for(int i = 0; i <= _GetBookInstance()->sheetCount(); i++){
-            // Check if a sheet of the given name exsists.
-            if(_GetBookInstance()->getSheetName(i) == sheetName){
-                return SHEET_ALREADY_EXISTS;
-            }
-        }
-        _GetBookInstance()->addSheet(sheetName.toLocal8Bit().constData());
-
-        return NEW_SHEET_CREATED;
+        return true;
     }
 };
-
-
 #endif // EXCEL_H
