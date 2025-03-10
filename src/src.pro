@@ -9,17 +9,18 @@ TARGET = financemanager
 SUBDIRS += ui
 
 FORMS += \
+    ui/loginwindow.ui \
     ui/expensewindow.ui \
     ui/mainwindow.ui \
-    ui/signinscreen.ui
+
 SOURCES += \
+    loginwindow.cpp \
     mainwindow.cpp \
     excel.cpp \
-    signinscreen.cpp \
-    expensewindow.cpp
+    expensewindow.cpp \
 
 HEADERS += \
+    loginwindow.h \
     mainwindow.h \
     excel.h \
-    signinscreen.h \
-    expensewindow.h
+    expensewindow.h \
