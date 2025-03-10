@@ -1,17 +1,12 @@
 #include "mainwindow.h"
-#include "excel.h"
+#include "expensewindow.h"
 
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
-
-    // Excel Example;
-    // std::string BookName = "Test";
-    // Example._CreateNewExcelBook(BookName);
-
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    ExpenseWindow DeclareExpenses;
+    DeclareExpenses.show();
     return a.exec();
 }

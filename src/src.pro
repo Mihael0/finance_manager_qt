@@ -8,11 +8,18 @@ TEMPLATE = lib
 TARGET = financemanager
 SUBDIRS += ui
 
-FORMS += ui/mainwindow.ui
+FORMS += \
+    ui/expensewindow.ui \
+    ui/mainwindow.ui \
+    ui/signinscreen.ui
 SOURCES += \
+    mainwindow.cpp \
     excel.cpp \
-    mainwindow.cpp
+    signinscreen.cpp \
+    expensewindow.cpp
 
 HEADERS += \
+    mainwindow.h \
     excel.h \
-    mainwindow.h
+    signinscreen.h \
+    expensewindow.h
