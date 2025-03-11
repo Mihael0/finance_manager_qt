@@ -7,6 +7,7 @@ namespace Ui {
 class LogInWindow;
 }
 
+// TODO: Implement an actual authenthication. For now this is a placeholder.
 typedef struct{
     const QString User1 = "Mihael";
     const QString User2 = "Vanya";
@@ -19,9 +20,11 @@ class LogInWindow : public QDialog
 public:
     explicit LogInWindow(QWidget *parent = nullptr);
     ~LogInWindow();
-    bool AuthenticationSuccessful(void);
 
 signals:
+    /*
+     * @brief This signal is used to notify the MainWindow that the authenthication has been successful.
+     */
     void AuthenthicationSuccessful(void);
 
 private slots:

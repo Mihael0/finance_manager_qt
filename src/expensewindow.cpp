@@ -7,23 +7,20 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ExpenseWindow)
 {
-    ui->setupUi(this);
-
-    ui->startOfCurrentMonth->setFrame(false);
     _SetAppTimeToStartOfMonth();
-    _InitializeCurrentMonth();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+
+    ui->setupUi(this);
+    if(ui){
+        ui->currentMonth->setFrame(false);
+        ui->startOfCurrentMonth->setFrame(false);
+        ui->currentMonth->setText(_GetCurrentTime().toString("dd-MM-yyyy"));
+        ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    }
+
 }
 
 ExpenseWindow::~ExpenseWindow(){
     delete ui;
-}
-
-void ExpenseWindow::_InitializeCurrentMonth(void){
-    if(ui){
-        ui->currentMonth->setFrame(false);
-        ui->currentMonth->setText(_GetCurrentTime().toString("dd-MM-yyyy"));
-    }
 }
 
 // TODO: We have to check if the expense is a valid value.
