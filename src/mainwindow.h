@@ -13,9 +13,16 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+public slots:
+    void on_Authenthication_successful(void);
+    void on_BackBtn_pressed(void);
+
+signals:
+    void on_DeclareEpxenseBtn_clicked(void);
+
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow();    
 
 private slots:
     void on_DeclareExpenseBtn_clicked();

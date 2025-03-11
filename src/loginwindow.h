@@ -21,20 +21,14 @@ public:
     ~LogInWindow();
     bool AuthenticationSuccessful(void);
 
+signals:
+    void AuthenthicationSuccessful(void);
+
 private slots:
     void on_LogIn_clicked();
 
 private:
     Ui::LogInWindow *ui;
-    bool _authenthicationSuccessful = false;
-
-    void _SetAuthenthicationSuccessful(bool isSuccessful){
-        _authenthicationSuccessful = isSuccessful;
-    }
-
-    bool _GetAuthehtnicationSuccessful(void){
-        return _authenthicationSuccessful;
-    }
 };
 
 #endif // LOGINWINDOW_H

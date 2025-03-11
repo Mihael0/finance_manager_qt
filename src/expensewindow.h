@@ -12,6 +12,12 @@ class ExpenseWindow : public QWidget
 {
     Q_OBJECT
 
+public slots:
+    void on_DailyExpensesBtn_pressed(void);
+
+signals:
+    void on_BackBtn_pressed(void);
+
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
     ~ExpenseWindow();
@@ -23,6 +29,8 @@ private slots:
     void on_nextDay_clicked();
 
     void on_previousDay_clicked();
+
+    void on_back_clicked();
 
 private:
     Ui::ExpenseWindow *ui;
@@ -45,9 +53,8 @@ private:
         _SetLocalAppTime(StartOfMonthTime);
     }
     QDateTime _GetCurrentTime(void) const{
-
-            return _worldClockTime;
-        }
+        return _worldClockTime;
+    }
 
     QDate _GetLocalAppTime(void) const{
         return _localAppTime;

@@ -15,8 +15,7 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
-ExpenseWindow::~ExpenseWindow()
-{
+ExpenseWindow::~ExpenseWindow(){
     delete ui;
 }
 
@@ -32,8 +31,7 @@ void ExpenseWindow::_InitializeCurrentMonth(void){
 // if that is the case, then we need to prompt the user if
 // they would like to create a new excel file for that given month.
 // if they say No, then they are returned to their previous value.
-void ExpenseWindow::on_dailyExpenses_returnPressed()
-{
+void ExpenseWindow::on_dailyExpenses_returnPressed(){
     QString bookName = _GetCurrentTime().toString("MM-yyyy");
     QString sheetName = "DailyExpenses";
     Excel DailyExpense{bookName, sheetName,MONTHLY_EXPENSE};
@@ -42,18 +40,24 @@ void ExpenseWindow::on_dailyExpenses_returnPressed()
     DailyExpense.StoreDailyExpense(dailyExpense, currentDate);
 }
 
-void ExpenseWindow::on_nextDay_clicked()
-{
+void ExpenseWindow::on_nextDay_clicked(){
     // Increment the current day by 1.
     _IncrementDayOfLocalAppTime();
     ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
-
-void ExpenseWindow::on_previousDay_clicked()
-{
+void ExpenseWindow::on_previousDay_clicked(){
     // Decrement the current day by 1.
     _DecrementDayOfLocalAppTime();
     ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+}
+
+void ExpenseWindow::on_back_clicked(){
+    this->close();
+    emit on_BackBtn_pressed();
+}
+
+void ExpenseWindow::on_DailyExpensesBtn_pressed(void){
+    this->show();
 }
 

@@ -18,17 +18,13 @@ void LogInWindow::on_LogIn_clicked()
 {   CREDENTIALS Users;
 
     if(ui->UserName->text()== Users.User1 || ui->UserName->text() == Users.User2){
-        _SetAuthenthicationSuccessful(true);
+        emit AuthenthicationSuccessful();
         accept();
+        this->close();
     } else{
-        _SetAuthenthicationSuccessful(false);
         QMessageBox::warning(this, "Error", "Authenthication Unsuccessful. Please try again.");
         reject();
     }
 
-}
-
-bool LogInWindow::AuthenticationSuccessful(void){
-    return _GetAuthehtnicationSuccessful();
 }
 
