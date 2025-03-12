@@ -10,7 +10,6 @@ void Excel::StoreDailyExpense(double expense, QString currentDate){
     if(!_GetBookInstance() ||!_GetSheetInstance()){
         return;
     }
-    const char* error = _GetLibxlErrorMsg();
 
     // Read the number of stored expenses
     double numberOfWrittenExpenses = _GetSheetInstance()->readNum(1,4);

@@ -1,58 +1,93 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "QString"
-#include "excel.h"
+#include <mainwindow.h>
+#include <ui_mainwindow.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    ui->startOfCurrentMonth->setFrame(false);
-    _SetAppTimeToStartOfMonth();
-    _InitializeCurrentMonth();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
-}
-
-void MainWindow::_InitializeCurrentMonth(void){
-    if(ui){
-        ui->currentMonth->setFrame(false);
-        ui->currentMonth->setText(_GetCurrentTime().toString("dd-MM-yyyy"));
-    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-// TODO: We have to check if the expense is a valid value.
-// TODO: We have to check if the month value has changed.
-// if that is the case, then we need to prompt the user if
-// they would like to create a new excel file for that given month.
-// if they say No, then they are returned to their previous value.
-void MainWindow::on_dailyExpenses_returnPressed()
+
+void MainWindow::on_declareExpenseBtn_clicked(void)
 {
-    QString bookName = _GetCurrentTime().toString("MM-yyyy");
-    QString sheetName = "DailyExpenses";
-    Excel DailyExpense{bookName, sheetName,MONTHLY_EXPENSE};
-    double dailyExpense = ui->dailyExpenses->text().toFloat();
-    QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
-    DailyExpense.StoreDailyExpense(dailyExpense, currentDate);
+    if(_declareExpense != nullptr){
+        return;
+    }
+    // Connection for DeclareExpense to know to show itself to the user.
+    _declareExpense = new ExpenseWindow();
+    QObject::connect(this,&MainWindow::declareExpenseWindowRequested,_declareExpense,&ExpenseWindow::showExpenseWindow);
+    // Connection to reset DeclareExpense to nullptr
+    QObject::connect(_declareExpense, &ExpenseWindow::closeExpenseWindowRequested,this,&MainWindow::expenseWindowRequestsBack);
+
+    this->hide();
+    emit declareExpenseWindowRequested();
 }
 
-void MainWindow::on_nextDay_clicked()
-{
-    // Increment the current day by 1.
-    _IncrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+void MainWindow::showMainWindow(void){
+    this->show();
 }
 
+void MainWindow::expenseWindowRequestsBack(void){
+    if(_declareExpense == nullptr){
+        return;
+    }
 
-void MainWindow::on_previousDay_clicked()
-{
-    // Decrement the current day by 1.
-    _DecrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    delete _declareExpense;
+    _declareExpense = nullptr;
+    this->show();
 }
 
+void MainWindow::on_recurringExpenseBtn_clicked()
+{
+    if(_recurringExpense != nullptr){
+        return;
+    }
+    // Connection for _recurringExpense to know to show itself to the user.
+    _recurringExpense = new RecurringExpenseWindow();
+    QObject::connect(this,&MainWindow::recurringExpenseWindowRequested,_recurringExpense,&RecurringExpenseWindow::showRecurringExpenseWindow);
+    // Connection to reset _recurringExpense to nullptr
+    QObject::connect(_recurringExpense, &RecurringExpenseWindow::closeRecurringExpenseWindowRequested,this,&MainWindow::recurringExpenseWindowRequestsBack);
+
+    this->hide();
+    emit recurringExpenseWindowRequested();
+}
+
+void MainWindow::recurringExpenseWindowRequestsBack(void){
+    if(_recurringExpense == nullptr){
+        return;
+    }
+
+    delete _recurringExpense;
+    _recurringExpense = nullptr;
+    this->show();
+}
+
+void MainWindow::on_createSummaryBtn_clicked()
+{
+    if(_createSummary != nullptr){
+        return;
+    }
+    // Connection for _createSummary to know to show itself to the user.
+    _createSummary = new CreateSummaryWindow();
+    QObject::connect(this,&MainWindow::createSummaryWindowRequested,_createSummary,&CreateSummaryWindow::showCreateSummaryWindow);
+    // Connection to reset _createSummary to nullptr
+    QObject::connect(_createSummary, &CreateSummaryWindow::closeCreateSummaryWindowRequested,this,&MainWindow::createSummaryWindowRequestsBack);
+
+    this->hide();
+    emit createSummaryWindowRequested();
+}
+
+void MainWindow::createSummaryWindowRequestsBack(void){
+    if(_createSummary == nullptr){
+        return;
+    }
+
+    delete _createSummary;
+    _createSummary = nullptr;
+    this->show();
+}
