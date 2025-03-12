@@ -18,7 +18,7 @@ void LogInWindow::on_LogIn_clicked()
 {   CREDENTIALS Users;
 
     if(ui->UserName->text()== Users.User1 || ui->UserName->text() == Users.User2){
-        emit AuthenthicationSuccessful();
+        emit authenthicationSucceeded();
         accept();
         this->close();
     } else{

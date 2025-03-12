@@ -23,9 +23,9 @@ public:
 
 signals:
     /*
-     * @brief This signal is used to notify the MainWindow that the authenthication has been successful.
+     * @brief This signal is used to notify the MainWindow that the authenthication has succeeded.
      */
-    void AuthenthicationSuccessful(void);
+    void authenthicationSucceeded(void);
 
 private slots:
     void on_LogIn_clicked();

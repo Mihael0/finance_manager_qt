@@ -16,13 +16,13 @@ public slots:
     /*
      * @brief This slot is used by the MainWindow to notify the ExpenseWindow that it must show up.
      */
-    void on_DailyExpensesBtn_pressed(void);
+    void showExpenseWindow(void);
 
 signals:
     /*
-     * @brief This signals is emitted to notify the MainWindow that the ExpenseWindow has been closed.
+     * @brief This signal is emitted to notify the MainWindow that the ExpenseWindow should be closed.
      */
-    void on_BackBtn_pressed(void);
+    void closeExpenseWindowRequested(void);
 
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
@@ -36,7 +36,7 @@ private slots:
 
     void on_previousDay_clicked();
 
-    void on_back_clicked();
+    void on_backBtn_clicked();
 
 private:
     Ui::ExpenseWindow *ui;
@@ -49,7 +49,7 @@ private:
         _localAppTime = newLocalAppTime;
     }
     /*
-     * Initializes _localAppTime to be the start of the month.
+     * @detail Initializes _localAppTime to be the start of the month.
      * Make sure this, or another initialization function of _localAppTime is called
      * before using any of the setters/gettters of _localAppTime.
      * Failing to do so, will lead to undefined behaviour.

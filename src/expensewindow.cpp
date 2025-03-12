@@ -49,12 +49,11 @@ void ExpenseWindow::on_previousDay_clicked(){
     ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
-void ExpenseWindow::on_back_clicked(){
-    this->close();
-    emit on_BackBtn_pressed();
+void ExpenseWindow::on_backBtn_clicked(){
+    emit closeExpenseWindowRequested();
 }
 
-void ExpenseWindow::on_DailyExpensesBtn_pressed(void){
+void ExpenseWindow::showExpenseWindow(void){
     this->show();
 }
 

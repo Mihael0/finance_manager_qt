@@ -140,7 +140,7 @@
     <string>Daily Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="back">
+  <widget class="QPushButton" name="backBtn">
    <property name="geometry">
     <rect>
      <x>10</x>

@@ -39,6 +39,9 @@ public:
      * @return true or false depending if the file exists or not.
      */
     void StoreDailyExpense(double expense, QString currentDate);
+    /*
+     * @return the current state of the ExcelResponse.
+     */
     ExcelResponse GetResponseState(void);
     Excel(QString bookName, QString sheetName){
         _CreateBookInstance(bookName, sheetName, EMPTY_EXCEL);
@@ -160,7 +163,7 @@ private:
      * @brief Uses libxl to assign a _sheet instance.
      * @return true or false depending if the operation was successful or not.
      */
-    bool _SetSheetInstance(int sheet_number){
+    bool _SetSheetInstance(SheetInstances sheet_number){
         _SetExcelResponseState(OKAY);
         // If the number given is larger than the sheetCount then the sheet does not exist.
         if(_GetBookInstance()->sheetCount() < sheet_number){
