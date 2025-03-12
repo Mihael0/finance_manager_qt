@@ -12,11 +12,9 @@ RecurringExpenseWindow::~RecurringExpenseWindow()
     delete ui;
 }
 
-
 void RecurringExpenseWindow::showRecurringExpenseWindow(void){
     this->show();
 }
-
 
 void RecurringExpenseWindow::on_backBtn_clicked()
 {

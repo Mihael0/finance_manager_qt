@@ -51,7 +51,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="DeclareExpenseBtn">
+   <widget class="QPushButton" name="declareExpenseBtn">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -80,7 +80,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="RecurringExpenseBtn">
+   <widget class="QPushButton" name="recurringExpenseBtn">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -93,7 +93,7 @@
      <string>Create or Edit Recurring Expense</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="createSummaryBtn">
     <property name="geometry">
      <rect>
       <x>320</x>

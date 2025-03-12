@@ -12,6 +12,9 @@ class RecurringExpenseWindow : public QWidget
     Q_OBJECT
 
 public slots:
+    /*
+     * @brief This slot is used by the MainWindow to notify the RecurringExpenseWindow that it must show up.
+     */
     void showRecurringExpenseWindow(void);
 
 signals:

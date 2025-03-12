@@ -13,18 +13,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_DeclareExpenseBtn_clicked(void)
+void MainWindow::on_declareExpenseBtn_clicked(void)
 {
-    if(DeclareExpense != nullptr){
+    if(_declareExpense != nullptr){
         return;
     }
     // Connection for DeclareExpense to know to show itself to the user.
-    DeclareExpense = new ExpenseWindow();
-    QObject::connect(this,&MainWindow::declareExpenseWindowRequested,DeclareExpense,&ExpenseWindow::showExpenseWindow);
+    _declareExpense = new ExpenseWindow();
+    QObject::connect(this,&MainWindow::declareExpenseWindowRequested,_declareExpense,&ExpenseWindow::showExpenseWindow);
     // Connection to reset DeclareExpense to nullptr
-    QObject::connect(DeclareExpense, &ExpenseWindow::closeExpenseWindowRequested,this,&MainWindow::expenseWindowRequestsBack);
+    QObject::connect(_declareExpense, &ExpenseWindow::closeExpenseWindowRequested,this,&MainWindow::expenseWindowRequestsBack);
 
-    // ExpenseWindowRequestsBack
     this->hide();
     emit declareExpenseWindowRequested();
 }
@@ -34,35 +33,61 @@ void MainWindow::showMainWindow(void){
 }
 
 void MainWindow::expenseWindowRequestsBack(void){
-    if(DeclareExpense == nullptr){
+    if(_declareExpense == nullptr){
         return;
     }
 
-    delete DeclareExpense;
-    DeclareExpense = nullptr;
+    delete _declareExpense;
+    _declareExpense = nullptr;
     this->show();
 }
 
-void MainWindow::on_RecurringExpenseBtn_clicked()
+void MainWindow::on_recurringExpenseBtn_clicked()
 {
-    if(RecurringExpense != nullptr){
+    if(_recurringExpense != nullptr){
         return;
     }
-    // Connection for RecurringExpense to know to show itself to the user.
-    RecurringExpense = new RecurringExpenseWindow();
-    QObject::connect(this,&MainWindow::recurringExpenseWindowRequested,RecurringExpense,&RecurringExpenseWindow::showRecurringExpenseWindow);
-    // Connection to reset RecurringExpense to nullptr
-    QObject::connect(RecurringExpense, &RecurringExpenseWindow::closeRecurringExpenseWindowRequested,this,&MainWindow::recurringExpenseWindowRequestsBack);
+    // Connection for _recurringExpense to know to show itself to the user.
+    _recurringExpense = new RecurringExpenseWindow();
+    QObject::connect(this,&MainWindow::recurringExpenseWindowRequested,_recurringExpense,&RecurringExpenseWindow::showRecurringExpenseWindow);
+    // Connection to reset _recurringExpense to nullptr
+    QObject::connect(_recurringExpense, &RecurringExpenseWindow::closeRecurringExpenseWindowRequested,this,&MainWindow::recurringExpenseWindowRequestsBack);
 
+    this->hide();
     emit recurringExpenseWindowRequested();
 }
 
 void MainWindow::recurringExpenseWindowRequestsBack(void){
-    if(RecurringExpense == nullptr){
+    if(_recurringExpense == nullptr){
         return;
     }
 
-    delete RecurringExpense;
-    RecurringExpense = nullptr;
+    delete _recurringExpense;
+    _recurringExpense = nullptr;
+    this->show();
+}
+
+void MainWindow::on_createSummaryBtn_clicked()
+{
+    if(_createSummary != nullptr){
+        return;
+    }
+    // Connection for _createSummary to know to show itself to the user.
+    _createSummary = new CreateSummaryWindow();
+    QObject::connect(this,&MainWindow::createSummaryWindowRequested,_createSummary,&CreateSummaryWindow::showCreateSummaryWindow);
+    // Connection to reset _createSummary to nullptr
+    QObject::connect(_createSummary, &CreateSummaryWindow::closeCreateSummaryWindowRequested,this,&MainWindow::createSummaryWindowRequestsBack);
+
+    this->hide();
+    emit createSummaryWindowRequested();
+}
+
+void MainWindow::createSummaryWindowRequestsBack(void){
+    if(_createSummary == nullptr){
+        return;
+    }
+
+    delete _createSummary;
+    _createSummary = nullptr;
     this->show();
 }

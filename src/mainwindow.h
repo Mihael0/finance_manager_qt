@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <expensewindow.h>
 #include <recurringexpensewindow.h>
+#include <createsummarywindow.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,6 +36,13 @@ public slots:
      * deallocated and shows the MainWindow to the user.
      */
     void recurringExpenseWindowRequestsBack(void);
+    /*
+     * @brief This slot handles the signal emitted whenever a
+     * back button is pressed in the CreateSummaryWindow. It makes
+     * sure that the resources allocated to CreateSummaryWindow are
+     * deallocated and shows the MainWindow to the user.
+     */
+    void createSummaryWindowRequestsBack(void);
 
 signals:
     /*
@@ -46,20 +54,26 @@ signals:
      * @brief This signal is emitted whenever the on_RecurringExpenseBtn_clicked() slot is triggered by the UI.
      */
     void recurringExpenseWindowRequested(void);
+    /*
+     * @brief This signal is emitted whenever the on_RecurringExpenseBtn_clicked() slot is triggered by the UI.
+     */
+    void createSummaryWindowRequested(void);
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();    
 
 private slots:
-    void on_DeclareExpenseBtn_clicked();
+    void on_declareExpenseBtn_clicked();
 
-    void on_RecurringExpenseBtn_clicked();
+    void on_recurringExpenseBtn_clicked();
+
+    void on_createSummaryBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
-    ExpenseWindow *DeclareExpense = nullptr;
-    RecurringExpenseWindow *RecurringExpense = nullptr;
-
+    ExpenseWindow *_declareExpense = nullptr;
+    RecurringExpenseWindow *_recurringExpense = nullptr;
+    CreateSummaryWindow *_createSummary = nullptr;
 };
 #endif // MAINWINDOW_H
