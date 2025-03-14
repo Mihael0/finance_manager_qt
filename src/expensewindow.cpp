@@ -30,7 +30,7 @@ ExpenseWindow::~ExpenseWindow(){
 void ExpenseWindow::on_dailyExpenses_returnPressed(){
     QString bookName = _GetCurrentTime().toString("MM-yyyy");
     QString sheetName = "DailyExpenses";
-    double dailyExpense = ui->dailyExpenses->text().toFloat();
+    // double dailyExpense = ui->dailyExpenses->text().toFloat();
     QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
 }
 

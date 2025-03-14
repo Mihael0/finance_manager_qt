@@ -8,7 +8,7 @@ class LogInWindow;
 }
 
 // TODO: Implement an actual authenthication. For now this is a placeholder.
-typedef struct{
+typedef struct CREDENTIALS{
     const QString User1 = "Mihael";
     const QString User2 = "Vanya";
 } CREDENTIALS;

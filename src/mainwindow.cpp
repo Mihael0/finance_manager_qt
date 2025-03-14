@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     QObject::connect(_logIn,&LogInWindow::authenthicationSucceeded,this,&MainWindow::showMainWindow);
+    _logIn->show();
 }
 
 MainWindow::~MainWindow()
@@ -17,7 +18,7 @@ MainWindow::~MainWindow()
 
 int MainWindow::IsAuthenthicationAccepted(void){
     if(_logIn){
-        _logIn->show();
+        // _logIn->show();
         return _logIn->exec();
     }
     return QDialog::Rejected;
