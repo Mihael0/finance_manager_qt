@@ -64,7 +64,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     /*
-     * @brief This signal is emitted whenever the on_RecurringExpenseBtn_clicked() slot is triggered by the UI.
+     * @brief This function is used to check if the user has successfully logged in with the correct credentials.
+     * @return returns int casted QDialog, accepted or rejected.
      */
     int IsAuthenthicationAccepted(void);
 

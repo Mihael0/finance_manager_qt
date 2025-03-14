@@ -19,7 +19,6 @@ SOURCES += \
     createsummarywindow.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
-    excel.cpp \
     expensewindow.cpp \
     recurringexpensewindow.cpp
 
@@ -27,6 +26,5 @@ HEADERS += \
     createsummarywindow.h \
     loginwindow.h \
     mainwindow.h \
-    excel.h \
     expensewindow.h \
     recurringexpensewindow.h

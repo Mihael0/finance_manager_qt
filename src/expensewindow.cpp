@@ -1,7 +1,6 @@
 #include "expensewindow.h"
 #include "ui_expensewindow.h"
 #include "QString"
-#include "excel.h"
 
 ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
@@ -31,10 +30,8 @@ ExpenseWindow::~ExpenseWindow(){
 void ExpenseWindow::on_dailyExpenses_returnPressed(){
     QString bookName = _GetCurrentTime().toString("MM-yyyy");
     QString sheetName = "DailyExpenses";
-    Excel DailyExpense{bookName, sheetName,MONTHLY_EXPENSE};
     double dailyExpense = ui->dailyExpenses->text().toFloat();
     QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
-    DailyExpense.StoreDailyExpense(dailyExpense, currentDate);
 }
 
 void ExpenseWindow::on_nextDay_clicked(){
