@@ -5,6 +5,7 @@
 #include <expensewindow.h>
 #include <recurringexpensewindow.h>
 #include <createsummarywindow.h>
+#include <loginwindow.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -61,7 +62,11 @@ signals:
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();    
+    ~MainWindow();
+    /*
+     * @brief This signal is emitted whenever the on_RecurringExpenseBtn_clicked() slot is triggered by the UI.
+     */
+    int IsAuthenthicationAccepted(void);
 
 private slots:
     void on_declareExpenseBtn_clicked();
@@ -75,5 +80,6 @@ private:
     ExpenseWindow *_declareExpense = nullptr;
     RecurringExpenseWindow *_recurringExpense = nullptr;
     CreateSummaryWindow *_createSummary = nullptr;
+    LogInWindow *_logIn = nullptr;
 };
 #endif // MAINWINDOW_H
