@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     QObject::connect(_logIn,&LogInWindow::authenthicationSucceeded,this,&MainWindow::showMainWindow);
-    _logIn->show();
 }
 
 MainWindow::~MainWindow()
@@ -16,12 +15,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int MainWindow::IsAuthenthicationAccepted(void){
-    if(_logIn){
-        // _logIn->show();
-        return _logIn->exec();
-    }
-    return QDialog::Rejected;
+void MainWindow::ShowLogInWindow(void){
+    _logIn->show();
 }
 
 void MainWindow::on_declareExpenseBtn_clicked(void)
@@ -43,10 +38,7 @@ void MainWindow::showMainWindow(void){
     if(_logIn == nullptr){
         return;
     }
-    // This makes sure _logIn gets deleted after the
-    // loop executes. Otherwise a race condition might
-    // be created.
-    _logIn->deleteLater();
+    delete _logIn;
     _logIn = nullptr;
     this->show();
 }

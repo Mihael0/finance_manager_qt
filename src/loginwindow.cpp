@@ -3,7 +3,7 @@
 #include "QMessageBox"
 
 LogInWindow::LogInWindow(QWidget *parent)
-    : QDialog(parent)
+    : QWidget(parent)
     , ui(new Ui::LogInWindow)
 {
     ui->setupUi(this);
@@ -19,11 +19,9 @@ void LogInWindow::on_LogIn_clicked()
 
     if(ui->UserName->text()== Users.User1 || ui->UserName->text() == Users.User2){
         emit authenthicationSucceeded();
-        accept();
         this->close();
     } else{
         QMessageBox::warning(this, "Error", "Authenthication Unsuccessful. Please try again.");
-        reject();
     }
 
 }

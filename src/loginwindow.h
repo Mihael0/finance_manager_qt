@@ -1,7 +1,7 @@
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
 class LogInWindow;
@@ -13,7 +13,7 @@ typedef struct CREDENTIALS{
     const QString User2 = "Vanya";
 } CREDENTIALS;
 
-class LogInWindow : public QDialog
+class LogInWindow : public QWidget
 {
     Q_OBJECT
 

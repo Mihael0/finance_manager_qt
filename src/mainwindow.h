@@ -64,10 +64,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     /*
-     * @brief This function is used to check if the user has successfully logged in with the correct credentials.
-     * @return returns int casted QDialog, accepted or rejected.
+     * @brief Uses the private class _logIn to show the LogInWindow to the user.
      */
-    int IsAuthenthicationAccepted(void);
+    void ShowLogInWindow(void);
 
 private slots:
     void on_declareExpenseBtn_clicked();
