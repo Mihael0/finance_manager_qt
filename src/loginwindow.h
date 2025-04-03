@@ -7,12 +7,6 @@ namespace Ui {
 class LogInWindow;
 }
 
-// TODO: Implement an actual authenthication. For now this is a placeholder.
-typedef struct CREDENTIALS{
-    const QString User1 = "Mihael";
-    const QString User2 = "Vanya";
-} CREDENTIALS;
-
 class LogInWindow : public QWidget
 {
     Q_OBJECT
