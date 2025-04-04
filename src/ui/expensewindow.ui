@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>838</width>
-    <height>747</height>
+    <height>551</height>
    </rect>
   </property>
   <property name="cursor">
@@ -19,8 +19,8 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>470</x>
-     <y>290</y>
+     <x>440</x>
+     <y>240</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QPushButton" name="nextDay">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>400</y>
+     <x>430</x>
+     <y>350</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -46,7 +46,7 @@
    <property name="geometry">
     <rect>
      <x>730</x>
-     <y>710</y>
+     <y>520</y>
      <width>101</width>
      <height>26</height>
     </rect>
@@ -58,8 +58,8 @@
   <widget class="QPushButton" name="previousDay">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>430</y>
+     <x>430</x>
+     <y>380</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -72,7 +72,7 @@
    <property name="geometry">
     <rect>
      <x>730</x>
-     <y>670</y>
+     <y>480</y>
      <width>101</width>
      <height>41</height>
     </rect>
@@ -84,8 +84,8 @@
   <widget class="QLineEdit" name="dailyExpenses">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>330</y>
+     <x>300</x>
+     <y>280</y>
      <width>113</width>
      <height>26</height>
     </rect>
@@ -94,8 +94,8 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>260</y>
+     <x>320</x>
+     <y>190</y>
      <width>221</width>
      <height>41</height>
     </rect>
@@ -107,8 +107,8 @@
   <widget class="QLineEdit" name="startOfCurrentMonth">
    <property name="geometry">
     <rect>
-     <x>470</x>
-     <y>330</y>
+     <x>450</x>
+     <y>280</y>
      <width>111</width>
      <height>26</height>
     </rect>
@@ -120,8 +120,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>290</y>
+     <x>310</x>
+     <y>240</y>
      <width>101</width>
      <height>41</height>
     </rect>
@@ -146,8 +146,8 @@
   <widget class="QPushButton" name="setToToday">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>370</y>
+     <x>430</x>
+     <y>320</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -159,8 +159,8 @@
   <widget class="QPushButton" name="setToStartOfMonth">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>460</y>
+     <x>430</x>
+     <y>410</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -169,11 +169,11 @@
     <string>Start of Month</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="setToToday_2">
+  <widget class="QPushButton" name="submitExpense">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>370</y>
+     <x>290</x>
+     <y>320</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -182,11 +182,11 @@
     <string>Submit Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="setToToday_3">
+  <widget class="QPushButton" name="deleteExpense">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>460</y>
+     <x>290</x>
+     <y>410</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -195,11 +195,11 @@
     <string>Delete Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="previousDay_2">
+  <widget class="QPushButton" name="previousExpense">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>430</y>
+     <x>290</x>
+     <y>380</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -208,17 +208,82 @@
     <string>Previous Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="previousDay_3">
+  <widget class="QPushButton" name="nextExpense">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>400</y>
+     <x>290</x>
+     <y>350</y>
      <width>131</width>
      <height>26</height>
     </rect>
    </property>
    <property name="text">
     <string>Next Expense</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="backBtn_2">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>460</y>
+     <width>131</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Declare Expenses</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>181</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>How to declare expenses:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_10">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>70</y>
+     <width>711</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>170</y>
+     <width>831</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>841</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
    </property>
   </widget>
  </widget>

@@ -3,15 +3,15 @@
 #include "QMessageBox"
 
 
-typedef struct USRDETAILS{
+struct USRDETAILS{
     QString UserName;
     QString PassWord;
-} USERDETAILS;
+};
 
-typedef struct CREDENTIALS{
+struct CREDENTIALS{
     const USRDETAILS User1;
     const USRDETAILS User2;
-} CREDENTIALS;
+};
 
 CREDENTIALS usrCredentials = {
     .User1 = {"Mihael", "Mihael"},

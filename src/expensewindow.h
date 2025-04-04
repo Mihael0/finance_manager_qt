@@ -4,6 +4,16 @@
 #include <QWidget>
 #include <QDateTime>
 
+struct ExpenseInfo{
+    float expenseValue;
+    QString expenseDate;
+};
+
+struct ExpenseData{
+    std::vector<ExpenseInfo> dailyExpense;
+    int nExpenses = 0;
+};
+
 namespace Ui {
 class ExpenseWindow;
 }
@@ -27,6 +37,9 @@ signals:
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
     ~ExpenseWindow();
+    ExpenseData GetExpenses(void){
+        return _expenses;
+    }
 
 private slots:
 
@@ -38,10 +51,24 @@ private slots:
 
     void on_backBtn_clicked();
 
+    void on_submitExpense_clicked();
+
+    void on_previousExpense_clicked();
+
 private:
     Ui::ExpenseWindow *ui;
     const QDateTime _worldClockTime = QDateTime::currentDateTime();
     QDate _localAppTime;
+    ExpenseData _expenses;
+    int _previousExpenseIndex;
+
+    /*
+     * @brief Sets the declaredExpense and increments the iterator for the next value.
+     */
+    void _SetExpenses(const float declaredExpense, const QString& dateOfExpense){
+        _expenses.dailyExpense.push_back({declaredExpense, dateOfExpense});
+        _expenses.nExpenses++;
+    }
     /*
      * @brief This function is used to change the value of _localAppTime.
      */
