@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDateTime>
+#include <type_traits>
 
 struct ExpenseInfo{
     float expenseValue;
@@ -40,7 +41,6 @@ public:
     ExpenseData GetExpenses(void){
         return _expenses;
     }
-
 private slots:
 
     void on_dailyExpenses_returnPressed();
@@ -54,6 +54,10 @@ private slots:
     void on_submitExpense_clicked();
 
     void on_previousExpense_clicked();
+
+    void on_setToToday_clicked();
+
+    void on_setToStartOfMonth_clicked();
 
 private:
     Ui::ExpenseWindow *ui;
@@ -70,10 +74,17 @@ private:
         _expenses.nExpenses++;
     }
     /*
-     * @brief This function is used to change the value of _localAppTime.
+     * @brief Sets the value of _localAppTime. This function can accept either QDateTime or QDate arguments.
+     * If the argument is QDateTime then it will take only the date from it and assign it.
      */
-    void _SetLocalAppTime(QDate newLocalAppTime){
-        _localAppTime = newLocalAppTime;
+    template<typename T>
+    void _SetLocalAppTime(const T& newlocalAppTime,
+                     typename std::enable_if<std::is_same<T,QDate>::value || std::is_same<T,QDateTime>::value>::type* = 0){
+        if constexpr (std::is_same<T,QDateTime>::value){
+            _localAppTime = newlocalAppTime.date();
+        } else{
+            _localAppTime = newlocalAppTime;
+        }
     }
     /*
      * @detail Initializes _localAppTime to be the start of the month.
@@ -81,15 +92,15 @@ private:
      * before using any of the setters/gettters of _localAppTime.
      * Failing to do so, will lead to undefined behaviour.
      */
-    void _SetAppTimeToStartOfMonth(void){
+    void _InitializeAppTimeToStartOfMonth(void){
         QDate StartOfMonthTime = _worldClockTime.date();
         StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
         _SetLocalAppTime(StartOfMonthTime);
     }
     /*
-     * @return the current time in the world taken from the QDateTime library. This time is the computer's set time.
+     * @return the current time in the world taken from the QDateTime library. This is the computer's set time.
      */
-    QDateTime _GetCurrentTime(void) const{
+    QDateTime _GetWorldTime(void) const{
         return _worldClockTime;
     }
     /*

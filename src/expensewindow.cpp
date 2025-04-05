@@ -7,12 +7,13 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ExpenseWindow){
 
-    _SetAppTimeToStartOfMonth();
+    // Make sure this function is called as soon as possible.
+    _InitializeAppTimeToStartOfMonth();
     ui->setupUi(this);
     if(ui){
         ui->currentMonth->setFrame(false);
         ui->startOfCurrentMonth->setFrame(false);
-        ui->currentMonth->setText(_GetCurrentTime().toString("dd-MM-yyyy"));
+        ui->currentMonth->setText(_GetWorldTime().toString("dd-MM-yyyy"));
         ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
         ui->label_10->setText("<ul>"
                              "<li>Input an expense in the Daily Expense box.</li>"
@@ -73,8 +74,20 @@ void ExpenseWindow::on_submitExpense_clicked(){
     on_dailyExpenses_returnPressed();
 }
 
-void ExpenseWindow::on_previousExpense_clicked()
-{
-    // _previousExpenseIndex
+void ExpenseWindow::on_previousExpense_clicked(){
+
+}
+
+void ExpenseWindow::on_setToToday_clicked(){
+    _SetLocalAppTime(_GetWorldTime());
+    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+}
+
+
+void ExpenseWindow::on_setToStartOfMonth_clicked(){
+    QDate localAppTime = _GetLocalAppTime();
+    localAppTime.setDate(localAppTime.year(), localAppTime.month(), 1);
+    _SetLocalAppTime(localAppTime);
+    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
