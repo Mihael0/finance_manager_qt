@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QDateTime>
 #include <type_traits>
+#include <QCalendarWidget>
+#include <eventeater.h>
+#include <QVBoxLayout>
 
 struct ExpenseInfo{
     float expenseValue;
@@ -28,6 +31,8 @@ public slots:
      * @brief This slot is used by the MainWindow to notify the ExpenseWindow that it must show up.
      */
     void showExpenseWindow(void);
+
+    void showCalendar(void);
 
 signals:
     /*
@@ -65,6 +70,9 @@ private:
     QDate _localAppTime;
     ExpenseData _expenses;
     int _previousExpenseIndex;
+    EventEater *_keyPressEater = nullptr;
+    QCalendarWidget *_calendar = nullptr;
+    QDate _selectedDate;
 
     /*
      * @brief Sets the declaredExpense and increments the iterator for the next value.

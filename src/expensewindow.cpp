@@ -12,20 +12,22 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     ui->setupUi(this);
     if(ui){
         ui->currentMonth->setFrame(false);
-        ui->startOfCurrentMonth->setFrame(false);
         ui->currentMonth->setText(_GetWorldTime().toString("dd-MM-yyyy"));
-        ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+        ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
         ui->label_10->setText("<ul>"
                              "<li>Input an expense in the Daily Expense box.</li>"
                              "<li>Then press the Next Day button to increase the day.</li>"
                              "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
                              "</ul>");
+        _keyPressEater = new EventEater(this);
+        ui->dateOfExpense->installEventFilter(_keyPressEater);
+        QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
     }
-
 }
 
 ExpenseWindow::~ExpenseWindow(){
     delete ui;
+    delete _keyPressEater;
 }
 
 // TODO: We have to check if the expense is a valid value.
@@ -53,13 +55,13 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
 void ExpenseWindow::on_nextDay_clicked(){
     // Increment the current day by 1.
     _IncrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
 void ExpenseWindow::on_previousDay_clicked(){
     // Decrement the current day by 1.
     _DecrementDayOfLocalAppTime();
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
 void ExpenseWindow::on_backBtn_clicked(){
@@ -80,7 +82,7 @@ void ExpenseWindow::on_previousExpense_clicked(){
 
 void ExpenseWindow::on_setToToday_clicked(){
     _SetLocalAppTime(_GetWorldTime());
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
 }
 
 
@@ -88,6 +90,24 @@ void ExpenseWindow::on_setToStartOfMonth_clicked(){
     QDate localAppTime = _GetLocalAppTime();
     localAppTime.setDate(localAppTime.year(), localAppTime.month(), 1);
     _SetLocalAppTime(localAppTime);
-    ui->startOfCurrentMonth->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+}
+
+
+void ExpenseWindow::showCalendar()
+{
+    _calendar = new QCalendarWidget();
+    _calendar->setWindowFlags(Qt::Popup);
+    _calendar->move(QCursor::pos());
+    _calendar->show();
+
+    connect(_calendar, &QCalendarWidget::clicked, this, [=](const QDate& date){
+        ui->dateOfExpense->setText(date.toString("dd-MM-yyyy"));
+        _selectedDate = date;
+        _calendar->close();
+        _calendar->deleteLater(); // cleanup
+    });
+
+    // QDebug() << "CALENDARUS MAXIMUS!!";
 }
 

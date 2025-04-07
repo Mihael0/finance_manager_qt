@@ -17,6 +17,7 @@ FORMS += \
 
 SOURCES += \
     createsummarywindow.cpp \
+    eventeater.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
     expensewindow.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     createsummarywindow.h \
+    eventeater.h \
     loginwindow.h \
     mainwindow.h \
     expensewindow.h \
