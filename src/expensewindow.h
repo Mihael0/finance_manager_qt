@@ -7,6 +7,7 @@
 #include <QCalendarWidget>
 #include <eventeater.h>
 #include <QVBoxLayout>
+#include <QToolButton>
 
 struct ExpenseInfo{
     float expenseValue;
@@ -15,7 +16,6 @@ struct ExpenseInfo{
 
 struct ExpenseData{
     std::vector<ExpenseInfo> dailyExpense;
-    int nExpenses = 0;
 };
 
 namespace Ui {
@@ -32,6 +32,9 @@ public slots:
      */
     void showExpenseWindow(void);
 
+    /*
+     * @brief This slot is used by the EventEater to notify the ExpenseWindow that it must show a calendar.
+     */
     void showCalendar(void);
 
 signals:
@@ -60,26 +63,59 @@ private slots:
 
     void on_previousExpense_clicked();
 
-    void on_setToToday_clicked();
-
-    void on_setToStartOfMonth_clicked();
+    void on_nextExpense_clicked();
 
 private:
     Ui::ExpenseWindow *ui;
     const QDateTime _worldClockTime = QDateTime::currentDateTime();
     QDate _localAppTime;
     ExpenseData _expenses;
-    int _previousExpenseIndex;
     EventEater *_keyPressEater = nullptr;
     QCalendarWidget *_calendar = nullptr;
     QDate _selectedDate;
+    size_t _expenseIndex = 0;
 
+    size_t _IncrementExpnsIndex(void){
+        if(_expenseIndex != _GetExpenses().dailyExpense.size() - 1){
+            _expenseIndex++;
+        }else{
+            _expenseIndex = 0;
+        }
+        return _expenseIndex;
+    }
+
+    size_t _DecrementExpnsIndex(void){
+        // If we are not at the very front of the vector, decrement
+        if(_expenseIndex != 0){
+            _expenseIndex--;
+        }else{
+            // size() counts from 1 not 0. Which is why we sub 1.
+            _expenseIndex = _GetExpenses().dailyExpense.size() - 1;
+        }
+        return _expenseIndex;
+    }
+
+    ExpenseInfo& _IndexDeclaredExpenses(void){
+        int adjustedIndex = 0;
+        int sizeOfDailyExpense = static_cast<int>(_GetExpenses().dailyExpense.size() - 1);
+        if(_expenseIndex == 0){
+            adjustedIndex = sizeOfDailyExpense;
+        } else {
+            adjustedIndex = std::abs(static_cast<int>(_expenseIndex) - sizeOfDailyExpense);
+        }
+        return _GetExpenses().dailyExpense[adjustedIndex];
+    }
     /*
-     * @brief Sets the declaredExpense and increments the iterator for the next value.
+     * @return the expenses struct which contains the currently inputted expenses by the user.
+     */
+    ExpenseData& _GetExpenses(void){
+        return _expenses;
+    }
+    /*
+     * @brief Sets the declaredExpense and increments the iterator for current and previous expense buttons.
      */
     void _SetExpenses(const float declaredExpense, const QString& dateOfExpense){
         _expenses.dailyExpense.push_back({declaredExpense, dateOfExpense});
-        _expenses.nExpenses++;
     }
     /*
      * @brief Sets the value of _localAppTime. This function can accept either QDateTime or QDate arguments.
