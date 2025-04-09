@@ -8,6 +8,7 @@
 #include <eventeater.h>
 #include <QVBoxLayout>
 #include <QToolButton>
+#include <QMessageBox>
 
 struct ExpenseInfo{
     float expenseValue;
@@ -16,6 +17,11 @@ struct ExpenseInfo{
 
 struct ExpenseData{
     std::vector<ExpenseInfo> dailyExpense;
+};
+
+enum class ExpenseDirection{
+    Backward,
+    Forward,
 };
 
 namespace Ui {
@@ -72,11 +78,10 @@ private:
     ExpenseData _expenses;
     EventEater *_keyPressEater = nullptr;
     QCalendarWidget *_calendar = nullptr;
-    QDate _selectedDate;
-    size_t _expenseIndex = 0;
+    int _expenseIndex = -1;
 
-    size_t _IncrementExpnsIndex(void){
-        if(_expenseIndex != _GetExpenses().dailyExpense.size() - 1){
+    int _IncrementExpnsIndex(void){
+        if(_expenseIndex != static_cast<int>(_GetExpenses().dailyExpense.size() - 1)){
             _expenseIndex++;
         }else{
             _expenseIndex = 0;
@@ -84,7 +89,7 @@ private:
         return _expenseIndex;
     }
 
-    size_t _DecrementExpnsIndex(void){
+    int _DecrementExpnsIndex(void){
         // If we are not at the very front of the vector, decrement
         if(_expenseIndex != 0){
             _expenseIndex--;
@@ -95,15 +100,38 @@ private:
         return _expenseIndex;
     }
 
-    ExpenseInfo& _IndexDeclaredExpenses(void){
+    ExpenseInfo* _IndexDeclaredExpenses(ExpenseDirection direction){
+        switch(direction){
+        case ExpenseDirection::Backward:
+            _DecrementExpnsIndex();
+            break;
+        case ExpenseDirection::Forward:
+            _IncrementExpnsIndex();
+            break;
+        default:
+            throw std::runtime_error("Invalid direction!!");
+            break;
+        }
+
+        if(_expenseIndex == -1){
+            throw std::runtime_error("Invalid expense index");
+        }
+
         int adjustedIndex = 0;
         int sizeOfDailyExpense = static_cast<int>(_GetExpenses().dailyExpense.size() - 1);
+        // User has not filled in any data for us to index.
+        if(sizeOfDailyExpense <= 0){
+            _expenseIndex = -1;
+            return nullptr;
+        }
+
         if(_expenseIndex == 0){
             adjustedIndex = sizeOfDailyExpense;
         } else {
-            adjustedIndex = std::abs(static_cast<int>(_expenseIndex) - sizeOfDailyExpense);
+            adjustedIndex = std::abs(_expenseIndex - sizeOfDailyExpense);
         }
-        return _GetExpenses().dailyExpense[adjustedIndex];
+
+        return &_GetExpenses().dailyExpense[adjustedIndex];
     }
     /*
      * @return the expenses struct which contains the currently inputted expenses by the user.

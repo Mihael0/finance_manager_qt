@@ -44,7 +44,7 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
         return;
     }
     _SetExpenses(expense,_GetLocalAppTime().toString("dd-MM-yyyy"));
-
+    ui->dailyExpenses->clear();
     // QString bookName = _GetCurrentTime().toString("MM-yyyy");
     // QString sheetName = "DailyExpenses";
     // double dailyExpense = ui->dailyExpenses->text().toFloat();
@@ -76,17 +76,25 @@ void ExpenseWindow::on_submitExpense_clicked(){
 }
 
 void ExpenseWindow::on_previousExpense_clicked(){
-    _IncrementExpnsIndex();
-    ExpenseInfo selectedExpense = _IndexDeclaredExpenses();
-    ui->dateOfExpense->setText(selectedExpense.expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense.expenseValue, 'f', 2));
+    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses(ExpenseDirection::Forward);
+    if(selectedExpense == nullptr){
+        QMessageBox::warning(this, "Error", "Please input a expense first");
+        return;
+    }
+
+    ui->dateOfExpense->setText(selectedExpense->expenseDate);
+    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
 }
 
 void ExpenseWindow::on_nextExpense_clicked(){
-    _DecrementExpnsIndex();
-    ExpenseInfo selectedExpense = _IndexDeclaredExpenses();
-    ui->dateOfExpense->setText(selectedExpense.expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense.expenseValue, 'f', 2));
+    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses(ExpenseDirection::Backward);
+    if(selectedExpense == nullptr){
+        QMessageBox::warning(this, "Error", "Please input a expense first");
+        return;
+    }
+
+    ui->dateOfExpense->setText(selectedExpense->expenseDate);
+    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
 }
 
 void ExpenseWindow::showCalendar()
@@ -98,7 +106,7 @@ void ExpenseWindow::showCalendar()
 
     connect(_calendar, &QCalendarWidget::clicked, this, [=](const QDate& date){
         ui->dateOfExpense->setText(date.toString("dd-MM-yyyy"));
-        _selectedDate = date;
+        _SetLocalAppTime(date);
         _calendar->close();
     });
 }
