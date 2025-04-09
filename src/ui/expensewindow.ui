@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>838</width>
+    <width>776</width>
     <height>551</height>
    </rect>
   </property>
@@ -19,8 +19,8 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>470</x>
-     <y>240</y>
+     <x>458</x>
+     <y>241</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -32,7 +32,7 @@
   <widget class="QLineEdit" name="currentMonth">
    <property name="geometry">
     <rect>
-     <x>730</x>
+     <x>670</x>
      <y>520</y>
      <width>101</width>
      <height>26</height>
@@ -45,7 +45,7 @@
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>730</x>
+     <x>670</x>
      <y>480</y>
      <width>101</width>
      <height>41</height>
@@ -58,18 +58,21 @@
   <widget class="QLineEdit" name="dailyExpenses">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>265</x>
      <y>280</y>
-     <width>113</width>
-     <height>26</height>
+     <width>101</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>200</y>
+     <x>280</x>
+     <y>184</y>
      <width>221</width>
      <height>41</height>
     </rect>
@@ -81,7 +84,7 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>275</x>
      <y>240</y>
      <width>101</width>
      <height>41</height>
@@ -107,7 +110,7 @@
   <widget class="QPushButton" name="submitExpense">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>255</x>
      <y>320</y>
      <width>131</width>
      <height>26</height>
@@ -120,7 +123,7 @@
   <widget class="QPushButton" name="deleteExpense">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>255</x>
      <y>350</y>
      <width>131</width>
      <height>26</height>
@@ -133,7 +136,7 @@
   <widget class="QPushButton" name="backBtn_2">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>255</x>
      <y>380</y>
      <width>131</width>
      <height>26</height>
@@ -174,7 +177,7 @@
     <rect>
      <x>0</x>
      <y>170</y>
-     <width>831</width>
+     <width>791</width>
      <height>16</height>
     </rect>
    </property>
@@ -198,8 +201,8 @@
   <widget class="QLabel" name="dateOfExpense">
    <property name="geometry">
     <rect>
-     <x>490</x>
-     <y>280</y>
+     <x>474</x>
+     <y>284</y>
      <width>81</width>
      <height>21</height>
     </rect>
@@ -208,68 +211,95 @@
     <string/>
    </property>
   </widget>
-  <widget class="QToolButton" name="previousExpense">
+  <widget class="QToolButton" name="backward">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>240</x>
      <y>280</y>
      <width>26</width>
-     <height>25</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="arrowType">
-    <enum>Qt::ArrowType::LeftArrow</enum>
+    <string>&lt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="nextExpense">
+  <widget class="QToolButton" name="forward">
    <property name="geometry">
     <rect>
-     <x>420</x>
+     <x>365</x>
      <y>280</y>
      <width>26</width>
-     <height>25</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="arrowType">
-    <enum>Qt::ArrowType::RightArrow</enum>
+    <string>&gt;</string>
    </property>
   </widget>
   <widget class="QToolButton" name="nextDay">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>561</x>
      <y>280</y>
      <width>26</width>
-     <height>25</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="arrowType">
-    <enum>Qt::ArrowType::RightArrow</enum>
+    <string>&gt;</string>
    </property>
   </widget>
   <widget class="QToolButton" name="previousDay">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>442</x>
      <y>280</y>
      <width>26</width>
-     <height>25</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>&lt;</string>
    </property>
-   <property name="arrowType">
-    <enum>Qt::ArrowType::LeftArrow</enum>
+  </widget>
+  <widget class="QPushButton" name="maxForward">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>280</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&gt;&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="maxBackward">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>280</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;&lt;</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>220</y>
+     <width>791</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
    </property>
   </widget>
  </widget>

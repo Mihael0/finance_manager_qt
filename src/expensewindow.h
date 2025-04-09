@@ -24,6 +24,11 @@ enum class ExpenseDirection{
     Forward,
 };
 
+struct TmpExpenseData{
+    QString tmpDailyExpense;
+    QDate tmpExpenseDate;
+};
+
 namespace Ui {
 class ExpenseWindow;
 }
@@ -67,9 +72,11 @@ private slots:
 
     void on_submitExpense_clicked();
 
-    void on_previousExpense_clicked();
+    void on_backward_clicked();
 
-    void on_nextExpense_clicked();
+    void on_forward_clicked();
+
+    void on_dailyExpenses_editingFinished();
 
 private:
     Ui::ExpenseWindow *ui;
@@ -80,43 +87,34 @@ private:
     QCalendarWidget *_calendar = nullptr;
     int _expenseIndex = -1;
 
-    int _IncrementExpnsIndex(void){
+    void _IncrementExpnsIndex(void){
+        // as long as we have not reached the lenght of the the vector. Continue incrementing.
         if(_expenseIndex != static_cast<int>(_GetExpenses().dailyExpense.size() - 1)){
             _expenseIndex++;
-        }else{
-            _expenseIndex = 0;
         }
-        return _expenseIndex;
     }
 
-    int _DecrementExpnsIndex(void){
+    void _DecrementExpnsIndex(void){
         // If we are not at the very front of the vector, decrement
         if(_expenseIndex != 0){
             _expenseIndex--;
         }else{
-            // size() counts from 1 not 0. Which is why we sub 1.
-            _expenseIndex = _GetExpenses().dailyExpense.size() - 1;
+            // if we have reached the very front and the user has pressed forward
+            // then we go beyond the vector, to the next value the user would like to add.
+            _expenseIndex = -1;
         }
-        return _expenseIndex;
     }
 
-    ExpenseInfo* _IndexDeclaredExpenses(ExpenseDirection direction){
-        switch(direction){
-        case ExpenseDirection::Backward:
-            _DecrementExpnsIndex();
-            break;
-        case ExpenseDirection::Forward:
-            _IncrementExpnsIndex();
-            break;
-        default:
-            throw std::runtime_error("Invalid direction!!");
-            break;
-        }
-
+    bool _isAtHeadOfVector(void){
+        // We are at the head of the vector
         if(_expenseIndex == -1){
-            throw std::runtime_error("Invalid expense index");
+            return true;
         }
 
+        return false;
+    }
+
+    ExpenseInfo* _IndexDeclaredExpenses(void){
         int adjustedIndex = 0;
         int sizeOfDailyExpense = static_cast<int>(_GetExpenses().dailyExpense.size() - 1);
         // User has not filled in any data for us to index.
@@ -151,10 +149,13 @@ private:
      */
     template<typename T>
     void _SetLocalAppTime(const T& newlocalAppTime,
-                     typename std::enable_if<std::is_same<T,QDate>::value || std::is_same<T,QDateTime>::value>::type* = 0){
+                     typename std::enable_if<std::is_same<T,QDate>::value || std::is_same<T,QDateTime>::value || std::is_same<T,QString>::value>::type* = 0){
         if constexpr (std::is_same<T,QDateTime>::value){
             _localAppTime = newlocalAppTime.date();
-        } else{
+        } else if constexpr (std::is_same<T,QString>::value) {
+            QDate date = QDate::fromString(newlocalAppTime, "dd-MM-yyyy");
+            _localAppTime = date;
+        }else{
             _localAppTime = newlocalAppTime;
         }
     }

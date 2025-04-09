@@ -75,28 +75,6 @@ void ExpenseWindow::on_submitExpense_clicked(){
     on_dailyExpenses_returnPressed();
 }
 
-void ExpenseWindow::on_previousExpense_clicked(){
-    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses(ExpenseDirection::Forward);
-    if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "Please input a expense first");
-        return;
-    }
-
-    ui->dateOfExpense->setText(selectedExpense->expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
-}
-
-void ExpenseWindow::on_nextExpense_clicked(){
-    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses(ExpenseDirection::Backward);
-    if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "Please input a expense first");
-        return;
-    }
-
-    ui->dateOfExpense->setText(selectedExpense->expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
-}
-
 void ExpenseWindow::showCalendar()
 {
     _calendar = new QCalendarWidget();
@@ -109,4 +87,44 @@ void ExpenseWindow::showCalendar()
         _SetLocalAppTime(date);
         _calendar->close();
     });
+}
+
+void ExpenseWindow::on_backward_clicked(){
+    _IncrementExpnsIndex();
+    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses();
+    if(selectedExpense == nullptr){
+        QMessageBox::warning(this, "Error", "Please input a expense first");
+        return;
+    }
+
+    ui->dateOfExpense->setText(selectedExpense->expenseDate);
+    _SetLocalAppTime(selectedExpense->expenseDate);
+    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
+}
+
+
+void ExpenseWindow::on_forward_clicked(){
+    _DecrementExpnsIndex();
+    if(_isAtHeadOfVector()){
+        // we return to the original date before the forward/backward buttons were clicked.
+        // we make the expenses box empty again.
+        return;
+    }
+    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses();
+    if(selectedExpense == nullptr){
+        QMessageBox::warning(this, "Error", "Please input a expense first");
+        return;
+    }
+
+    ui->dateOfExpense->setText(selectedExpense->expenseDate);
+    _SetLocalAppTime(selectedExpense->expenseDate);
+    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
+}
+
+
+void ExpenseWindow::on_dailyExpenses_editingFinished(){
+    TmpExpenseData tmpExpenseData;
+
+    tmpExpenseData.tmpDailyExpense = ui->dailyExpenses->text();
+    tmpExpenseData.tmpExpenseDate = QDate::fromString(ui->dateOfExpense->text(), "dd-MM-yyyy");
 }
