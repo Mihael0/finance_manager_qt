@@ -110,9 +110,9 @@
   <widget class="QPushButton" name="submitExpense">
    <property name="geometry">
     <rect>
-     <x>255</x>
+     <x>245</x>
      <y>320</y>
-     <width>131</width>
+     <width>151</width>
      <height>26</height>
     </rect>
    </property>
@@ -123,22 +123,22 @@
   <widget class="QPushButton" name="deleteExpense">
    <property name="geometry">
     <rect>
-     <x>255</x>
+     <x>245</x>
      <y>350</y>
-     <width>131</width>
+     <width>151</width>
      <height>26</height>
     </rect>
    </property>
    <property name="text">
-    <string>Delete Expense</string>
+    <string>Edit/Delete Expense</string>
    </property>
   </widget>
   <widget class="QPushButton" name="backBtn_2">
    <property name="geometry">
     <rect>
-     <x>255</x>
+     <x>245</x>
      <y>380</y>
-     <width>131</width>
+     <width>151</width>
      <height>26</height>
     </rect>
    </property>
@@ -159,7 +159,7 @@
     <string>How to declare expenses:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_10">
+  <widget class="QLabel" name="howToUseExpenses">
    <property name="geometry">
     <rect>
      <x>50</x>
@@ -211,7 +211,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QToolButton" name="backward">
+  <widget class="QToolButton" name="leftExpense">
    <property name="geometry">
     <rect>
      <x>240</x>
@@ -224,7 +224,7 @@
     <string>&lt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="forward">
+  <widget class="QToolButton" name="rightExpense">
    <property name="geometry">
     <rect>
      <x>365</x>

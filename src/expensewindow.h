@@ -9,25 +9,7 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QMessageBox>
-
-struct ExpenseInfo{
-    float expenseValue;
-    QString expenseDate;
-};
-
-struct ExpenseData{
-    std::vector<ExpenseInfo> dailyExpense;
-};
-
-enum class ExpenseDirection{
-    Backward,
-    Forward,
-};
-
-struct TmpExpenseData{
-    QString tmpDailyExpense;
-    QDate tmpExpenseDate;
-};
+#include <expensemanager.h>
 
 namespace Ui {
 class ExpenseWindow;
@@ -57,9 +39,6 @@ signals:
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
     ~ExpenseWindow();
-    ExpenseData GetExpenses(void){
-        return _expenses;
-    }
 private slots:
 
     void on_dailyExpenses_returnPressed();
@@ -72,84 +51,28 @@ private slots:
 
     void on_submitExpense_clicked();
 
-    void on_backward_clicked();
+    void on_leftExpense_clicked();
 
-    void on_forward_clicked();
-
-    void on_dailyExpenses_editingFinished();
+    void on_rightExpense_clicked();
 
 private:
     Ui::ExpenseWindow *ui;
     const QDateTime _worldClockTime = QDateTime::currentDateTime();
     QDate _localAppTime;
-    ExpenseData _expenses;
     EventEater *_keyPressEater = nullptr;
     QCalendarWidget *_calendar = nullptr;
-    int _expenseIndex = -1;
+    ExpenseManager *_expenseManager = nullptr;
 
-    void _IncrementExpnsIndex(void){
-        // as long as we have not reached the lenght of the the vector. Continue incrementing.
-        if(_expenseIndex != static_cast<int>(_GetExpenses().dailyExpense.size() - 1)){
-            _expenseIndex++;
-        }
-    }
-
-    void _DecrementExpnsIndex(void){
-        // If we are not at the very front of the vector, decrement
-        if(_expenseIndex != 0){
-            _expenseIndex--;
-        }else{
-            // if we have reached the very front and the user has pressed forward
-            // then we go beyond the vector, to the next value the user would like to add.
-            _expenseIndex = -1;
-        }
-    }
-
-    bool _isAtHeadOfVector(void){
-        // We are at the head of the vector
-        if(_expenseIndex == -1){
-            return true;
-        }
-
-        return false;
-    }
-
-    ExpenseInfo* _IndexDeclaredExpenses(void){
-        int adjustedIndex = 0;
-        int sizeOfDailyExpense = static_cast<int>(_GetExpenses().dailyExpense.size() - 1);
-        // User has not filled in any data for us to index.
-        if(sizeOfDailyExpense <= 0){
-            _expenseIndex = -1;
-            return nullptr;
-        }
-
-        if(_expenseIndex == 0){
-            adjustedIndex = sizeOfDailyExpense;
-        } else {
-            adjustedIndex = std::abs(_expenseIndex - sizeOfDailyExpense);
-        }
-
-        return &_GetExpenses().dailyExpense[adjustedIndex];
-    }
-    /*
-     * @return the expenses struct which contains the currently inputted expenses by the user.
-     */
-    ExpenseData& _GetExpenses(void){
-        return _expenses;
-    }
-    /*
-     * @brief Sets the declaredExpense and increments the iterator for current and previous expense buttons.
-     */
-    void _SetExpenses(const float declaredExpense, const QString& dateOfExpense){
-        _expenses.dailyExpense.push_back({declaredExpense, dateOfExpense});
-    }
     /*
      * @brief Sets the value of _localAppTime. This function can accept either QDateTime or QDate arguments.
      * If the argument is QDateTime then it will take only the date from it and assign it.
      */
     template<typename T>
     void _SetLocalAppTime(const T& newlocalAppTime,
-                     typename std::enable_if<std::is_same<T,QDate>::value || std::is_same<T,QDateTime>::value || std::is_same<T,QString>::value>::type* = 0){
+                     typename std::enable_if<std::is_same<T,QDate>::value
+                    || std::is_same<T,QDateTime>::value
+                    || std::is_same<T,QString>::value>::type* = 0){
+
         if constexpr (std::is_same<T,QDateTime>::value){
             _localAppTime = newlocalAppTime.date();
         } else if constexpr (std::is_same<T,QString>::value) {
@@ -169,6 +92,7 @@ private:
         QDate StartOfMonthTime = _worldClockTime.date();
         StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
         _SetLocalAppTime(StartOfMonthTime);
+        // tmpExpenseData.tmpExpenseDate = _GetLocalAppTime();
     }
     /*
      * @return the current time in the world taken from the QDateTime library. This is the computer's set time.
@@ -194,6 +118,10 @@ private:
     void _DecrementDayOfLocalAppTime(void){
         _SetLocalAppTime(_GetLocalAppTime().addDays(-1));
     }
+
+    void _DisplayExpenseInfo(const ExpenseInfo* selectedExpense);
+    void _StorePendingInput(void);
+    void _DisplayPendingInput(const LastExpenseData* restoredUserInput);
 };
 
 #endif // EXPENSEWINDOW_H

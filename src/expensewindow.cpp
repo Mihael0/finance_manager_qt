@@ -5,7 +5,8 @@
 
 ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::ExpenseWindow){
+    , ui(new Ui::ExpenseWindow)
+    , _expenseManager(new ExpenseManager){
 
     // Make sure this function is called as soon as possible.
     _InitializeAppTimeToStartOfMonth();
@@ -14,7 +15,7 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
         ui->currentMonth->setFrame(false);
         ui->currentMonth->setText(_GetWorldTime().toString("dd-MM-yyyy"));
         ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
-        ui->label_10->setText("<ul>"
+        ui->howToUseExpenses->setText("<ul>"
                              "<li>Input an expense in the Daily Expense box.</li>"
                              "<li>Then press the Next Day button to increase the day.</li>"
                              "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
@@ -28,6 +29,24 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
 ExpenseWindow::~ExpenseWindow(){
     delete ui;
     delete _keyPressEater;
+    delete _expenseManager;
+}
+
+void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
+    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
+    _SetLocalAppTime(selectedExpense->expenseDate);
+    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+}
+
+void ExpenseWindow::_StorePendingInput(void){
+    QDate rAppTime = _GetLocalAppTime();
+    QString rDailyExpenses = ui->dailyExpenses->text();
+    _expenseManager->StoreUserInputtedData(rDailyExpenses,rAppTime);
+}
+
+void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInput){
+    ui->dailyExpenses->setText(restoredUserInput->lastDailyExpense);
+    _SetLocalAppTime(restoredUserInput->lastExpenseDate);
 }
 
 // TODO: We have to check if the expense is a valid value.
@@ -36,6 +55,11 @@ ExpenseWindow::~ExpenseWindow(){
 // they would like to create a new excel file for that given month.
 // if they say No, then they are returned to their previous value.
 void ExpenseWindow::on_dailyExpenses_returnPressed(){
+    if(_expenseManager->IsUserScrollingExpenses()){
+        QMessageBox::warning(this, "Error", "Cannot submit expense. You are currently scrolling existing expenses. Press the right double arrow to return to inputting new expenses!");
+        return;
+    }
+
     bool isFloat = true;
     float expense = ui->dailyExpenses->text().toFloat(&isFloat);
 
@@ -43,12 +67,10 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
         QMessageBox::warning(this, "Result", "Invalid Expense! Please submit a decimal number!");
         return;
     }
-    _SetExpenses(expense,_GetLocalAppTime().toString("dd-MM-yyyy"));
+    // Passing by reference.
+    QDate rLocalAppTime = _GetLocalAppTime();
+    _expenseManager->SetExpenses(expense,rLocalAppTime);
     ui->dailyExpenses->clear();
-    // QString bookName = _GetCurrentTime().toString("MM-yyyy");
-    // QString sheetName = "DailyExpenses";
-    // double dailyExpense = ui->dailyExpenses->text().toFloat();
-    // QString currentDate = _GetLocalAppTime().toString("dd-MM-yyyy");
 }
 
 void ExpenseWindow::on_nextDay_clicked(){
@@ -75,8 +97,7 @@ void ExpenseWindow::on_submitExpense_clicked(){
     on_dailyExpenses_returnPressed();
 }
 
-void ExpenseWindow::showCalendar()
-{
+void ExpenseWindow::showCalendar(){
     _calendar = new QCalendarWidget();
     _calendar->setWindowFlags(Qt::Popup);
     _calendar->move(QCursor::pos());
@@ -89,42 +110,52 @@ void ExpenseWindow::showCalendar()
     });
 }
 
-void ExpenseWindow::on_backward_clicked(){
-    _IncrementExpnsIndex();
-    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses();
+void ExpenseWindow::on_leftExpense_clicked(){
+    _expenseManager->MoveExpenseIndexLeft(1);
+
+    if((_expenseManager->GetCurrentStateOfBoundry() == Boundry::Right
+        || _expenseManager->GetCurrentStateOfBoundry() == Boundry::LeftRight)
+        && _expenseManager->GetPreviousStateOfBoundry() == Boundry::HeadOfVector){
+        _StorePendingInput();
+    }
+
+    const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
     if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "Please input a expense first");
+        QMessageBox::warning(this, "Error", "No Expenses to select");
         return;
     }
 
-    ui->dateOfExpense->setText(selectedExpense->expenseDate);
-    _SetLocalAppTime(selectedExpense->expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
+    _DisplayExpenseInfo(selectedExpense);
 }
 
+void ExpenseWindow::on_rightExpense_clicked(){
+    _expenseManager->MoveExpenseIndexRight(1);
 
-void ExpenseWindow::on_forward_clicked(){
-    _DecrementExpnsIndex();
-    if(_isAtHeadOfVector()){
-        // we return to the original date before the forward/backward buttons were clicked.
-        // we make the expenses box empty again.
+    if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
+        && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
+        const LastExpenseData* restoredUserInput = _expenseManager->RestoreUserInputtedData();
+        _DisplayPendingInput(restoredUserInput);
         return;
     }
-    ExpenseInfo* selectedExpense = _IndexDeclaredExpenses();
+
+    const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
     if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "Please input a expense first");
+        QMessageBox::warning(this, "Error", "No Expenses to select");
         return;
     }
 
-    ui->dateOfExpense->setText(selectedExpense->expenseDate);
-    _SetLocalAppTime(selectedExpense->expenseDate);
-    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue, 'f', 2));
+    _DisplayExpenseInfo(selectedExpense);
 }
 
 
-void ExpenseWindow::on_dailyExpenses_editingFinished(){
-    TmpExpenseData tmpExpenseData;
+void ExpenseWindow::on_maxForward_clicked()
+{
 
-    tmpExpenseData.tmpDailyExpense = ui->dailyExpenses->text();
-    tmpExpenseData.tmpExpenseDate = QDate::fromString(ui->dateOfExpense->text(), "dd-MM-yyyy");
 }
+
+
+void ExpenseWindow::on_maxBackward_clicked()
+{
+
+}
+
