@@ -6,15 +6,14 @@
 ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ExpenseWindow)
-    , _expenseManager(new ExpenseManager){
+    , _expenseManager(new ExpenseManager)
+    , _appTime(new AppTime){
 
-    // Make sure this function is called as soon as possible.
-    _InitializeAppTimeToStartOfMonth();
     ui->setupUi(this);
     if(ui){
         ui->currentMonth->setFrame(false);
-        ui->currentMonth->setText(_GetWorldTime().toString("dd-MM-yyyy"));
-        ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+        ui->currentMonth->setText(_appTime->GetLocalTimeAsString());
+        ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
         ui->howToUseExpenses->setText("<ul>"
                              "<li>Input an expense in the Daily Expense box.</li>"
                              "<li>Then press the Next Day button to increase the day.</li>"
@@ -34,19 +33,28 @@ ExpenseWindow::~ExpenseWindow(){
 
 void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
     ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
-    _SetLocalAppTime(selectedExpense->expenseDate);
-    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    _SetNDisplayLocalAppTime(selectedExpense->expenseDate);
+}
+template<typename T>
+void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
+                              typename
+                              std::enable_if<std::is_same<T,QDate>::value
+                                || std::is_same<T,QDateTime>::value
+                                || std::is_same<T,QString>::value>::type*){
+    _appTime->SetLocalAppTime(newLocalAppTime);
+    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
 void ExpenseWindow::_StorePendingInput(void){
-    QDate rAppTime = _GetLocalAppTime();
+    QDate rAppTime = _appTime->GetLocalAppTime();
     QString rDailyExpenses = ui->dailyExpenses->text();
     _expenseManager->StoreUserInputtedData(rDailyExpenses,rAppTime);
 }
 
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInput){
     ui->dailyExpenses->setText(restoredUserInput->lastDailyExpense);
-    _SetLocalAppTime(restoredUserInput->lastExpenseDate);
+    _SetNDisplayLocalAppTime(restoredUserInput->lastExpenseDate);
+    // HOW IS THIS WORKING IF WE ARE NOT SETTING IT HERE?!
 }
 
 // TODO: We have to check if the expense is a valid value.
@@ -68,21 +76,21 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
         return;
     }
     // Passing by reference.
-    QDate rLocalAppTime = _GetLocalAppTime();
+    QDate rLocalAppTime = _appTime->GetLocalAppTime();
     _expenseManager->SetExpenses(expense,rLocalAppTime);
     ui->dailyExpenses->clear();
 }
 
 void ExpenseWindow::on_nextDay_clicked(){
     // Increment the current day by 1.
-    _IncrementDayOfLocalAppTime();
-    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    _appTime->IncrementDayOfLocalAppTime();
+    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
 void ExpenseWindow::on_previousDay_clicked(){
     // Decrement the current day by 1.
-    _DecrementDayOfLocalAppTime();
-    ui->dateOfExpense->setText(_GetLocalAppTime().toString("dd-MM-yyyy"));
+    _appTime->DecrementDayOfLocalAppTime();
+    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
 void ExpenseWindow::on_backBtn_clicked(){
@@ -104,8 +112,7 @@ void ExpenseWindow::showCalendar(){
     _calendar->show();
 
     connect(_calendar, &QCalendarWidget::clicked, this, [=](const QDate& date){
-        ui->dateOfExpense->setText(date.toString("dd-MM-yyyy"));
-        _SetLocalAppTime(date);
+        _SetNDisplayLocalAppTime(date);
         _calendar->close();
     });
 }
@@ -159,7 +166,6 @@ void ExpenseWindow::on_maxRight_clicked(){
     }
 }
 
-
 void ExpenseWindow::on_maxLeft_clicked(){
     // Move the Boundry state to Left
     _expenseManager->MoveExpenseIndexMaxLeft();
@@ -176,4 +182,3 @@ void ExpenseWindow::on_maxLeft_clicked(){
 
     _DisplayExpenseInfo(selectedExpense);
 }
-

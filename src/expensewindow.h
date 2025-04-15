@@ -1,15 +1,15 @@
 #ifndef EXPENSEWINDOW_H
 #define EXPENSEWINDOW_H
-
+// QT includes
 #include <QWidget>
-#include <QDateTime>
-#include <type_traits>
 #include <QCalendarWidget>
-#include <eventeater.h>
-#include <QVBoxLayout>
 #include <QToolButton>
 #include <QMessageBox>
+// General C++ includes
+// Project Includes
+#include <eventeater.h>
 #include <expensemanager.h>
+#include <apptime.h>
 
 namespace Ui {
 class ExpenseWindow;
@@ -39,6 +39,7 @@ signals:
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
     ~ExpenseWindow();
+
 private slots:
 
     void on_dailyExpenses_returnPressed();
@@ -61,71 +62,19 @@ private slots:
 
 private:
     Ui::ExpenseWindow *ui;
-    const QDateTime _worldClockTime = QDateTime::currentDateTime();
-    QDate _localAppTime;
     EventEater *_keyPressEater = nullptr;
     QCalendarWidget *_calendar = nullptr;
     ExpenseManager *_expenseManager = nullptr;
-
-    /*
-     * @brief Sets the value of _localAppTime. This function can accept either QDateTime or QDate arguments.
-     * If the argument is QDateTime then it will take only the date from it and assign it.
-     */
-    template<typename T>
-    void _SetLocalAppTime(const T& newlocalAppTime,
-                     typename std::enable_if<std::is_same<T,QDate>::value
-                    || std::is_same<T,QDateTime>::value
-                    || std::is_same<T,QString>::value>::type* = 0){
-
-        if constexpr (std::is_same<T,QDateTime>::value){
-            _localAppTime = newlocalAppTime.date();
-        } else if constexpr (std::is_same<T,QString>::value) {
-            QDate date = QDate::fromString(newlocalAppTime, "dd-MM-yyyy");
-            _localAppTime = date;
-        }else{
-            _localAppTime = newlocalAppTime;
-        }
-    }
-    /*
-     * @detail Initializes _localAppTime to be the start of the month.
-     * Make sure this, or another initialization function of _localAppTime is called
-     * before using any of the setters/gettters of _localAppTime.
-     * Failing to do so, will lead to undefined behaviour.
-     */
-    void _InitializeAppTimeToStartOfMonth(void){
-        QDate StartOfMonthTime = _worldClockTime.date();
-        StartOfMonthTime.setDate(StartOfMonthTime.year(), StartOfMonthTime.month(),1);
-        _SetLocalAppTime(StartOfMonthTime);
-        // tmpExpenseData.tmpExpenseDate = _GetLocalAppTime();
-    }
-    /*
-     * @return the current time in the world taken from the QDateTime library. This is the computer's set time.
-     */
-    QDateTime _GetWorldTime(void) const{
-        return _worldClockTime;
-    }
-    /*
-     * @return _localAppTime, which is the internal variable used to keep track of the user specified day/month/year.
-     */
-    QDate _GetLocalAppTime(void) const{
-        return _localAppTime;
-    }
-    /*
-     * @brief Increments the LocalAppTime by 1 day. Uses the QDateTime library to handle transition between months.
-     */
-    void _IncrementDayOfLocalAppTime(void){
-        _SetLocalAppTime(_GetLocalAppTime().addDays(1));
-    }
-    /*
-     * @brief Decrements the LocalAppTime by 1 day. Uses the QDateTime library to handle transition between months.
-     */
-    void _DecrementDayOfLocalAppTime(void){
-        _SetLocalAppTime(_GetLocalAppTime().addDays(-1));
-    }
+    AppTime *_appTime = nullptr;
 
     void _DisplayExpenseInfo(const ExpenseInfo* selectedExpense);
     void _StorePendingInput(void);
     void _DisplayPendingInput(const LastExpenseData* restoredUserInput);
+    template<typename T>
+    void _SetNDisplayLocalAppTime(const T& newLocalAppTime,
+                                  typename
+                                  std::enable_if<std::is_same<T,QDate>::value
+                                    || std::is_same<T,QDateTime>::value
+                                    || std::is_same<T,QString>::value>::type* = 0);
 };
-
 #endif // EXPENSEWINDOW_H

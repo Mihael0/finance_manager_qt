@@ -16,6 +16,7 @@ FORMS += \
     ui/mainwindow.ui \
 
 SOURCES += \
+    apptime.cpp \
     createsummarywindow.cpp \
     eventeater.cpp \
     expensemanager.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
     recurringexpensewindow.cpp
 
 HEADERS += \
+    apptime.h \
     createsummarywindow.h \
     eventeater.h \
     expensemanager.h \
