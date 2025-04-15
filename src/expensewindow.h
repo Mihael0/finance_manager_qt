@@ -55,6 +55,10 @@ private slots:
 
     void on_rightExpense_clicked();
 
+    void on_maxRight_clicked();
+
+    void on_maxLeft_clicked();
+
 private:
     Ui::ExpenseWindow *ui;
     const QDateTime _worldClockTime = QDateTime::currentDateTime();

@@ -263,7 +263,7 @@
     <string>&lt;</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="maxForward">
+  <widget class="QPushButton" name="maxRight">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -276,7 +276,7 @@
     <string>&gt;&gt;</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="maxBackward">
+  <widget class="QPushButton" name="maxLeft">
    <property name="geometry">
     <rect>
      <x>210</x>

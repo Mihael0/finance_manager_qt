@@ -55,6 +55,8 @@ public:
     void StoreUserInputtedData(QString& lastDailyExpense, QDate& lastExpenseDate);
 
     bool IsUserScrollingExpenses(void) const;
+    void MoveExpenseIndexMaxRight(void);
+    void MoveExpenseIndexMaxLeft(void);
 
 private:
     // all expenses SUBMITTED by the user are stored here.

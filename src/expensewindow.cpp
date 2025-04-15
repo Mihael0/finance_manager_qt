@@ -114,7 +114,7 @@ void ExpenseWindow::on_leftExpense_clicked(){
     _expenseManager->MoveExpenseIndexLeft(1);
 
     if((_expenseManager->GetCurrentStateOfBoundry() == Boundry::Right
-        || _expenseManager->GetCurrentStateOfBoundry() == Boundry::LeftRight)
+        || _expenseManager->GetCurrentStateOfBoundry() == Boundry::LeftRight) // This is in the case of expense size of 1.
         && _expenseManager->GetPreviousStateOfBoundry() == Boundry::HeadOfVector){
         _StorePendingInput();
     }
@@ -147,15 +147,33 @@ void ExpenseWindow::on_rightExpense_clicked(){
     _DisplayExpenseInfo(selectedExpense);
 }
 
+void ExpenseWindow::on_maxRight_clicked(){
+    // Restart the Boundry state to HeadOfVector
+    _expenseManager->MoveExpenseIndexMaxRight();
 
-void ExpenseWindow::on_maxForward_clicked()
-{
-
+    if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
+        && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
+        const LastExpenseData* restoredUserInput = _expenseManager->RestoreUserInputtedData();
+        _DisplayPendingInput(restoredUserInput);
+        return;
+    }
 }
 
 
-void ExpenseWindow::on_maxBackward_clicked()
-{
+void ExpenseWindow::on_maxLeft_clicked(){
+    // Move the Boundry state to Left
+    _expenseManager->MoveExpenseIndexMaxLeft();
 
+    if(_expenseManager->GetPreviousStateOfBoundry() == Boundry::HeadOfVector){
+        _StorePendingInput();
+    }
+
+    const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
+    if(selectedExpense == nullptr){
+        QMessageBox::warning(this, "Error", "No Expenses to select");
+        return;
+    }
+
+    _DisplayExpenseInfo(selectedExpense);
 }
 

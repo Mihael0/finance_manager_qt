@@ -28,6 +28,17 @@ void ExpenseManager::MoveExpenseIndexRight(int moveby){
     _SetStateOfBound();
 }
 
+void ExpenseManager::MoveExpenseIndexMaxRight(void){
+    _movingIndex = -1;
+    _SetStateOfBound();
+}
+
+void ExpenseManager::MoveExpenseIndexMaxLeft(void){
+    int maxIndexOfExpenses = _GetExpenses().size() - 1;
+    _movingIndex = maxIndexOfExpenses;
+    _SetStateOfBound();
+}
+
 Boundry ExpenseManager::GetCurrentStateOfBoundry(void) const{
     return _currentBoundryState;
 }
@@ -68,22 +79,3 @@ const ExpenseInfo* ExpenseManager::GetExpenseAtMovingIndex(void) const{
 const LastExpenseData* ExpenseManager::RestoreUserInputtedData(void) const{
     return &_lastExpenseData;
 }
-
-// void ExpenseManager::MoveLeftNCheckIfUserPendingDataShouldBeStored(void){
-
-// }
-
-// PostMoveAction ExpenseManager::MoveRightNSetMovingState(void){
-//     MoveExpenseIndexRight(1);
-
-//     // If we are at the HeadOfVector, and user presses right, we do nothing.
-//     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
-//         && _expenseManager->GetPreviousStateOfBoundry() == Boundry::HeadOfVector){
-//         return PostMoveAction::DoNothing;
-//     }
-
-//     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
-//         && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
-//         return PostMoveAction::RestorePendingData;
-//     }
-// }
