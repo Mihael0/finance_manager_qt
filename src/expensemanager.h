@@ -33,11 +33,22 @@ public:
      * @brief Sets the given arguments into the private _expenses struct. Can be retrieved by calling GetExpenses(index).
      */
     void SetExpenses(float declaredExpense, QDate& dateOfExpense);
+    /*
+     * @brief Moves the _movingIndex "left" by the passed to it.
+     */
     void MoveExpenseIndexLeft(int moveby);
+    /*
+     * @brief Moves the _movingIndex "right" by the passed to it.
+     */
     void MoveExpenseIndexRight(int moveby);
+    /*
+     * @return the state of the boundry.
+     */
     Boundry GetCurrentStateOfBoundry(void) const;
+    /*
+     * @return the state of the previous boundry.
+     */
     Boundry GetPreviousStateOfBoundry(void) const;
-    Boundry GetStateOfBoundry(void) const;
     /*
      * @return the last inputted value by the user. If none was set, it returns nullptr.
      */
@@ -53,9 +64,18 @@ public:
      * For this reason the tmpDailyExpense is a QString as it is not checked if it is a correct float value.
      */
     void StoreUserInputtedData(QString& lastDailyExpense, QDate& lastExpenseDate);
-
+    /*
+     * @brief Tracks the flag that shows to the application that the user is currently scrolling expenses
+     * and that expenses cannot be submitted or declared until the user goes to the head of the vector.
+     */
     bool IsUserScrollingExpenses(void) const;
+    /*
+     * @detail Moves the moving index to the very right to the head of the vector.
+     */
     void MoveExpenseIndexMaxRight(void);
+    /*
+     * @detail Moves the moving index to the very left to the very first element of the vector, or also known as Left.
+     */
     void MoveExpenseIndexMaxLeft(void);
 
 private:
@@ -72,7 +92,9 @@ private:
     int _movingIndex = -1;
     bool _isUserScrollingExpenses = false;
 
-
+    /*
+     * @detail Sets the flag that controls if the user is scrolling the expenses or not.
+     */
     void _SetIsUSerScrollingExpenses(bool is){
         _isUserScrollingExpenses = is;
     }
@@ -82,7 +104,10 @@ private:
     const std::vector<ExpenseInfo>& _GetExpenses(void) const{
         return _expenses;
     }
-
+    /*
+     * @detail Sets the boundry to the one corresponding of where the user is currently scrolling through.
+     * For more information on what each boundry represents, please look at the declaration of the boundry.
+     */
     void _SetStateOfBound(void){
         _previousBoundryState = _currentBoundryState;
         if(_movingIndex == - 1){

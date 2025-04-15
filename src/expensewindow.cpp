@@ -35,6 +35,7 @@ void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
     ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
     _SetNDisplayLocalAppTime(selectedExpense->expenseDate);
 }
+
 template<typename T>
 void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
                               typename
