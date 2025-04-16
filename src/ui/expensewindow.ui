@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>458</x>
-     <y>241</y>
+     <y>281</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -59,7 +59,7 @@
    <property name="geometry">
     <rect>
      <x>265</x>
-     <y>280</y>
+     <y>320</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -68,24 +68,27 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_7">
+  <widget class="QLabel" name="ErrorLabel">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>184</y>
-     <width>221</width>
-     <height>41</height>
+     <x>220</x>
+     <y>180</y>
+     <width>331</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="text">
     <string>Input your daily expenses below</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
      <x>275</x>
-     <y>240</y>
+     <y>280</y>
      <width>101</width>
      <height>41</height>
     </rect>
@@ -111,7 +114,7 @@
    <property name="geometry">
     <rect>
      <x>245</x>
-     <y>320</y>
+     <y>360</y>
      <width>151</width>
      <height>26</height>
     </rect>
@@ -124,7 +127,7 @@
    <property name="geometry">
     <rect>
      <x>245</x>
-     <y>350</y>
+     <y>390</y>
      <width>151</width>
      <height>26</height>
     </rect>
@@ -137,7 +140,7 @@
    <property name="geometry">
     <rect>
      <x>245</x>
-     <y>380</y>
+     <y>420</y>
      <width>151</width>
      <height>26</height>
     </rect>
@@ -150,13 +153,13 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>40</y>
+     <y>20</y>
      <width>181</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>How to declare expenses:</string>
+    <string>How To Use:</string>
    </property>
   </widget>
   <widget class="QLabel" name="howToUseExpenses">
@@ -202,7 +205,7 @@
    <property name="geometry">
     <rect>
      <x>474</x>
-     <y>284</y>
+     <y>324</y>
      <width>81</width>
      <height>21</height>
     </rect>
@@ -215,7 +218,7 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>280</y>
+     <y>320</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -228,7 +231,7 @@
    <property name="geometry">
     <rect>
      <x>365</x>
-     <y>280</y>
+     <y>320</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -241,7 +244,7 @@
    <property name="geometry">
     <rect>
      <x>561</x>
-     <y>280</y>
+     <y>320</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -254,7 +257,7 @@
    <property name="geometry">
     <rect>
      <x>442</x>
-     <y>280</y>
+     <y>320</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -267,7 +270,7 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>280</y>
+     <y>320</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -280,7 +283,7 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>280</y>
+     <y>320</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -293,7 +296,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>220</y>
+     <y>270</y>
      <width>791</width>
      <height>16</height>
     </rect>

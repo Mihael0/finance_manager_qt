@@ -1,7 +1,5 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
-#include "QMessageBox"
-
 
 struct USRDETAILS{
     QString UserName;
@@ -37,8 +35,7 @@ void LogInWindow::on_LogIn_clicked(){
         ui->PassWord->text() == usrCredentials.User2.PassWord)){
         emit authenthicationSucceeded();
     } else{
-        QMessageBox::warning(this, "Error", "Authenthication Unsuccessful. Please try again.");
+        ui->ErrorLabel->setText("Authenthication Unsuccessful. Please try again.");
     }
-
 }
 

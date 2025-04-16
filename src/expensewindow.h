@@ -92,6 +92,8 @@ private:
     ExpenseManager *_expenseManager = nullptr;
     AppTime *_appTime = nullptr;
 
+
+    void _SetErrorLabel(const QString& message);
     /*
      * @brief Uses the ui to display the currently selected expense value and expense date to the user.
      */

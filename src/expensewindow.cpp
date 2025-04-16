@@ -1,6 +1,5 @@
 #include "expensewindow.h"
 #include "ui_expensewindow.h"
-#include "QMessageBox"
 #include "QString"
 
 ExpenseWindow::ExpenseWindow(QWidget *parent)
@@ -31,6 +30,16 @@ ExpenseWindow::~ExpenseWindow(){
     delete _expenseManager;
 }
 
+void ExpenseWindow::_SetErrorLabel(const QString& message){
+    QString style = ui->ErrorLabel->styleSheet();
+
+    if (!style.contains("color: red", Qt::CaseInsensitive)) {
+        ui->ErrorLabel->setStyleSheet("color: red;");
+    }
+
+    ui->ErrorLabel->setText(message);
+}
+
 void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
     ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
     _SetNDisplayLocalAppTime(selectedExpense->expenseDate);
@@ -55,7 +64,6 @@ void ExpenseWindow::_StorePendingInput(void){
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInput){
     ui->dailyExpenses->setText(restoredUserInput->lastDailyExpense);
     _SetNDisplayLocalAppTime(restoredUserInput->lastExpenseDate);
-    // HOW IS THIS WORKING IF WE ARE NOT SETTING IT HERE?!
 }
 
 // TODO: We have to check if the expense is a valid value.
@@ -65,7 +73,7 @@ void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInpu
 // if they say No, then they are returned to their previous value.
 void ExpenseWindow::on_dailyExpenses_returnPressed(){
     if(_expenseManager->IsUserScrollingExpenses()){
-        QMessageBox::warning(this, "Error", "Cannot submit expense. You are currently scrolling existing expenses. Press the right double arrow to return to inputting new expenses!");
+        _SetErrorLabel("Cannot submit expense. You are currently scrolling existing expenses. Press the right double arrow to return to inputting new expenses!");
         return;
     }
 
@@ -73,7 +81,7 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
     float expense = ui->dailyExpenses->text().toFloat(&isFloat);
 
     if(!isFloat){
-        QMessageBox::warning(this, "Result", "Invalid Expense! Please submit a decimal number!");
+        _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
         return;
     }
     // Passing by reference.
@@ -129,7 +137,7 @@ void ExpenseWindow::on_leftExpense_clicked(){
 
     const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
     if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "No Expenses to select");
+        _SetErrorLabel("No Expenses to select");
         return;
     }
 
@@ -148,7 +156,7 @@ void ExpenseWindow::on_rightExpense_clicked(){
 
     const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
     if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "No Expenses to select");
+        _SetErrorLabel("No Expenses to select");
         return;
     }
 
@@ -177,7 +185,7 @@ void ExpenseWindow::on_maxLeft_clicked(){
 
     const ExpenseInfo* selectedExpense = _expenseManager->GetExpenseAtMovingIndex();
     if(selectedExpense == nullptr){
-        QMessageBox::warning(this, "Error", "No Expenses to select");
+        _SetErrorLabel("No Expenses to select");
         return;
     }
 
