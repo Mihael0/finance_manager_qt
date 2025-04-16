@@ -42,48 +42,48 @@ private slots:
      * @brief Slot triggered when the Enter is pressed on the keyboard.
      * The slot is responsible for validating and storing the inputted expense and date by the user.
      */
-    void on_dailyExpenses_returnPressed();
+    void on_DailyExpenses_returnPressed();
     /*
      * @brief Slot triggered when the nextDay button is pressed.
      * It increments the current date by one.
      */
-    void on_nextDay_clicked();
+    void on_NextDay_clicked();
     /*
      * @brief Slot triggered when the previousDay button is pressed.
      * It decrements the current date by one.
      */
-    void on_previousDay_clicked();
+    void on_PreviousDay_clicked();
     /*
      * @brief Slot triggered when the BackBtn is pressed.
      * It sends out a signal that tells the MainWindow that the user
      * is requesting that this window be closed.
      */
-    void on_backBtn_clicked();
+    void on_BackBtn_clicked();
     /*
      * @brief Slot triggered by the submitExpense button.
      * It takes all of the inputted expenses and sends them to the server for storage.
      */
-    void on_submitExpense_clicked();
+    void on_SubmitExpense_clicked();
     /*
      * @brief Slot triggered by the leftExpense button.
      * It moves the currently selected expense one to the left and shows it to the user.
      */
-    void on_leftExpense_clicked();
+    void on_LeftExpense_clicked();
     /*
      * @brief Slot triggered by the rightExpense button.
      * It moves the currently selected expense one to the right and shows it to the user.
      */
-    void on_rightExpense_clicked();
+    void on_RightExpense_clicked();
     /*
      * @brief Slot triggered by the maxRight button.
      * It moves the currently selected expense maximum to the right and shows it to the user.
      */
-    void on_maxRight_clicked();
+    void on_MaxRight_clicked();
     /*
      * @brief Slot triggered by the maxLight button.
      * It moves the currently selected expense maximum to the left and shows it to the user.
      */
-    void on_maxLeft_clicked();
+    void on_MaxLeft_clicked();
 
 private:
     Ui::ExpenseWindow *ui;

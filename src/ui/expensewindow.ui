@@ -29,7 +29,7 @@
     <string>Date of Expense</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="currentMonth">
+  <widget class="QLineEdit" name="CurrentMonth">
    <property name="geometry">
     <rect>
      <x>670</x>
@@ -55,7 +55,7 @@
     <string>Local Time</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="dailyExpenses">
+  <widget class="QLineEdit" name="DailyExpenses">
    <property name="geometry">
     <rect>
      <x>265</x>
@@ -97,7 +97,7 @@
     <string>Daily Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="backBtn">
+  <widget class="QPushButton" name="BackBtn">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -110,7 +110,7 @@
     <string>Back</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="submitExpense">
+  <widget class="QPushButton" name="SubmitExpense">
    <property name="geometry">
     <rect>
      <x>245</x>
@@ -123,7 +123,7 @@
     <string>Submit Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="deleteExpense">
+  <widget class="QPushButton" name="DeleteExpense">
    <property name="geometry">
     <rect>
      <x>245</x>
@@ -136,7 +136,7 @@
     <string>Edit/Delete Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="backBtn_2">
+  <widget class="QPushButton" name="BackBtn_2">
    <property name="geometry">
     <rect>
      <x>245</x>
@@ -162,7 +162,7 @@
     <string>How To Use:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="howToUseExpenses">
+  <widget class="QLabel" name="HowToUseExpenses">
    <property name="geometry">
     <rect>
      <x>50</x>
@@ -201,7 +201,7 @@
     <enum>Qt::Orientation::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="dateOfExpense">
+  <widget class="QLabel" name="DateOfExpense">
    <property name="geometry">
     <rect>
      <x>474</x>
@@ -214,7 +214,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QToolButton" name="leftExpense">
+  <widget class="QToolButton" name="LeftExpense">
    <property name="geometry">
     <rect>
      <x>240</x>
@@ -227,7 +227,7 @@
     <string>&lt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="rightExpense">
+  <widget class="QToolButton" name="RightExpense">
    <property name="geometry">
     <rect>
      <x>365</x>
@@ -240,7 +240,7 @@
     <string>&gt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="nextDay">
+  <widget class="QToolButton" name="NextDay">
    <property name="geometry">
     <rect>
      <x>561</x>
@@ -253,7 +253,7 @@
     <string>&gt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="previousDay">
+  <widget class="QToolButton" name="PreviousDay">
    <property name="geometry">
     <rect>
      <x>442</x>
@@ -266,7 +266,7 @@
     <string>&lt;</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="maxRight">
+  <widget class="QPushButton" name="MaxRight">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -279,7 +279,7 @@
     <string>&gt;&gt;</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="maxLeft">
+  <widget class="QPushButton" name="MaxLeft">
    <property name="geometry">
     <rect>
      <x>210</x>

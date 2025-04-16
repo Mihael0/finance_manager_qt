@@ -10,16 +10,16 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
 
     ui->setupUi(this);
     if(ui){
-        ui->currentMonth->setFrame(false);
-        ui->currentMonth->setText(_appTime->GetLocalTimeAsString());
-        ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
-        ui->howToUseExpenses->setText("<ul>"
+        ui->CurrentMonth->setFrame(false);
+        ui->CurrentMonth->setText(_appTime->GetLocalTimeAsString());
+        ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
+        ui->HowToUseExpenses->setText("<ul>"
                              "<li>Input an expense in the Daily Expense box.</li>"
                              "<li>Then press the Next Day button to increase the day.</li>"
                              "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
                              "</ul>");
         _keyPressEater = new EventEater(this);
-        ui->dateOfExpense->installEventFilter(_keyPressEater);
+        ui->DateOfExpense->installEventFilter(_keyPressEater);
         QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
     }
 }
@@ -41,7 +41,7 @@ void ExpenseWindow::_SetErrorLabel(const QString& message){
 }
 
 void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
-    ui->dailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
+    ui->DailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
     _SetNDisplayLocalAppTime(selectedExpense->expenseDate);
 }
 
@@ -52,17 +52,17 @@ void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
                                 || std::is_same<T,QDateTime>::value
                                 || std::is_same<T,QString>::value>::type*){
     _appTime->SetLocalAppTime(newLocalAppTime);
-    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
+    ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
 void ExpenseWindow::_StorePendingInput(void){
     QDate rAppTime = _appTime->GetLocalAppTime();
-    QString rDailyExpenses = ui->dailyExpenses->text();
+    QString rDailyExpenses = ui->DailyExpenses->text();
     _expenseManager->StoreUserInputtedData(rDailyExpenses,rAppTime);
 }
 
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInput){
-    ui->dailyExpenses->setText(restoredUserInput->lastDailyExpense);
+    ui->DailyExpenses->setText(restoredUserInput->lastDailyExpense);
     _SetNDisplayLocalAppTime(restoredUserInput->lastExpenseDate);
 }
 
@@ -71,14 +71,14 @@ void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInpu
 // if that is the case, then we need to prompt the user if
 // they would like to create a new excel file for that given month.
 // if they say No, then they are returned to their previous value.
-void ExpenseWindow::on_dailyExpenses_returnPressed(){
+void ExpenseWindow::on_DailyExpenses_returnPressed(){
     if(_expenseManager->IsUserScrollingExpenses()){
         _SetErrorLabel("Cannot submit expense. You are currently scrolling existing expenses. Press the right double arrow to return to inputting new expenses!");
         return;
     }
 
     bool isFloat = true;
-    float expense = ui->dailyExpenses->text().toFloat(&isFloat);
+    float expense = ui->DailyExpenses->text().toFloat(&isFloat);
 
     if(!isFloat){
         _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
@@ -87,22 +87,22 @@ void ExpenseWindow::on_dailyExpenses_returnPressed(){
     // Passing by reference.
     QDate rLocalAppTime = _appTime->GetLocalAppTime();
     _expenseManager->SetExpenses(expense,rLocalAppTime);
-    ui->dailyExpenses->clear();
+    ui->DailyExpenses->clear();
 }
 
-void ExpenseWindow::on_nextDay_clicked(){
+void ExpenseWindow::on_NextDay_clicked(){
     // Increment the current day by 1.
     _appTime->IncrementDayOfLocalAppTime();
-    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
+    ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
-void ExpenseWindow::on_previousDay_clicked(){
+void ExpenseWindow::on_PreviousDay_clicked(){
     // Decrement the current day by 1.
     _appTime->DecrementDayOfLocalAppTime();
-    ui->dateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
+    ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
 }
 
-void ExpenseWindow::on_backBtn_clicked(){
+void ExpenseWindow::on_BackBtn_clicked(){
     emit closeExpenseWindowRequested();
 }
 
@@ -110,8 +110,8 @@ void ExpenseWindow::showExpenseWindow(void){
     this->show();
 }
 
-void ExpenseWindow::on_submitExpense_clicked(){
-    on_dailyExpenses_returnPressed();
+void ExpenseWindow::on_SubmitExpense_clicked(){
+    on_DailyExpenses_returnPressed();
 }
 
 void ExpenseWindow::showCalendar(){
@@ -126,7 +126,7 @@ void ExpenseWindow::showCalendar(){
     });
 }
 
-void ExpenseWindow::on_leftExpense_clicked(){
+void ExpenseWindow::on_LeftExpense_clicked(){
     _expenseManager->MoveExpenseIndexLeft(1);
 
     if((_expenseManager->GetCurrentStateOfBoundry() == Boundry::Right
@@ -144,7 +144,7 @@ void ExpenseWindow::on_leftExpense_clicked(){
     _DisplayExpenseInfo(selectedExpense);
 }
 
-void ExpenseWindow::on_rightExpense_clicked(){
+void ExpenseWindow::on_RightExpense_clicked(){
     _expenseManager->MoveExpenseIndexRight(1);
 
     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
@@ -163,7 +163,7 @@ void ExpenseWindow::on_rightExpense_clicked(){
     _DisplayExpenseInfo(selectedExpense);
 }
 
-void ExpenseWindow::on_maxRight_clicked(){
+void ExpenseWindow::on_MaxRight_clicked(){
     // Restart the Boundry state to HeadOfVector
     _expenseManager->MoveExpenseIndexMaxRight();
 
@@ -175,7 +175,7 @@ void ExpenseWindow::on_maxRight_clicked(){
     }
 }
 
-void ExpenseWindow::on_maxLeft_clicked(){
+void ExpenseWindow::on_MaxLeft_clicked(){
     // Move the Boundry state to Left
     _expenseManager->MoveExpenseIndexMaxLeft();
 
