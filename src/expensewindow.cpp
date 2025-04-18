@@ -9,18 +9,14 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     , _appTime(new AppTime){
 
     ui->setupUi(this);
+    QObject::connect(_expenseManager, &ExpenseManager::UpdateUIStateRequested, this, &ExpenseWindow::UpdateUIState);
     if(ui){
-        ui->CurrentMonth->setFrame(false);
-        ui->CurrentMonth->setText(_appTime->GetLocalTimeAsString());
-        ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
-        ui->HowToUseExpenses->setText("<ul>"
-                             "<li>Input an expense in the Daily Expense box.</li>"
-                             "<li>Then press the Next Day button to increase the day.</li>"
-                             "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
-                             "</ul>");
-        _keyPressEater = new EventEater(this);
-        ui->DateOfExpense->installEventFilter(_keyPressEater);
-        QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
+        _SetUIState(UIState::Startup);
+        _ProcessUIStateChange();
+    } else {
+        // Uh-oh we dun fucked up.
+        // We can't even throw an error here, as the UI we would use to throw the error just failled.
+        // This probably requires some sort of logging. Like qDebug() or something alike.
     }
 }
 
@@ -28,6 +24,100 @@ ExpenseWindow::~ExpenseWindow(){
     delete ui;
     delete _keyPressEater;
     delete _expenseManager;
+}
+
+void ExpenseWindow::UpdateUIState(void){
+    _UpdateUIBasedOnState();
+}
+
+void ExpenseWindow::_UpdateUIBasedOnState(void){
+    Boundry currentBoundry = _expenseManager->GetCurrentStateOfBoundry();
+    // If we are at the head of the Vector means the user can submit expenses.
+    if(currentBoundry == Boundry::HeadOfVector){
+        _SetUIState(UIState::DeclaringExpenses);
+        _ProcessUIStateChange();
+        return;
+    }
+    // If we are not at the head of the Vector and the state is already scrolling,
+    // means we do not need to do anything.
+    if(currentBoundry != Boundry::HeadOfVector
+        && _GetCurrentUIState() == UIState::Scrolling){
+        return;
+    }
+    if(currentBoundry != Boundry::HeadOfVector){
+        _SetUIState(UIState::Scrolling);
+        _ProcessUIStateChange();
+        return;
+    }
+}
+
+void ExpenseWindow::_ProcessUIStateChange(void){
+    UIState currentUIState = _GetCurrentUIState();
+    switch(currentUIState){
+    case UIState::Startup:
+        // Make sure certain UI elements initialize their values with the correct values.
+        ui->CurrentMonth->setFrame(false);
+        ui->CurrentMonth->setText(_appTime->GetLocalTimeAsString());
+        ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
+        ui->HowToUseExpenses->setText("<ul>"
+                                      "<li>Input an expense in the Daily Expense box.</li>"
+                                      "<li>Then press the Next Day button to increase the day.</li>"
+                                      "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
+                                      "</ul>");
+        // Prepare the EventEater to intercept an event if a user clicks on the date to display the calendar.
+        _keyPressEater = new EventEater(this);
+        ui->DateOfExpense->installEventFilter(_keyPressEater);
+        QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
+        // Initialize the list of TypeOfExpenses
+        _InitializeTypeOfExpenses();
+        break;
+    case UIState::DeclaringExpenses:
+        // Business as usual. For now we do nothing. If that proves fatal, we will add checks that
+        // see if the UI elements are in the states they are supposed to be and if not, to put them in that state.
+        ui->Note->setReadOnly(false);
+        ui->DailyExpenses->setReadOnly(false);
+        ui->PreviousDay->setEnabled(true);
+        ui->NextDay->setEnabled(true);
+        _SetShowCalendar(true);
+        ui->TypeOfExpense->setEnabled(true);
+        break;
+    case UIState::Scrolling:
+        ui->Note->setReadOnly(true);
+        ui->DailyExpenses->setReadOnly(true);
+        ui->PreviousDay->setEnabled(false);
+        ui->NextDay->setEnabled(false);
+        _SetShowCalendar(false);
+        ui->TypeOfExpense->setEnabled(false);
+        break;
+    case UIState::EditDelete:
+        break;
+    default:
+        // How are we here?!
+        // Use the error handler to throw an error here.
+        break;
+    }
+}
+
+void ExpenseWindow::_DisplayExpenseNote(QString noteToDisplay){
+    ui->Note->setText(noteToDisplay);
+}
+
+void ExpenseWindow::_InitializeTypeOfExpenses(void){
+    ui->TypeOfExpense->addItem("Food");
+    ui->TypeOfExpense->addItem("Recreation");
+    ui->TypeOfExpense->addItem("Cat");
+    ui->TypeOfExpense->addItem("Technology");
+}
+
+void ExpenseWindow::_DisplayCurrentErrorText(void){
+    QString style = ui->ErrorLabel->styleSheet();
+
+    if (!style.contains("color: red", Qt::CaseInsensitive)) {
+        ui->ErrorLabel->setStyleSheet("color: red;");
+    }
+
+    QString currentError = _GetCurrentErrorText();
+    ui->ErrorLabel->setText(currentError);
 }
 
 void ExpenseWindow::_SetErrorLabel(const QString& message){
@@ -42,7 +132,9 @@ void ExpenseWindow::_SetErrorLabel(const QString& message){
 
 void ExpenseWindow::_DisplayExpenseInfo(const ExpenseInfo* selectedExpense){
     ui->DailyExpenses->setText(QString::number(selectedExpense->expenseValue,'f', 2));
+    ui->TypeOfExpense->setCurrentText(selectedExpense->expenseType);
     _SetNDisplayLocalAppTime(selectedExpense->expenseDate);
+    _DisplayExpenseNote(selectedExpense->expenseNote);
 }
 
 template<typename T>
@@ -58,12 +150,20 @@ void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
 void ExpenseWindow::_StorePendingInput(void){
     QDate rAppTime = _appTime->GetLocalAppTime();
     QString rDailyExpenses = ui->DailyExpenses->text();
-    _expenseManager->StoreUserInputtedData(rDailyExpenses,rAppTime);
+    QString rExpenseType = ui->TypeOfExpense->currentText();
+    QString rExpenseNote = ui->Note->text();
+    //TODO FUCKING FIX THIS WHY IS THAT SOME OF THEM HAVE A GETTER AND OTHERS DO NOT!!?!?!?!?!?!?
+    _expenseManager->StoreUserInputtedInfo(rDailyExpenses,rAppTime,rExpenseType,rExpenseNote);
 }
 
-void ExpenseWindow::_DisplayPendingInput(const LastExpenseData* restoredUserInput){
+void ExpenseWindow::_DisplayPendingInput(const LastExpenseInfo* restoredUserInput){
+    // Display the value of the expense
     ui->DailyExpenses->setText(restoredUserInput->lastDailyExpense);
     _SetNDisplayLocalAppTime(restoredUserInput->lastExpenseDate);
+    // Display the type of expense
+    ui->TypeOfExpense->setCurrentText(restoredUserInput->lastTypeOfExpense);
+    // Display the note of the expense
+    _DisplayExpenseNote(restoredUserInput->lastExpenseNote);
 }
 
 // TODO: We have to check if the expense is a valid value.
@@ -79,6 +179,7 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
 
     bool isFloat = true;
     float expense = ui->DailyExpenses->text().toFloat(&isFloat);
+    QString typeOfExpense = ui->TypeOfExpense->currentText();
 
     if(!isFloat){
         _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
@@ -86,8 +187,12 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
     }
     // Passing by reference.
     QDate rLocalAppTime = _appTime->GetLocalAppTime();
-    _expenseManager->SetExpenses(expense,rLocalAppTime);
+    QString rNote = ui->Note->text();
+    // TODO FIX THIS FOR ALL OF THESE TO HAVE GETTERS AND THEN MAKE SET EXPENSES BE A FUCKING CONST VAR& INSTEAD
+    // OF JSUT DOING THIS FUCKING RANDOM ASS FUCKING BULLSHIT. LIKE GOD DAMN, WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY!
+    _expenseManager->SetExpenses(expense,rLocalAppTime, typeOfExpense, rNote);
     ui->DailyExpenses->clear();
+    ui->Note->clear();
 }
 
 void ExpenseWindow::on_NextDay_clicked(){
@@ -115,7 +220,12 @@ void ExpenseWindow::on_SubmitExpense_clicked(){
 }
 
 void ExpenseWindow::showCalendar(){
-    _calendar = new QCalendarWidget();
+    if(!_GetShowCalendar()){
+        return;
+    }
+    if(_calendar == nullptr){
+        _calendar = new QCalendarWidget();
+    }
     _calendar->setWindowFlags(Qt::Popup);
     _calendar->move(QCursor::pos());
     _calendar->show();
@@ -149,7 +259,7 @@ void ExpenseWindow::on_RightExpense_clicked(){
 
     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
         && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
-        const LastExpenseData* restoredUserInput = _expenseManager->RestoreUserInputtedData();
+        const LastExpenseInfo* restoredUserInput = _expenseManager->RestoreUserInputtedInfo();
         _DisplayPendingInput(restoredUserInput);
         return;
     }
@@ -169,7 +279,7 @@ void ExpenseWindow::on_MaxRight_clicked(){
 
     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
         && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
-        const LastExpenseData* restoredUserInput = _expenseManager->RestoreUserInputtedData();
+        const LastExpenseInfo* restoredUserInput = _expenseManager->RestoreUserInputtedInfo();
         _DisplayPendingInput(restoredUserInput);
         return;
     }

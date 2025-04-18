@@ -16,19 +16,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>458</x>
-     <y>281</y>
-     <width>111</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Date of Expense</string>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="CurrentMonth">
    <property name="geometry">
     <rect>
@@ -73,12 +60,12 @@
     <rect>
      <x>220</x>
      <y>180</y>
-     <width>331</width>
+     <width>351</width>
      <height>91</height>
     </rect>
    </property>
    <property name="text">
-    <string>Input your daily expenses below</string>
+    <string>Input your daily expenses below and then select a type of expense</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -87,14 +74,17 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>275</x>
+     <x>250</x>
      <y>280</y>
-     <width>101</width>
+     <width>161</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Daily Expense</string>
+    <string>Daily Expense &amp; Date</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="BackBtn">
@@ -113,9 +103,9 @@
   <widget class="QPushButton" name="SubmitExpense">
    <property name="geometry">
     <rect>
-     <x>245</x>
-     <y>360</y>
-     <width>151</width>
+     <x>230</x>
+     <y>390</y>
+     <width>171</width>
      <height>26</height>
     </rect>
    </property>
@@ -126,9 +116,9 @@
   <widget class="QPushButton" name="DeleteExpense">
    <property name="geometry">
     <rect>
-     <x>245</x>
-     <y>390</y>
-     <width>151</width>
+     <x>230</x>
+     <y>420</y>
+     <width>171</width>
      <height>26</height>
     </rect>
    </property>
@@ -139,9 +129,9 @@
   <widget class="QPushButton" name="BackBtn_2">
    <property name="geometry">
     <rect>
-     <x>245</x>
-     <y>420</y>
-     <width>151</width>
+     <x>230</x>
+     <y>450</y>
+     <width>171</width>
      <height>26</height>
     </rect>
    </property>
@@ -204,9 +194,9 @@
   <widget class="QLabel" name="DateOfExpense">
    <property name="geometry">
     <rect>
-     <x>474</x>
-     <y>324</y>
-     <width>81</width>
+     <x>270</x>
+     <y>354</y>
+     <width>101</width>
      <height>21</height>
     </rect>
    </property>
@@ -224,7 +214,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;</string>
+    <string>◄</string>
    </property>
   </widget>
   <widget class="QToolButton" name="RightExpense">
@@ -237,33 +227,33 @@
     </rect>
    </property>
    <property name="text">
-    <string>&gt;</string>
+    <string>►</string>
    </property>
   </widget>
   <widget class="QToolButton" name="NextDay">
    <property name="geometry">
     <rect>
-     <x>561</x>
-     <y>320</y>
+     <x>365</x>
+     <y>350</y>
      <width>26</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>&gt;</string>
+    <string>►</string>
    </property>
   </widget>
   <widget class="QToolButton" name="PreviousDay">
    <property name="geometry">
     <rect>
-     <x>442</x>
-     <y>320</y>
+     <x>240</x>
+     <y>350</y>
      <width>26</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;</string>
+    <string>◄</string>
    </property>
   </widget>
   <widget class="QPushButton" name="MaxRight">
@@ -276,7 +266,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&gt;&gt;</string>
+    <string>►►</string>
    </property>
   </widget>
   <widget class="QPushButton" name="MaxLeft">
@@ -289,7 +279,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;&lt;</string>
+    <string>◄◄</string>
    </property>
   </widget>
   <widget class="Line" name="line_3">
@@ -303,6 +293,45 @@
    </property>
    <property name="orientation">
     <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>439</x>
+     <y>280</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Type Of Expense &amp; Notes</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="TypeOfExpense">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>320</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Note">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>350</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

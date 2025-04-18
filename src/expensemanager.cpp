@@ -1,11 +1,16 @@
 #include "expensemanager.h"
 
-ExpenseManager::ExpenseManager() {}
+ExpenseManager::ExpenseManager(QObject* parent)
+        : QObject(parent){
 
-void ExpenseManager::SetExpenses(float declaredExpense, QDate& dateOfExpense){
+}
+
+void ExpenseManager::SetExpenses(float declaredExpense, QDate& dateOfExpense, QString& typeOfExpense, QString& expenseNote){
     ExpenseInfo expense = {
         .expenseValue = declaredExpense,
         .expenseDate = dateOfExpense,
+        .expenseType = typeOfExpense,
+        .expenseNote = expenseNote,
     };
     _expenses.push_back(expense);
 }
@@ -47,12 +52,14 @@ Boundry ExpenseManager::GetPreviousStateOfBoundry(void) const{
     return _previousBoundryState;
 }
 
-void ExpenseManager::StoreUserInputtedData(QString& lastDailyExpense, QDate& lastExpenseDate){
-    LastExpenseData lastExpenseData = {
+void ExpenseManager::StoreUserInputtedInfo(QString& lastDailyExpense, QDate& lastExpenseDate, QString& lastTypeOfExpense, QString& lastExpenseNote){
+    LastExpenseInfo lastExpenseInfo = {
         .lastDailyExpense = lastDailyExpense,
         .lastExpenseDate  = lastExpenseDate,
+        .lastTypeOfExpense = lastTypeOfExpense,
+        .lastExpenseNote = lastExpenseNote,
     };
-    _lastExpenseData = lastExpenseData;
+    _lastExpenseInfo = lastExpenseInfo;
 }
 
 bool ExpenseManager::IsUserScrollingExpenses(void) const{
@@ -66,7 +73,7 @@ const ExpenseInfo* ExpenseManager::GetExpenseAtMovingIndex(void) const{
     if(maxIndexOfExpenses <= -1 || _movingIndex == -1){
         return nullptr;
     }
-    // if _movingIndex is 0, that means we want the most latest added value.
+    // if _movingIndex is 0, that means we want the latest added value.
     if(_movingIndex == 0){
         adjustedIndex = maxIndexOfExpenses;
     } else { // if index is any other value, we have to take the absolute difference.
@@ -76,6 +83,6 @@ const ExpenseInfo* ExpenseManager::GetExpenseAtMovingIndex(void) const{
     return &_GetExpenses()[adjustedIndex];
 }
 
-const LastExpenseData* ExpenseManager::RestoreUserInputtedData(void) const{
-    return &_lastExpenseData;
+const LastExpenseInfo* ExpenseManager::RestoreUserInputtedInfo(void) const{
+    return &_lastExpenseInfo;
 }

@@ -12,6 +12,13 @@ namespace Ui {
 class ExpenseWindow;
 }
 
+enum class UIState {
+    Startup,
+    DeclaringExpenses,
+    Scrolling,
+    EditDelete,
+};
+
 class ExpenseWindow : public QWidget
 {
     Q_OBJECT
@@ -38,6 +45,7 @@ public:
     ~ExpenseWindow();
 
 private slots:
+    void UpdateUIState();
     /*
      * @brief Slot triggered when the Enter is pressed on the keyboard.
      * The slot is responsible for validating and storing the inputted expense and date by the user.
@@ -91,8 +99,34 @@ private:
     QCalendarWidget *_calendar = nullptr;
     ExpenseManager *_expenseManager = nullptr;
     AppTime *_appTime = nullptr;
+    UIState _currentUIState = UIState::Startup;
+    QString _currentErrorText = "";
+    bool _showCalendar = false;
 
+    void _SetShowCalendar(bool val){
+        _showCalendar = val;
+    }
+    bool _GetShowCalendar(void) const{
+        return _showCalendar;
+    }
+    void _ProcessUIStateChange(void);
+    void _DisplayCurrentErrorText(void);
+    void _SetErrorText(QString errorText){
+        _currentErrorText = errorText;
+    }
+    const QString& _GetCurrentErrorText(void) const{
+        return _currentErrorText;
+    }
+    void _UpdateUIBasedOnState(void);
 
+    void _SetUIState(UIState state){
+        _currentUIState = state;
+    }
+    const UIState& _GetCurrentUIState(void) const{
+        return _currentUIState;
+    }
+    void _DisplayExpenseNote(QString noteToSet);
+    void _InitializeTypeOfExpenses(void);
     void _SetErrorLabel(const QString& message);
     /*
      * @brief Uses the ui to display the currently selected expense value and expense date to the user.
@@ -105,7 +139,7 @@ private:
     /*
      * @brief Displays the stored date and whatever the use had written in the dailyExpense box.
      */
-    void _DisplayPendingInput(const LastExpenseData* restoredUserInput);
+    void _DisplayPendingInput(const LastExpenseInfo* restoredUserInput);
     /*
      * @brief Template that can take it multiple arguments that are then used to set the expenseDate
      * and are then displayed to the user.

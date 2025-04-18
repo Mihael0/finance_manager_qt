@@ -18,14 +18,9 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override{
         if (event->type() == QEvent::MouseButtonRelease) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-            qDebug("Ate key press %d", keyEvent->key());
             emit showCalendarRequested();
-            // return QObject::eventFilter(obj, event);
             return true;
         } else {
-            // standard event processing
-            // return true;
             return QObject::eventFilter(obj, event);
         }
     }
