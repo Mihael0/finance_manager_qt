@@ -103,6 +103,11 @@ private:
     QString _currentErrorText = "";
     bool _showCalendar = false;
 
+    void _ClearDailyExpenses(void);
+    void _ClearExpenseNote(void);
+    QString _GetExpenseType(void) const;
+    QString _GetExpenseNote(void) const;
+    QString _GetDailyExpenses(void) const;
     void _SetShowCalendar(bool val){
         _showCalendar = val;
     }

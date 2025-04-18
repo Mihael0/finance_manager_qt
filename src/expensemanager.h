@@ -41,7 +41,7 @@ public:
     /*
      * @brief Sets the given arguments into the private _expenses struct. Can be retrieved by calling GetExpenses(index).
      */
-    void SetExpenses(float declaredExpense, QDate& dateOfExpense, QString& typeOfExpense, QString& expenseNotez);
+    void SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote);
     /*
      * @brief Moves the _movingIndex "left" by the passed to it.
      */
@@ -72,7 +72,7 @@ public:
      * @detail This function is used to store the last inputted user ExpenseData and ExpenseDate.
      * For this reason the tmpDailyExpense is a QString as it is not checked if it is a correct float value.
      */
-    void StoreUserInputtedInfo(QString& lastDailyExpense, QDate& lastExpenseDate, QString& lastTypeOfExpense, QString& lastExpenseNote);
+    void StoreUserInputtedInfo(const QString& lastDailyExpense, const QDate& lastExpenseDate, const QString& lastTypeOfExpense, const QString& lastExpenseNote);
     /*
      * @brief Tracks the flag that shows to the application that the user is currently scrolling expenses
      * and that expenses cannot be submitted or declared until the user goes to the head of the vector.

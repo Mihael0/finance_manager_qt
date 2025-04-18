@@ -5,7 +5,7 @@ ExpenseManager::ExpenseManager(QObject* parent)
 
 }
 
-void ExpenseManager::SetExpenses(float declaredExpense, QDate& dateOfExpense, QString& typeOfExpense, QString& expenseNote){
+void ExpenseManager::SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote){
     ExpenseInfo expense = {
         .expenseValue = declaredExpense,
         .expenseDate = dateOfExpense,
@@ -52,7 +52,7 @@ Boundry ExpenseManager::GetPreviousStateOfBoundry(void) const{
     return _previousBoundryState;
 }
 
-void ExpenseManager::StoreUserInputtedInfo(QString& lastDailyExpense, QDate& lastExpenseDate, QString& lastTypeOfExpense, QString& lastExpenseNote){
+void ExpenseManager::StoreUserInputtedInfo(const QString& lastDailyExpense, const QDate& lastExpenseDate, const QString& lastTypeOfExpense, const QString& lastExpenseNote){
     LastExpenseInfo lastExpenseInfo = {
         .lastDailyExpense = lastDailyExpense,
         .lastExpenseDate  = lastExpenseDate,

@@ -26,6 +26,26 @@ ExpenseWindow::~ExpenseWindow(){
     delete _expenseManager;
 }
 
+void ExpenseWindow::_ClearDailyExpenses(void){
+    ui->DailyExpenses->clear();
+}
+void ExpenseWindow::_ClearExpenseNote(void){
+    ui->Note->clear();
+}
+
+QString ExpenseWindow::_GetExpenseType(void) const{
+    return ui->TypeOfExpense->currentText();
+}
+
+QString ExpenseWindow::_GetExpenseNote(void) const{
+    return ui->Note->text();
+}
+
+QString ExpenseWindow::_GetDailyExpenses(void) const{
+    return ui->DailyExpenses->text();
+}
+
+
 void ExpenseWindow::UpdateUIState(void){
     _UpdateUIBasedOnState();
 }
@@ -148,12 +168,7 @@ void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
 }
 
 void ExpenseWindow::_StorePendingInput(void){
-    QDate rAppTime = _appTime->GetLocalAppTime();
-    QString rDailyExpenses = ui->DailyExpenses->text();
-    QString rExpenseType = ui->TypeOfExpense->currentText();
-    QString rExpenseNote = ui->Note->text();
-    //TODO FUCKING FIX THIS WHY IS THAT SOME OF THEM HAVE A GETTER AND OTHERS DO NOT!!?!?!?!?!?!?
-    _expenseManager->StoreUserInputtedInfo(rDailyExpenses,rAppTime,rExpenseType,rExpenseNote);
+    _expenseManager->StoreUserInputtedInfo(_GetDailyExpenses(),_appTime->GetLocalAppTime(),_GetExpenseType(),_GetExpenseNote());
 }
 
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseInfo* restoredUserInput){
@@ -179,20 +194,15 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
 
     bool isFloat = true;
     float expense = ui->DailyExpenses->text().toFloat(&isFloat);
-    QString typeOfExpense = ui->TypeOfExpense->currentText();
 
     if(!isFloat){
         _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
         return;
     }
-    // Passing by reference.
-    QDate rLocalAppTime = _appTime->GetLocalAppTime();
-    QString rNote = ui->Note->text();
-    // TODO FIX THIS FOR ALL OF THESE TO HAVE GETTERS AND THEN MAKE SET EXPENSES BE A FUCKING CONST VAR& INSTEAD
-    // OF JSUT DOING THIS FUCKING RANDOM ASS FUCKING BULLSHIT. LIKE GOD DAMN, WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY!
-    _expenseManager->SetExpenses(expense,rLocalAppTime, typeOfExpense, rNote);
-    ui->DailyExpenses->clear();
-    ui->Note->clear();
+    _expenseManager->SetExpenses(expense,_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
+    _ClearDailyExpenses();
+    _ClearExpenseNote();
+
 }
 
 void ExpenseWindow::on_NextDay_clicked(){
