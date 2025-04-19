@@ -101,8 +101,9 @@ private:
     AppTime *_appTime = nullptr;
     UIState _currentUIState = UIState::Startup;
     QString _currentErrorText = "";
-    bool _showCalendar = false;
+    bool _showCalendar = true;
 
+    void _ErrorHandler(void);
     void _ClearDailyExpenses(void);
     void _ClearExpenseNote(void);
     QString _GetExpenseType(void) const;

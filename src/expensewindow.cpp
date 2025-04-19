@@ -1,6 +1,5 @@
 #include "expensewindow.h"
 #include "ui_expensewindow.h"
-#include "QString"
 
 ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
@@ -24,6 +23,10 @@ ExpenseWindow::~ExpenseWindow(){
     delete ui;
     delete _keyPressEater;
     delete _expenseManager;
+}
+
+void ExpenseWindow::_ErrorHandler(void){
+    _SetErrorLabel(_GetCurrentErrorText());
 }
 
 void ExpenseWindow::_ClearDailyExpenses(void){
@@ -95,6 +98,8 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         // Business as usual. For now we do nothing. If that proves fatal, we will add checks that
         // see if the UI elements are in the states they are supposed to be and if not, to put them in that state.
         ui->Note->setReadOnly(false);
+        ui->Note->setFocusPolicy(Qt::StrongFocus);
+        ui->DailyExpenses->setFocusPolicy(Qt::StrongFocus);
         ui->DailyExpenses->setReadOnly(false);
         ui->PreviousDay->setEnabled(true);
         ui->NextDay->setEnabled(true);
@@ -103,7 +108,12 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         break;
     case UIState::Scrolling:
         ui->Note->setReadOnly(true);
+        // For some reason, when compiled in WebAssembly, the Notes are still editable.
+        // Which is why we also remove Focus.
+        ui->Note->setFocusPolicy(Qt::NoFocus);
         ui->DailyExpenses->setReadOnly(true);
+        // Same with DailyExpenses.
+        ui->DailyExpenses->setFocusPolicy(Qt::NoFocus);
         ui->PreviousDay->setEnabled(false);
         ui->NextDay->setEnabled(false);
         _SetShowCalendar(false);
