@@ -176,6 +176,7 @@ void ExpenseWindow::_StorePendingInput(void){
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseInfo* restoredUserInput){
     // Display the value of the expense
     ui->DailyExpenses->setText(restoredUserInput->lastDailyExpense);
+    // Store and Display the local app time.
     _SetNDisplayLocalAppTime(restoredUserInput->lastExpenseDate);
     // Display the type of expense
     ui->TypeOfExpense->setCurrentText(restoredUserInput->lastTypeOfExpense);
@@ -204,7 +205,6 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
     _expenseManager->SetExpenses(expense,_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
     _ClearDailyExpenses();
     _ClearExpenseNote();
-
 }
 
 void ExpenseWindow::on_NextDay_clicked(){
@@ -235,17 +235,14 @@ void ExpenseWindow::showCalendar(){
     if(!_GetShowCalendar()){
         return;
     }
-    if(_calendar == nullptr){
-        _calendar = std::make_unique<QCalendarWidget>();
-    }
-    _calendar->setWindowFlags(Qt::Popup);
-    _calendar->move(QCursor::pos());
+    _SetupCalendar();
     _calendar->show();
+    connect(_calendar.get(), &QCalendarWidget::clicked, this, &ExpenseWindow::on_Calendar_clicked);
+}
 
-    connect(_calendar.get(), &QCalendarWidget::clicked, this, [=](const QDate& date){
-        _SetNDisplayLocalAppTime(date);
-        _calendar->close();
-    });
+void ExpenseWindow::on_Calendar_clicked(const QDate& clicked_date){
+    _SetNDisplayLocalAppTime(clicked_date);
+    _calendar->close();
 }
 
 void ExpenseWindow::on_LeftExpense_clicked(){

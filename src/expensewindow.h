@@ -93,6 +93,8 @@ private slots:
      */
     void on_MaxLeft_clicked();
 
+    void on_Calendar_clicked(const QDate& clicked_date);
+
 private:
     // UI is deleted manually
     Ui::ExpenseWindow *ui;
@@ -107,6 +109,13 @@ private:
     QString _currentErrorText = "";
     bool _showCalendar = true;
 
+    void _SetupCalendar(void){
+        if(_calendar == nullptr){
+            _calendar = std::make_unique<QCalendarWidget>();
+        }
+        _calendar->setWindowFlags(Qt::Popup);
+        _calendar->move(QCursor::pos());
+    }
     void _ErrorHandler(void);
     void _ClearDailyExpenses(void);
     void _ClearExpenseNote(void);
