@@ -76,7 +76,9 @@ private slots:
     void on_createSummaryBtn_clicked();
 
 private:
+    // Has to be deleted manually
     Ui::MainWindow *ui;
+    // All of them inherit from QObject and use QT's integrated memory management.
     ExpenseWindow *_declareExpense = nullptr;
     RecurringExpenseWindow *_recurringExpense = nullptr;
     CreateSummaryWindow *_createSummary = nullptr;

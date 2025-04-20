@@ -4,25 +4,18 @@
 ExpenseWindow::ExpenseWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ExpenseWindow)
-    , _expenseManager(new ExpenseManager)
-    , _appTime(new AppTime){
+    , _expenseManager(new ExpenseManager(this))
+    , _keyPressEater(new EventEater(this))
+    , _appTime(std::make_unique<AppTime>()){
 
     ui->setupUi(this);
     QObject::connect(_expenseManager, &ExpenseManager::UpdateUIStateRequested, this, &ExpenseWindow::UpdateUIState);
-    if(ui){
-        _SetUIState(UIState::Startup);
-        _ProcessUIStateChange();
-    } else {
-        // Uh-oh we dun fucked up.
-        // We can't even throw an error here, as the UI we would use to throw the error just failled.
-        // This probably requires some sort of logging. Like qDebug() or something alike.
-    }
+    _SetUIState(UIState::Startup);
+    _ProcessUIStateChange();
 }
 
 ExpenseWindow::~ExpenseWindow(){
     delete ui;
-    delete _keyPressEater;
-    delete _expenseManager;
 }
 
 void ExpenseWindow::_ErrorHandler(void){
@@ -47,7 +40,6 @@ QString ExpenseWindow::_GetExpenseNote(void) const{
 QString ExpenseWindow::_GetDailyExpenses(void) const{
     return ui->DailyExpenses->text();
 }
-
 
 void ExpenseWindow::UpdateUIState(void){
     _UpdateUIBasedOnState();
@@ -88,15 +80,14 @@ void ExpenseWindow::_ProcessUIStateChange(void){
                                       "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
                                       "</ul>");
         // Prepare the EventEater to intercept an event if a user clicks on the date to display the calendar.
-        _keyPressEater = new EventEater(this);
+        // _keyPressEater = new EventEater(this);
         ui->DateOfExpense->installEventFilter(_keyPressEater);
         QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
         // Initialize the list of TypeOfExpenses
         _InitializeTypeOfExpenses();
         break;
     case UIState::DeclaringExpenses:
-        // Business as usual. For now we do nothing. If that proves fatal, we will add checks that
-        // see if the UI elements are in the states they are supposed to be and if not, to put them in that state.
+        // Place all the UI elements in their proper state.
         ui->Note->setReadOnly(false);
         ui->Note->setFocusPolicy(Qt::StrongFocus);
         ui->DailyExpenses->setFocusPolicy(Qt::StrongFocus);
@@ -107,6 +98,7 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->TypeOfExpense->setEnabled(true);
         break;
     case UIState::Scrolling:
+        // We make sure the user cannot interact with certain UI elements during this period.
         ui->Note->setReadOnly(true);
         // For some reason, when compiled in WebAssembly, the Notes are still editable.
         // Which is why we also remove Focus.
@@ -244,13 +236,13 @@ void ExpenseWindow::showCalendar(){
         return;
     }
     if(_calendar == nullptr){
-        _calendar = new QCalendarWidget();
+        _calendar = std::make_unique<QCalendarWidget>();
     }
     _calendar->setWindowFlags(Qt::Popup);
     _calendar->move(QCursor::pos());
     _calendar->show();
 
-    connect(_calendar, &QCalendarWidget::clicked, this, [=](const QDate& date){
+    connect(_calendar.get(), &QCalendarWidget::clicked, this, [=](const QDate& date){
         _SetNDisplayLocalAppTime(date);
         _calendar->close();
     });
@@ -296,7 +288,7 @@ void ExpenseWindow::on_RightExpense_clicked(){
 void ExpenseWindow::on_MaxRight_clicked(){
     // Restart the Boundry state to HeadOfVector
     _expenseManager->MoveExpenseIndexMaxRight();
-
+    // Restore UserInput
     if(_expenseManager->GetCurrentStateOfBoundry() == Boundry::HeadOfVector
         && _expenseManager->GetPreviousStateOfBoundry() != Boundry::HeadOfVector){
         const LastExpenseInfo* restoredUserInput = _expenseManager->RestoreUserInputtedInfo();

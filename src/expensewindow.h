@@ -94,11 +94,15 @@ private slots:
     void on_MaxLeft_clicked();
 
 private:
+    // UI is deleted manually
     Ui::ExpenseWindow *ui;
-    EventEater *_keyPressEater = nullptr;
-    QCalendarWidget *_calendar = nullptr;
+    // Pointers that use QT's system
     ExpenseManager *_expenseManager = nullptr;
-    AppTime *_appTime = nullptr;
+    EventEater *_keyPressEater = nullptr;
+    // Pointers that use std::unique_ptr
+    std::unique_ptr<QCalendarWidget> _calendar;
+    std::unique_ptr<AppTime> _appTime;
+    // Private member variables
     UIState _currentUIState = UIState::Startup;
     QString _currentErrorText = "";
     bool _showCalendar = true;

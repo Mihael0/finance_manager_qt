@@ -4,16 +4,16 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , _logIn(new LogInWindow())
-{
+    , _declareExpense(new ExpenseWindow)
+    , _logIn(new LogInWindow){
+
     ui->setupUi(this);
     QObject::connect(_logIn,&LogInWindow::authenthicationSucceeded,this,&MainWindow::showMainWindow);
     // Makes it so that when close() is called, it deletes the window.
     _logIn->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow(){
     delete ui;
 }
 
@@ -21,12 +21,11 @@ void MainWindow::ShowLogInWindow(void){
     _logIn->show();
 }
 
-void MainWindow::on_declareExpenseBtn_clicked(void)
-{
+void MainWindow::on_declareExpenseBtn_clicked(void){
     if(_declareExpense != nullptr){
         return;
     }
-    // Connection for DeclareExpense to know to show itself to the user.
+    // // Connection for DeclareExpense to know to show itself to the user.
     _declareExpense = new ExpenseWindow();
     // Makes it so that when close() is called, it deletes the window.
     _declareExpense->setAttribute(Qt::WA_DeleteOnClose);
@@ -57,8 +56,7 @@ void MainWindow::expenseWindowRequestsBack(void){
     this->show();
 }
 
-void MainWindow::on_recurringExpenseBtn_clicked()
-{
+void MainWindow::on_recurringExpenseBtn_clicked(){
     if(_recurringExpense != nullptr){
         return;
     }
@@ -84,8 +82,7 @@ void MainWindow::recurringExpenseWindowRequestsBack(void){
     this->show();
 }
 
-void MainWindow::on_createSummaryBtn_clicked()
-{
+void MainWindow::on_createSummaryBtn_clicked(){
     if(_createSummary != nullptr){
         return;
     }
