@@ -7,12 +7,27 @@ ExpenseManager::ExpenseManager(QObject* parent)
 
 void ExpenseManager::SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote){
     ExpenseInfo expense = {
-        .expenseValue = declaredExpense,
-        .expenseDate = dateOfExpense,
-        .expenseType = typeOfExpense,
-        .expenseNote = expenseNote,
+        declaredExpense,
+        dateOfExpense,
+        typeOfExpense,
+        expenseNote,
     };
     _expenses.push_back(expense);
+}
+
+void ExpenseManager::ReplaceExpense(const float newExpense, const QDate& newDateOfExpense, const QString& newTypeOfExpense, const QString& newExpenseNote){
+    if (_movingIndex == -1 || _movingIndex >= static_cast<int>(_expenses.size())) {
+        // Throw an error or return an error code/enum.
+        return;
+    }
+
+    ExpenseInfo newExpenseInfo{
+        newExpense,
+        newDateOfExpense,
+        newTypeOfExpense,
+        newExpenseNote
+    };
+    _expenses[_CalculateAnAdjustedIndex()] = newExpenseInfo;
 }
 
 void ExpenseManager::MoveExpenseIndexLeft(int moveby){
@@ -60,10 +75,6 @@ void ExpenseManager::StoreUserInputtedInfo(const QString& lastDailyExpense, cons
         .lastExpenseNote = lastExpenseNote,
     };
     _lastExpenseInfo = lastExpenseInfo;
-}
-
-bool ExpenseManager::IsUserScrollingExpenses(void) const{
-    return _isUserScrollingExpenses;
 }
 
 const ExpenseInfo* ExpenseManager::GetExpenseAtMovingIndex(void) const{

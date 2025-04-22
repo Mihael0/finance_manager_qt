@@ -16,7 +16,8 @@ enum class UIState {
     Startup,
     DeclaringExpenses,
     Scrolling,
-    EditDelete,
+    Edit,
+    Delete,
 };
 
 class ExpenseWindow : public QWidget
@@ -95,6 +96,10 @@ private slots:
 
     void on_Calendar_clicked(const QDate& clicked_date);
 
+    void on_EditExpense_clicked();
+
+    void on_DeleteExpense_clicked();
+
 private:
     // UI is deleted manually
     Ui::ExpenseWindow *ui;
@@ -109,6 +114,33 @@ private:
     QString _currentErrorText = "";
     bool _showCalendar = true;
 
+    // For now a very basic check. In the future it should be much more extensive.
+    // Most likely using an ENUM as a return type.
+    // Also check that note is not beyond a certain limit of characters.
+    bool _isExpenseValid(void);
+
+    void _EditExpense(void){
+        if(_isExpenseValid() == false){
+            _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
+        }
+        _expenseManager->ReplaceExpense(_GetDailyExpenseAsFloat(),_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
+        _SetUIState(UIState::Scrolling);
+        _ProcessUIStateChange();
+    }
+
+    void _DeclareExpense(void){
+        if(_isExpenseValid() == false){
+            _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
+        }
+        _expenseManager->SetExpenses(_GetDailyExpenseAsFloat(),_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
+        _ClearDailyExpenses();
+        _ClearExpenseNote();
+    }
+
+    void _DeleteExpense(void){
+
+    }
+
     void _SetupCalendar(void){
         if(_calendar == nullptr){
             _calendar = std::make_unique<QCalendarWidget>();
@@ -121,7 +153,9 @@ private:
     void _ClearExpenseNote(void);
     QString _GetExpenseType(void) const;
     QString _GetExpenseNote(void) const;
-    QString _GetDailyExpenses(void) const;
+    QString _GetDailyExpense(void) const;
+    // Only use this function after isExpenseValid() has been called.
+    float _GetDailyExpenseAsFloat(void);
     void _SetShowCalendar(bool val){
         _showCalendar = val;
     }

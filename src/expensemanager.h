@@ -42,6 +42,8 @@ public:
      * @brief Sets the given arguments into the private _expenses struct. Can be retrieved by calling GetExpenses(index).
      */
     void SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote);
+
+    void ReplaceExpense(const float newExpense, const QDate& newDateOfExpense, const QString& newTypeOfExpense, const QString& newExpenseNote);
     /*
      * @brief Moves the _movingIndex "left" by the passed to it.
      */
@@ -74,11 +76,6 @@ public:
      */
     void StoreUserInputtedInfo(const QString& lastDailyExpense, const QDate& lastExpenseDate, const QString& lastTypeOfExpense, const QString& lastExpenseNote);
     /*
-     * @brief Tracks the flag that shows to the application that the user is currently scrolling expenses
-     * and that expenses cannot be submitted or declared until the user goes to the head of the vector.
-     */
-    bool IsUserScrollingExpenses(void) const;
-    /*
      * @detail Moves the moving index to the very right to the head of the vector.
      */
     void MoveExpenseIndexMaxRight(void);
@@ -99,14 +96,19 @@ private:
     Boundry _currentBoundryState = Boundry::HeadOfVector;
     Boundry _previousBoundryState = Boundry::HeadOfVector;
     int _movingIndex = -1;
-    bool _isUserScrollingExpenses = false;
 
-    /*
-     * @detail Sets the flag that controls if the user is scrolling the expenses or not.
-     */
-    void _SetIsUSerScrollingExpenses(bool is){
-        _isUserScrollingExpenses = is;
+    int _CalculateAnAdjustedIndex(void){
+        int adjustedIndex = 0;
+        int maxIndexOfExpenses = static_cast<int>(_GetExpenses().size()) - 1;
+        // if _movingIndex is 0, that means we want the latest added value.
+        if(_movingIndex == 0){
+            adjustedIndex = maxIndexOfExpenses;
+        } else { // if index is any other value, we have to take the absolute difference.
+            adjustedIndex = std::abs(_movingIndex - maxIndexOfExpenses);
+        }
+        return adjustedIndex;
     }
+
     /*
      * @return the expenses struct which contains the currently inputted expenses by the user.
      */
@@ -121,12 +123,10 @@ private:
         _previousBoundryState = _currentBoundryState;
         if(_movingIndex == - 1){
             _currentBoundryState = Boundry::HeadOfVector;
-            _SetIsUSerScrollingExpenses(false);
             emit UpdateUIStateRequested();
             return;
         }
 
-        _SetIsUSerScrollingExpenses(true);
         int max_index_of_expenseValue = _GetExpenses().size() - 1;
         if(_movingIndex == 0
             && _movingIndex == max_index_of_expenseValue){

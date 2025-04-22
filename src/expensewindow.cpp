@@ -18,6 +18,18 @@ ExpenseWindow::~ExpenseWindow(){
     delete ui;
 }
 
+bool ExpenseWindow::_isExpenseValid(void){
+    bool isFloat = true;
+    // We do not use the return value, only to check if it is a valid float.
+    (void)ui->DailyExpenses->text().toFloat(&isFloat);
+
+    if(!isFloat){
+        return false;
+    }
+
+    return true;
+}
+
 void ExpenseWindow::_ErrorHandler(void){
     _SetErrorLabel(_GetCurrentErrorText());
 }
@@ -37,7 +49,11 @@ QString ExpenseWindow::_GetExpenseNote(void) const{
     return ui->Note->text();
 }
 
-QString ExpenseWindow::_GetDailyExpenses(void) const{
+float ExpenseWindow::_GetDailyExpenseAsFloat(void) {
+    return ui->DailyExpenses->text().toFloat();
+}
+
+QString ExpenseWindow::_GetDailyExpense(void) const{
     return ui->DailyExpenses->text();
 }
 
@@ -65,7 +81,8 @@ void ExpenseWindow::_UpdateUIBasedOnState(void){
         return;
     }
 }
-
+// Startup->DeclareExpenses<->Scrolling(<->EditExpense && <->DeleteExpense)
+// Scolling is the crossroad between most UI states.
 void ExpenseWindow::_ProcessUIStateChange(void){
     UIState currentUIState = _GetCurrentUIState();
     switch(currentUIState){
@@ -80,11 +97,12 @@ void ExpenseWindow::_ProcessUIStateChange(void){
                                       "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
                                       "</ul>");
         // Prepare the EventEater to intercept an event if a user clicks on the date to display the calendar.
-        // _keyPressEater = new EventEater(this);
         ui->DateOfExpense->installEventFilter(_keyPressEater);
         QObject::connect(_keyPressEater,&EventEater::showCalendarRequested,this,&ExpenseWindow::showCalendar);
         // Initialize the list of TypeOfExpenses
         _InitializeTypeOfExpenses();
+        // Initialize the starting UI state.
+        _SetUIState(UIState::DeclaringExpenses);
         break;
     case UIState::DeclaringExpenses:
         // Place all the UI elements in their proper state.
@@ -96,8 +114,17 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->NextDay->setEnabled(true);
         _SetShowCalendar(true);
         ui->TypeOfExpense->setEnabled(true);
+        ui->HowToUseExpenses->setText("<ul>"
+                                      "<li>Input an expense in the Daily Expense box.</li>"
+                                      "<li>Then press the Next Day button to increase the day.</li>"
+                                      "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
+                                      "</ul>");
         break;
     case UIState::Scrolling:
+        ui->LeftExpense->setEnabled(true);
+        ui->RightExpense->setEnabled(true);
+        ui->MaxLeft->setEnabled(true);
+        ui->MaxRight->setEnabled(true);
         // We make sure the user cannot interact with certain UI elements during this period.
         ui->Note->setReadOnly(true);
         // For some reason, when compiled in WebAssembly, the Notes are still editable.
@@ -111,7 +138,26 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         _SetShowCalendar(false);
         ui->TypeOfExpense->setEnabled(false);
         break;
-    case UIState::EditDelete:
+    case UIState::Edit:
+        ui->LeftExpense->setEnabled(false);
+        ui->RightExpense->setEnabled(false);
+        ui->MaxLeft->setEnabled(false);
+        ui->MaxRight->setEnabled(false);
+        ui->DailyExpenses->setReadOnly(false);
+        ui->DailyExpenses->setFocusPolicy(Qt::StrongFocus);
+        _SetShowCalendar(true);
+        ui->NextDay->setEnabled(true);
+        ui->PreviousDay->setEnabled(true);
+        ui->TypeOfExpense->setEnabled(true);
+        ui->Note->setReadOnly(false);
+        ui->Note->setFocusPolicy(Qt::StrongFocus);
+        ui->HowToUseExpenses->setText("<ul>"
+                                      "<li>You are now in editing mode.</li>"
+                                      "<li>Feel free to change the Expense, the Note, Date, or Type of Expense.</li>"
+                                      "<li>Whenever you are done, press the Declare Expenses to store all of your newly changed expenses.</li>"
+                                      "</ul>");
+        break;
+    case UIState::Delete:
         break;
     default:
         // How are we here?!
@@ -170,7 +216,7 @@ void ExpenseWindow::_SetNDisplayLocalAppTime(const T& newLocalAppTime,
 }
 
 void ExpenseWindow::_StorePendingInput(void){
-    _expenseManager->StoreUserInputtedInfo(_GetDailyExpenses(),_appTime->GetLocalAppTime(),_GetExpenseType(),_GetExpenseNote());
+    _expenseManager->StoreUserInputtedInfo(_GetDailyExpense(),_appTime->GetLocalAppTime(),_GetExpenseType(),_GetExpenseNote());
 }
 
 void ExpenseWindow::_DisplayPendingInput(const LastExpenseInfo* restoredUserInput){
@@ -190,21 +236,23 @@ void ExpenseWindow::_DisplayPendingInput(const LastExpenseInfo* restoredUserInpu
 // they would like to create a new excel file for that given month.
 // if they say No, then they are returned to their previous value.
 void ExpenseWindow::on_DailyExpenses_returnPressed(){
-    if(_expenseManager->IsUserScrollingExpenses()){
+    switch(_GetCurrentUIState()){
+    case UIState::Scrolling:
         _SetErrorLabel("Cannot submit expense. You are currently scrolling existing expenses. Press the right double arrow to return to inputting new expenses!");
-        return;
+        break;
+    case UIState::Edit:
+        _EditExpense();
+        break;
+    case UIState::DeclaringExpenses:
+        _DeclareExpense();
+        break;
+    case UIState::Delete:
+        // Call DeleteExpense();
+        break;
+    default:
+        // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?!
+        break;
     }
-
-    bool isFloat = true;
-    float expense = ui->DailyExpenses->text().toFloat(&isFloat);
-
-    if(!isFloat){
-        _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
-        return;
-    }
-    _expenseManager->SetExpenses(expense,_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
-    _ClearDailyExpenses();
-    _ClearExpenseNote();
 }
 
 void ExpenseWindow::on_NextDay_clicked(){
@@ -310,3 +358,17 @@ void ExpenseWindow::on_MaxLeft_clicked(){
 
     _DisplayExpenseInfo(selectedExpense);
 }
+
+void ExpenseWindow::on_EditExpense_clicked(){
+    if(_GetCurrentUIState() == UIState::Scrolling){
+        _SetUIState(UIState::Edit);
+        _ProcessUIStateChange();
+    }else{
+        _SetErrorLabel("You cannot edit this value! Please press the left arrows of Daily Expense to be able to edit the corresponding values.");
+    }
+}
+
+void ExpenseWindow::on_DeleteExpense_clicked(){
+
+}
+
