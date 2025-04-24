@@ -158,6 +158,7 @@ void ExpenseWindow::_ProcessUIStateChange(void){
                                       "</ul>");
         break;
     case UIState::Delete:
+        _DeleteExpense();
         break;
     default:
         // How are we here?!
@@ -247,10 +248,11 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
         _DeclareExpense();
         break;
     case UIState::Delete:
-        // Call DeleteExpense();
+        _SetErrorLabel("Cannot submit expense. You are trying to delete an expense. Press the left arrow to be able to see which expenses you can delete.");
         break;
     default:
         // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?!
+        _SetErrorLabel("Unknown state! Internal Error!");
         break;
     }
 }
@@ -369,6 +371,11 @@ void ExpenseWindow::on_EditExpense_clicked(){
 }
 
 void ExpenseWindow::on_DeleteExpense_clicked(){
-
+    if(_GetCurrentUIState() == UIState::Scrolling){
+        _SetUIState(UIState::Delete);
+        _ProcessUIStateChange();
+    }else{
+        _SetErrorLabel("You cannot delete this value. You must be scrolling through the already existing expenses for it to work. Please press the left arrow button to see expenses that can be deleted.");
+    }
 }
 

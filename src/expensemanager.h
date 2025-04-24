@@ -42,8 +42,9 @@ public:
      * @brief Sets the given arguments into the private _expenses struct. Can be retrieved by calling GetExpenses(index).
      */
     void SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote);
-
     void ReplaceExpense(const float newExpense, const QDate& newDateOfExpense, const QString& newTypeOfExpense, const QString& newExpenseNote);
+    void EraseExpenseAtCurrentIndex(void);
+
     /*
      * @brief Moves the _movingIndex "left" by the passed to it.
      */

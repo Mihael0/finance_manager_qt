@@ -118,7 +118,12 @@ private:
     // Most likely using an ENUM as a return type.
     // Also check that note is not beyond a certain limit of characters.
     bool _isExpenseValid(void);
-
+    void _DeleteExpense(void){
+        _expenseManager->EraseExpenseAtCurrentIndex();
+        on_RightExpense_clicked();
+        // _SetUIState(UIState::Scrolling);
+        // _ProcessUIStateChange();
+    }
     void _EditExpense(void){
         if(_isExpenseValid() == false){
             _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
@@ -135,10 +140,6 @@ private:
         _expenseManager->SetExpenses(_GetDailyExpenseAsFloat(),_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
         _ClearDailyExpenses();
         _ClearExpenseNote();
-    }
-
-    void _DeleteExpense(void){
-
     }
 
     void _SetupCalendar(void){

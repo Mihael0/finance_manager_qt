@@ -15,6 +15,10 @@ void ExpenseManager::SetExpenses(const float declaredExpense, const QDate& dateO
     _expenses.push_back(expense);
 }
 
+void ExpenseManager::EraseExpenseAtCurrentIndex(void){
+    _expenses.erase(_expenses.begin() + _CalculateAnAdjustedIndex());
+}
+
 void ExpenseManager::ReplaceExpense(const float newExpense, const QDate& newDateOfExpense, const QString& newTypeOfExpense, const QString& newExpenseNote){
     if (_movingIndex == -1 || _movingIndex >= static_cast<int>(_expenses.size())) {
         // Throw an error or return an error code/enum.
