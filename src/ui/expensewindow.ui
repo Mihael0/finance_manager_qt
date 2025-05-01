@@ -113,7 +113,7 @@
     <string>Submit Expense</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="BackBtn_2">
+  <widget class="QPushButton" name="DeclareExpenses">
    <property name="geometry">
     <rect>
      <x>230</x>

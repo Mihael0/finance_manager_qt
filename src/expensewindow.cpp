@@ -10,6 +10,7 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
 
     ui->setupUi(this);
     QObject::connect(_expenseManager, &ExpenseManager::UpdateUIStateRequested, this, &ExpenseWindow::UpdateUIState);
+    QObject::connect(this, &ExpenseWindow::declareExpensesRequested, _expenseManager, &ExpenseManager::onRequestDeclareExpenses);
     _SetUIState(UIState::Startup);
     _ProcessUIStateChange();
 }
@@ -65,11 +66,11 @@ void ExpenseWindow::_UpdateUIBasedOnState(void){
     Boundry currentBoundry = _expenseManager->GetCurrentStateOfBoundry();
     // If we are at the head of the Vector means the user can submit expenses.
     if(currentBoundry == Boundry::HeadOfVector){
-        _SetUIState(UIState::DeclaringExpenses);
+        _SetUIState(UIState::SubmittingExpenses);
         _ProcessUIStateChange();
         return;
     }
-    // If we are not at the head of the Vector and the state is already scrolling,
+    // If we are not at the head of the Vector andeclareExpensesRequestedd the state is already scrolling,
     // means we do not need to do anything.
     if(currentBoundry != Boundry::HeadOfVector
         && _GetCurrentUIState() == UIState::Scrolling){
@@ -88,7 +89,9 @@ void ExpenseWindow::_ProcessUIStateChange(void){
     switch(currentUIState){
     case UIState::Startup:
         // Make sure certain UI elements initialize their values with the correct values.
+        unsetCursor();
         ui->CurrentMonth->setFrame(false);
+        ui->CurrentMonth->setFocusPolicy(Qt::NoFocus);
         ui->CurrentMonth->setText(_appTime->GetLocalTimeAsString());
         ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
         ui->HowToUseExpenses->setText("<ul>"
@@ -102,10 +105,11 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         // Initialize the list of TypeOfExpenses
         _InitializeTypeOfExpenses();
         // Initialize the starting UI state.
-        _SetUIState(UIState::DeclaringExpenses);
+        _SetUIState(UIState::SubmittingExpenses);
         break;
-    case UIState::DeclaringExpenses:
+    case UIState::SubmittingExpenses:
         // Place all the UI elements in their proper state.
+        unsetCursor();
         ui->Note->setReadOnly(false);
         ui->Note->setFocusPolicy(Qt::StrongFocus);
         ui->DailyExpenses->setFocusPolicy(Qt::StrongFocus);
@@ -121,6 +125,7 @@ void ExpenseWindow::_ProcessUIStateChange(void){
                                       "</ul>");
         break;
     case UIState::Scrolling:
+        unsetCursor();
         ui->LeftExpense->setEnabled(true);
         ui->RightExpense->setEnabled(true);
         ui->MaxLeft->setEnabled(true);
@@ -139,6 +144,7 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->TypeOfExpense->setEnabled(false);
         break;
     case UIState::Edit:
+        unsetCursor();
         ui->LeftExpense->setEnabled(false);
         ui->RightExpense->setEnabled(false);
         ui->MaxLeft->setEnabled(false);
@@ -160,6 +166,30 @@ void ExpenseWindow::_ProcessUIStateChange(void){
     case UIState::Delete:
         _DeleteExpense();
         break;
+    case UIState::DeclaringExpenses:
+        setCursor(Qt::WaitCursor);
+        ui->LeftExpense->setEnabled(false);
+        ui->RightExpense->setEnabled(false);
+        ui->MaxLeft->setEnabled(false);
+        ui->MaxRight->setEnabled(false);
+        ui->DailyExpenses->setReadOnly(true);
+        ui->DailyExpenses->setFocusPolicy(Qt::NoFocus);
+        _SetShowCalendar(false);
+        ui->NextDay->setEnabled(false);
+        ui->PreviousDay->setEnabled(false);
+        ui->TypeOfExpense->setEnabled(false);
+        ui->Note->setReadOnly(true);
+        ui->Note->setFocusPolicy(Qt::NoFocus);
+        ui->BackBtn->setEnabled(false);
+        ui->EditExpense->setEnabled(false);
+        ui->SubmitExpense->setEnabled(false);
+        ui->DeleteExpense->setEnabled(false);
+        ui->DeclareExpenses->setEnabled(false);
+        ui->HowToUseExpenses->setText("<ul>"
+                                      "<li>Expenses are being currently sent over to the server for storage.</li>"
+                                      "<li>In the meanwhile please wait.</li>"
+                                      "<li>Whenever the sending has finished, you will be notified.</li>"
+                                      "</ul>");
     default:
         // How are we here?!
         // Use the error handler to throw an error here.
@@ -244,11 +274,14 @@ void ExpenseWindow::on_DailyExpenses_returnPressed(){
     case UIState::Edit:
         _EditExpense();
         break;
-    case UIState::DeclaringExpenses:
+    case UIState::SubmittingExpenses:
         _DeclareExpense();
         break;
     case UIState::Delete:
         _SetErrorLabel("Cannot submit expense. You are trying to delete an expense. Press the left arrow to be able to see which expenses you can delete.");
+        break;
+    case UIState::DeclaringExpenses:
+        _SetErrorLabel("You cannot submit further expenses while they are being declared. Please wait!");
         break;
     default:
         // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?!
@@ -270,6 +303,7 @@ void ExpenseWindow::on_PreviousDay_clicked(){
 }
 
 void ExpenseWindow::on_BackBtn_clicked(){
+    // TODO:: Add a warning to the user if there is something in the expenses.
     emit closeExpenseWindowRequested();
 }
 
@@ -379,3 +413,31 @@ void ExpenseWindow::on_DeleteExpense_clicked(){
     }
 }
 
+void ExpenseWindow::on_DeclareExpenses_clicked(){
+    if(_expenseManager->GetExpenses()->size() < 1){
+        _SetErrorLabel("There are not expenses submitted to Declare. Please submit at least 1 expense to be able to declare it");
+        return;
+    }
+    _submitExpensesConfirmBox = new QMessageBox(this);
+
+    // Create the UI element of the _submitExpensesConfirmBox
+    _submitExpensesConfirmBox->setIcon(QMessageBox::Question);
+    _submitExpensesConfirmBox->setWindowTitle("Confirmation");
+    _submitExpensesConfirmBox->setText("Are you sure you want to continue with declaring all of your expenses? This will store all of the expenses you have submitted so far.");
+    // This line seems to be ignored as well (by WebAssembly), to a point. It makes it Yes/No instead of No/Yes.
+    _submitExpensesConfirmBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    // The below line in WebAssembly makess no difference at all. It sill selects Yes as the default
+    _submitExpensesConfirmBox->setDefaultButton(QMessageBox::No);
+
+    connect(_submitExpensesConfirmBox, &QMessageBox::finished, this, &ExpenseWindow::on_DeclareExpenses_finished);
+    _submitExpensesConfirmBox->show();
+}
+
+void ExpenseWindow::on_DeclareExpenses_finished(int usrResponse){
+    if(usrResponse == QMessageBox:: Yes){
+        _submitExpensesConfirmBox->deleteLater();
+        _SetUIState(UIState::DeclaringExpenses);
+        _ProcessUIStateChange();
+        emit declareExpensesRequested();
+    }
+}

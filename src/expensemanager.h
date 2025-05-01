@@ -26,18 +26,22 @@ struct LastExpenseInfo{
     QString lastExpenseNote = "";
 };
 
-class ExpenseManager: public QObject
-{
+class ExpenseManager: public QObject{
     Q_OBJECT
+
+public slots:
+    void onRequestDeclareExpenses(void);
+
 signals:
     void UpdateUIStateRequested(void);
+    void PublishExpensesRequested(const std::vector<ExpenseInfo>& expensesToDeclare);
 
 public:
     explicit ExpenseManager(QObject* parent = nullptr);
     /*
-     * @return expenseValue and expenseDate at the requested index. Returns nullptr if it does not exist.
+     * @return The ExpnseInfo populated struct. Returns nullptr if it does not exist.
      */
-    const ExpenseInfo* GetExpense(int index) const;
+    const std::vector<ExpenseInfo>* GetExpenses(void) const;
     /*
      * @brief Sets the given arguments into the private _expenses struct. Can be retrieved by calling GetExpenses(index).
      */

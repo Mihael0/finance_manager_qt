@@ -7,6 +7,7 @@
 #include <eventeater.h>
 #include <expensemanager.h>
 #include <apptime.h>
+#include <QMessageBox>
 
 namespace Ui {
 class ExpenseWindow;
@@ -14,14 +15,19 @@ class ExpenseWindow;
 
 enum class UIState {
     Startup,
-    DeclaringExpenses,
+    SubmittingExpenses,
     Scrolling,
     Edit,
     Delete,
+    DeclaringExpenses,
 };
 
-class ExpenseWindow : public QWidget
-{
+// This class is a largely One-Way Data Binding design. But, due to the fact that at certain points of operation of the program
+// there is a need to show the inputted expenses (by the user) to the user, this entails a Two-Way Data Binding. That is the only
+// situation whenever data is exchanged between the ExpenseManager and ExpenseWindow. Combined with the fact that they already
+// have two way communication between each other, be it through events (signals and slots), or through composition, creates the Two-Way
+// Data Binding design. So, please keep that in mind when interacting with this class.
+class ExpenseWindow : public QWidget{
     Q_OBJECT
 
 public slots:
@@ -40,6 +46,8 @@ signals:
      * @brief This signal is emitted to notify the MainWindow that the ExpenseWindow should be closed.
      */
     void closeExpenseWindowRequested(void);
+
+    void declareExpensesRequested(void);
 
 public:
     explicit ExpenseWindow(QWidget *parent = nullptr);
@@ -100,12 +108,17 @@ private slots:
 
     void on_DeleteExpense_clicked();
 
+    void on_DeclareExpenses_clicked();
+
+    void on_DeclareExpenses_finished(int usrResponse);
+
 private:
     // UI is deleted manually
     Ui::ExpenseWindow *ui;
     // Pointers that use QT's system
     ExpenseManager *_expenseManager = nullptr;
     EventEater *_keyPressEater = nullptr;
+    QMessageBox *_submitExpensesConfirmBox = nullptr;
     // Pointers that use std::unique_ptr
     std::unique_ptr<QCalendarWidget> _calendar;
     std::unique_ptr<AppTime> _appTime;

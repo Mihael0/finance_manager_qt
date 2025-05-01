@@ -2,7 +2,14 @@
 
 ExpenseManager::ExpenseManager(QObject* parent)
         : QObject(parent){
+}
 
+void ExpenseManager::onRequestDeclareExpenses(void){
+    emit PublishExpensesRequested(_GetExpenses());
+}
+
+const std::vector<ExpenseInfo>* ExpenseManager::GetExpenses(void) const{
+    return &_expenses;
 }
 
 void ExpenseManager::SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote){

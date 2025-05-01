@@ -23,6 +23,7 @@ SOURCES += \
     loginwindow.cpp \
     mainwindow.cpp \
     expensewindow.cpp \
+    networkmanager.cpp \
     recurringexpensewindow.cpp
 
 HEADERS += \
@@ -33,4 +34,5 @@ HEADERS += \
     loginwindow.h \
     mainwindow.h \
     expensewindow.h \
+    networkmanager.h \
     recurringexpensewindow.h
