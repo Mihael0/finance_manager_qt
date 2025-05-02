@@ -313,8 +313,25 @@ void ExpenseWindow::on_PreviousDay_clicked(){
 }
 
 void ExpenseWindow::on_BackBtn_clicked(){
-    // TODO:: Add a warning to the user if there is something in the expenses.
-    emit closeExpenseWindowRequested();
+    if(_expenseManager->GetExpenses()->size() > 0){
+        _areYouSureYouWantToLeaveBox = new QMessageBox(this);
+        _areYouSureYouWantToLeaveBox->setIcon(QMessageBox::Question);
+        _areYouSureYouWantToLeaveBox->setWindowTitle("Confirmation");
+        _areYouSureYouWantToLeaveBox->setText("There are currently undeclared expenses. Are you sure you want to go back without declaring them? If you press Yes, then all undeclared expenses will be lost. Are you sure?");
+        _areYouSureYouWantToLeaveBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+        _areYouSureYouWantToLeaveBox->setDefaultButton(QMessageBox::No);
+        QObject::connect(_areYouSureYouWantToLeaveBox, &QMessageBox::finished, this, [=](int result){
+            if(result == QMessageBox::Yes){
+                emit closeExpenseWindowRequested();
+            }else{
+                _areYouSureYouWantToLeaveBox->deleteLater();
+            }
+        });
+        _areYouSureYouWantToLeaveBox->show();
+    }else {
+        emit closeExpenseWindowRequested();
+    }
+
 }
 
 void ExpenseWindow::showExpenseWindow(void){

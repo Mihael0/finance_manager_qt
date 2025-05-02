@@ -124,6 +124,7 @@ private:
     EventEater *_keyPressEater = nullptr;
     QMessageBox *_submitExpensesConfirmBox = nullptr;
     QMessageBox *_areExpensesSubmittedSuccessfullyBox = nullptr;
+    QMessageBox *_areYouSureYouWantToLeaveBox = nullptr;
     // Pointers that use std::unique_ptr
     std::unique_ptr<QCalendarWidget> _calendar;
     std::unique_ptr<AppTime> _appTime;
