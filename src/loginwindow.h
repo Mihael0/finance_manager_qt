@@ -24,6 +24,8 @@ signals:
 private slots:
     void on_LogIn_clicked();
 
+    void on_isShowPasswordToggled_toggled(bool checked);
+
 private:
     Ui::LogInWindow *ui;
 };

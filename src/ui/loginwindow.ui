@@ -106,6 +106,19 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QCheckBox" name="isShowPasswordToggled">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>250</y>
+     <width>141</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show Password</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

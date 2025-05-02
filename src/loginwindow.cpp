@@ -20,6 +20,7 @@ LogInWindow::LogInWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::LogInWindow){
     ui->setupUi(this);
+    ui->PassWord->setEchoMode(QLineEdit::Password);
 }
 
 LogInWindow::~LogInWindow(){
@@ -36,6 +37,15 @@ void LogInWindow::on_LogIn_clicked(){
         emit authenthicationSucceeded();
     } else{
         ui->ErrorLabel->setText("Authenthication Unsuccessful. Please try again.");
+    }
+}
+
+
+void LogInWindow::on_isShowPasswordToggled_toggled(bool checked){
+    if(checked){
+        ui->PassWord->setEchoMode(QLineEdit::Normal);
+    }else{
+        ui->PassWord->setEchoMode(QLineEdit::Password);
     }
 }
 
