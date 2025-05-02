@@ -1,7 +1,18 @@
 #include "expensemanager.h"
 
-ExpenseManager::ExpenseManager(QObject* parent)
-        : QObject(parent){
+ExpenseManager::ExpenseManager(QObject* parent):
+    QObject(parent),
+    _networkManager(new NetworkManager(this)){
+    QObject::connect(this, &ExpenseManager::PublishExpensesRequested, _networkManager, &NetworkManager::onExpenseManagerRequestsPublish);
+    QObject::connect(_networkManager, &NetworkManager::SendingFinished, this, &ExpenseManager::OnSendingFinished);
+}
+
+void ExpenseManager::ClearAllExpenses(void){
+    _expenses.clear();
+}
+
+void ExpenseManager::OnSendingFinished(bool isSuccessful){
+    emit AreExpensesDeclared(isSuccessful);
 }
 
 void ExpenseManager::onRequestDeclareExpenses(void){

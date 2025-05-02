@@ -3,6 +3,7 @@
 #include <QString>
 #include <QObject>
 #include <QDate>
+#include "networkmanager.h"
 
 struct ExpenseInfo{
     float expenseValue;
@@ -31,10 +32,11 @@ class ExpenseManager: public QObject{
 
 public slots:
     void onRequestDeclareExpenses(void);
-
+    void OnSendingFinished(bool isSuccessful);
 signals:
     void UpdateUIStateRequested(void);
     void PublishExpensesRequested(const std::vector<ExpenseInfo>& expensesToDeclare);
+    void AreExpensesDeclared(bool areExpensesSent);
 
 public:
     explicit ExpenseManager(QObject* parent = nullptr);
@@ -48,7 +50,7 @@ public:
     void SetExpenses(const float declaredExpense, const QDate& dateOfExpense, const QString& typeOfExpense, const QString& expenseNote);
     void ReplaceExpense(const float newExpense, const QDate& newDateOfExpense, const QString& newTypeOfExpense, const QString& newExpenseNote);
     void EraseExpenseAtCurrentIndex(void);
-
+    void ClearAllExpenses(void);
     /*
      * @brief Moves the _movingIndex "left" by the passed to it.
      */
@@ -101,6 +103,7 @@ private:
     Boundry _currentBoundryState = Boundry::HeadOfVector;
     Boundry _previousBoundryState = Boundry::HeadOfVector;
     int _movingIndex = -1;
+    NetworkManager *_networkManager = nullptr;
 
     int _CalculateAnAdjustedIndex(void){
         int adjustedIndex = 0;

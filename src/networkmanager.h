@@ -8,7 +8,7 @@ public slots:
     void onExpenseManagerRequestsPublish(void);
 
 signals:
-    void SendingFinished(void);
+    void SendingFinished(bool isSuccessful);
 
 public:
     NetworkManager(QObject* parent);

@@ -11,6 +11,7 @@ ExpenseWindow::ExpenseWindow(QWidget *parent)
     ui->setupUi(this);
     QObject::connect(_expenseManager, &ExpenseManager::UpdateUIStateRequested, this, &ExpenseWindow::UpdateUIState);
     QObject::connect(this, &ExpenseWindow::declareExpensesRequested, _expenseManager, &ExpenseManager::onRequestDeclareExpenses);
+    QObject::connect(_expenseManager, &ExpenseManager::AreExpensesDeclared, this, &ExpenseWindow::processDeclaringExpenses);
     _SetUIState(UIState::Startup);
     _ProcessUIStateChange();
 }
@@ -70,7 +71,7 @@ void ExpenseWindow::_UpdateUIBasedOnState(void){
         _ProcessUIStateChange();
         return;
     }
-    // If we are not at the head of the Vector andeclareExpensesRequestedd the state is already scrolling,
+    // If we are not at the head of the Vector and the state is already scrolling,
     // means we do not need to do anything.
     if(currentBoundry != Boundry::HeadOfVector
         && _GetCurrentUIState() == UIState::Scrolling){
@@ -110,13 +111,22 @@ void ExpenseWindow::_ProcessUIStateChange(void){
     case UIState::SubmittingExpenses:
         // Place all the UI elements in their proper state.
         unsetCursor();
+        ui->LeftExpense->setEnabled(true);
+        ui->RightExpense->setEnabled(true);
+        ui->MaxLeft->setEnabled(true);
+        ui->MaxRight->setEnabled(true);
         ui->Note->setReadOnly(false);
         ui->Note->setFocusPolicy(Qt::StrongFocus);
         ui->DailyExpenses->setFocusPolicy(Qt::StrongFocus);
         ui->DailyExpenses->setReadOnly(false);
         ui->PreviousDay->setEnabled(true);
         ui->NextDay->setEnabled(true);
+        ui->BackBtn->setEnabled(true);
         _SetShowCalendar(true);
+        ui->EditExpense->setEnabled(true);
+        ui->SubmitExpense->setEnabled(true);
+        ui->DeleteExpense->setEnabled(true);
+        ui->DeclareExpenses->setEnabled(true);
         ui->TypeOfExpense->setEnabled(true);
         ui->HowToUseExpenses->setText("<ul>"
                                       "<li>Input an expense in the Daily Expense box.</li>"
@@ -439,5 +449,38 @@ void ExpenseWindow::on_DeclareExpenses_finished(int usrResponse){
         _SetUIState(UIState::DeclaringExpenses);
         _ProcessUIStateChange();
         emit declareExpensesRequested();
+    }else{
+        _submitExpensesConfirmBox->deleteLater();
     }
+}
+
+void ExpenseWindow::processDeclaringExpenses(bool isSendingSuccessful){
+    _areExpensesSubmittedSuccessfullyBox = new QMessageBox(this);
+
+    _areExpensesSubmittedSuccessfullyBox->setIcon(QMessageBox::Information);
+    _areExpensesSubmittedSuccessfullyBox->setWindowTitle("Notification");
+
+    // This really requires some more extensive error.
+    // In hindsight, the current architecture makes creating a more extensive error coding quite difficult.
+    // TODO: Rewrite the whole archtiecture. For now this works but does not scale. Think on MVC architecture.
+    if(isSendingSuccessful){
+        _areExpensesSubmittedSuccessfullyBox->setText("Expenses Declared successfully!");
+    } else {
+        _areExpensesSubmittedSuccessfullyBox->setText("Expenses Declared unsuccessfully!");
+    }
+    _areExpensesSubmittedSuccessfullyBox->setStandardButtons(QMessageBox::Ok);
+    QObject::connect(_areExpensesSubmittedSuccessfullyBox, &QMessageBox::finished, this, [=](){
+        on_areExpensesSubmittedSuccessfullyBox_finished(isSendingSuccessful);
+    });
+    _areExpensesSubmittedSuccessfullyBox->show();
+}
+
+void ExpenseWindow::on_areExpensesSubmittedSuccessfullyBox_finished(int usrRespone){
+    // if we failled to send, we do not delete the declared expenses.
+    if(usrRespone){
+        _expenseManager->ClearAllExpenses();
+    }
+    _areExpensesSubmittedSuccessfullyBox->deleteLater();
+    _SetUIState(UIState::SubmittingExpenses);
+    _ProcessUIStateChange();
 }

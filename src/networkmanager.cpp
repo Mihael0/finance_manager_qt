@@ -2,10 +2,7 @@
 #include "expensemanager.h"
 
 NetworkManager::NetworkManager(QObject* parent)
-    : QObject (parent)
-{
-
-    // connect PublishExpensesRequested to onExpenseManagerRequestsPublishExpenses(const std::vector<ExpenseInfo>& expensesToPublish)
+    : QObject (parent){
 }
 
 
@@ -18,7 +15,7 @@ void NetworkManager::onExpenseManagerRequestsPublish(void){
 
     // For now this function is not fully implemented and just returns a success every time.
     _SetIsSendingSuccessful(true);
-    emit SendingFinished();
+    emit SendingFinished(IsSendingSuccessful());
 }
 
 bool NetworkManager::IsSendingSuccessful(void){

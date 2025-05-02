@@ -45,6 +45,7 @@ void MainWindow::recurringExpenseWindowRequestsBack(void){
 }
 
 void MainWindow::on_createSummaryBtn_clicked(){
+    _SetupCreateSummaryWindow();
     this->hide();
     emit createSummaryWindowRequested();
 }

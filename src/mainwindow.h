@@ -93,12 +93,6 @@ private:
     }
 
     void _SetupExpenseWindow(void){
-        // We will use this function to interact with our Main Model.
-        // This Model will create the _declareExpense object and populate it.
-        // It will also pass a shared pointer of the ExpenseModel to the ExpenseWindow.
-        // It will make event connections between ExpenseModel and ExpenseWindow.
-        // It will make event connections between the NetworkManager and the ExpenseModel.
-
         _declareExpense = new ExpenseWindow(this);
         // Tells QT that it should be treated as a Top-level Window.
         // Instead of treating it as a child widget.

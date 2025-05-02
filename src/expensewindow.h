@@ -41,6 +41,8 @@ public slots:
      */
     void showCalendar(void);
 
+    void processDeclaringExpenses(bool isSendingSuccessful);
+
 signals:
     /*
      * @brief This signal is emitted to notify the MainWindow that the ExpenseWindow should be closed.
@@ -112,6 +114,8 @@ private slots:
 
     void on_DeclareExpenses_finished(int usrResponse);
 
+    void on_areExpensesSubmittedSuccessfullyBox_finished(int usrRespone);
+
 private:
     // UI is deleted manually
     Ui::ExpenseWindow *ui;
@@ -119,6 +123,7 @@ private:
     ExpenseManager *_expenseManager = nullptr;
     EventEater *_keyPressEater = nullptr;
     QMessageBox *_submitExpensesConfirmBox = nullptr;
+    QMessageBox *_areExpensesSubmittedSuccessfullyBox = nullptr;
     // Pointers that use std::unique_ptr
     std::unique_ptr<QCalendarWidget> _calendar;
     std::unique_ptr<AppTime> _appTime;

@@ -15,8 +15,7 @@ void CreateSummaryWindow::showCreateSummaryWindow(void){
     this->show();
 }
 
-void CreateSummaryWindow::on_backBtn_clicked()
-{
+void CreateSummaryWindow::on_backBtn_clicked(){
     emit closeCreateSummaryWindowRequested();
 }
 
