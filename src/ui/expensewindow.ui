@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>776</width>
-    <height>551</height>
+    <width>812</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="cursor">
@@ -19,8 +19,8 @@
   <widget class="QLineEdit" name="CurrentMonth">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>520</y>
+     <x>691</x>
+     <y>500</y>
      <width>101</width>
      <height>26</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>480</y>
+     <x>692</x>
+     <y>463</y>
      <width>101</width>
      <height>41</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QLineEdit" name="DailyExpenses">
    <property name="geometry">
     <rect>
-     <x>265</x>
-     <y>330</y>
+     <x>295</x>
+     <y>298</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -58,8 +58,8 @@
   <widget class="QLabel" name="ErrorLabel">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>180</y>
+     <x>250</x>
+     <y>172</y>
      <width>351</width>
      <height>91</height>
     </rect>
@@ -74,8 +74,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>290</y>
+     <x>260</x>
+     <y>258</y>
      <width>181</width>
      <height>41</height>
     </rect>
@@ -90,8 +90,8 @@
   <widget class="QPushButton" name="BackBtn">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>520</y>
+     <x>0</x>
+     <y>500</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -103,8 +103,8 @@
   <widget class="QPushButton" name="SubmitExpense">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>400</y>
+     <x>260</x>
+     <y>368</y>
      <width>171</width>
      <height>26</height>
     </rect>
@@ -116,8 +116,8 @@
   <widget class="QPushButton" name="DeclareExpenses">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>460</y>
+     <x>260</x>
+     <y>428</y>
      <width>171</width>
      <height>26</height>
     </rect>
@@ -130,7 +130,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>4</y>
      <width>181</width>
      <height>41</height>
     </rect>
@@ -142,10 +142,10 @@
   <widget class="QLabel" name="HowToUseExpenses">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>70</y>
-     <width>711</width>
-     <height>91</height>
+     <x>8</x>
+     <y>40</y>
+     <width>781</width>
+     <height>111</height>
     </rect>
    </property>
    <property name="text">
@@ -155,37 +155,11 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="Line" name="line">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>170</y>
-     <width>791</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="Line" name="line_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>841</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-  </widget>
   <widget class="QLabel" name="DateOfExpense">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>364</y>
+     <x>300</x>
+     <y>332</y>
      <width>101</width>
      <height>21</height>
     </rect>
@@ -197,8 +171,8 @@
   <widget class="QToolButton" name="LeftExpense">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>330</y>
+     <x>270</x>
+     <y>298</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -210,8 +184,8 @@
   <widget class="QToolButton" name="RightExpense">
    <property name="geometry">
     <rect>
-     <x>365</x>
-     <y>330</y>
+     <x>395</x>
+     <y>298</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -223,8 +197,8 @@
   <widget class="QToolButton" name="NextDay">
    <property name="geometry">
     <rect>
-     <x>365</x>
-     <y>360</y>
+     <x>395</x>
+     <y>328</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -236,8 +210,8 @@
   <widget class="QToolButton" name="PreviousDay">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>360</y>
+     <x>270</x>
+     <y>328</y>
      <width>26</width>
      <height>31</height>
     </rect>
@@ -249,8 +223,8 @@
   <widget class="QPushButton" name="MaxRight">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>330</y>
+     <x>420</x>
+     <y>298</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -262,8 +236,8 @@
   <widget class="QPushButton" name="MaxLeft">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>330</y>
+     <x>240</x>
+     <y>298</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -272,24 +246,11 @@
     <string>◄◄</string>
    </property>
   </widget>
-  <widget class="Line" name="line_3">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>270</y>
-     <width>791</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>439</x>
-     <y>290</y>
+     <x>469</x>
+     <y>258</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -304,8 +265,8 @@
   <widget class="QComboBox" name="TypeOfExpense">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>330</y>
+     <x>470</x>
+     <y>298</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -314,8 +275,8 @@
   <widget class="QLineEdit" name="Note">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>360</y>
+     <x>470</x>
+     <y>328</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -327,8 +288,8 @@
   <widget class="QPushButton" name="DeleteExpense">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>430</y>
+     <x>350</x>
+     <y>398</y>
      <width>81</width>
      <height>26</height>
     </rect>
@@ -340,14 +301,79 @@
   <widget class="QPushButton" name="EditExpense">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>430</y>
+     <x>260</x>
+     <y>398</y>
      <width>81</width>
      <height>26</height>
     </rect>
    </property>
    <property name="text">
     <string>Edit</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>792</x>
+     <y>10</y>
+     <width>20</width>
+     <height>521</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>152</y>
+     <width>801</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_5">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>801</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_4">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>521</y>
+     <width>801</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>10</y>
+     <width>20</width>
+     <height>521</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Orientation::Vertical</enum>
    </property>
   </widget>
  </widget>

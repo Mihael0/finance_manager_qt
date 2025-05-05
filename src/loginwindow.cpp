@@ -40,7 +40,6 @@ void LogInWindow::on_LogIn_clicked(){
     }
 }
 
-
 void LogInWindow::on_isShowPasswordToggled_toggled(bool checked){
     if(checked){
         ui->PassWord->setEchoMode(QLineEdit::Normal);

@@ -23,22 +23,18 @@ ExpenseWindow::~ExpenseWindow(){
 bool ExpenseWindow::_isExpenseValid(void){
     bool isFloat = true;
     // We do not use the return value, only to check if it is a valid float.
-    (void)ui->DailyExpenses->text().toFloat(&isFloat);
+    ui->DailyExpenses->text().toFloat(&isFloat);
 
     if(!isFloat){
         return false;
     }
-
     return true;
-}
-
-void ExpenseWindow::_ErrorHandler(void){
-    _SetErrorLabel(_GetCurrentErrorText());
 }
 
 void ExpenseWindow::_ClearDailyExpenses(void){
     ui->DailyExpenses->clear();
 }
+
 void ExpenseWindow::_ClearExpenseNote(void){
     ui->Note->clear();
 }
@@ -96,9 +92,9 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->CurrentMonth->setText(_appTime->GetLocalTimeAsString());
         ui->DateOfExpense->setText(_appTime->GetLocalAppTimeAsString());
         ui->HowToUseExpenses->setText("<ul>"
-                                      "<li>Input an expense in the Daily Expense box.</li>"
-                                      "<li>Then press the Next Day button to increase the day.</li>"
-                                      "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
+                                      "<li>Input an expense in the Daily Expense box and set the expense's type and note.</li>"
+                                      "<li>You are able to change the date by either clicking on the date or by using the arrows left and right of the date.</li>"
+                                      "<li>Whenever you have written everything about your expense press Submit Expense (or Enter on your keyboard). Whnever you are done declaring all expenses, press Declare Expenses for all your expenses to be saved in an excel file.</li>"
                                       "</ul>");
         // Prepare the EventEater to intercept an event if a user clicks on the date to display the calendar.
         ui->DateOfExpense->installEventFilter(_keyPressEater);
@@ -129,9 +125,9 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->DeclareExpenses->setEnabled(true);
         ui->TypeOfExpense->setEnabled(true);
         ui->HowToUseExpenses->setText("<ul>"
-                                      "<li>Input an expense in the Daily Expense box.</li>"
-                                      "<li>Then press the Next Day button to increase the day.</li>"
-                                      "<li>Whenever you are done, press the Declare Expenses to store all of your submitted expenses.</li>"
+                                      "<li>Input an expense in the Daily Expense box and set the expense's type and note.</li>"
+                                      "<li>You are able to change the date by either clicking on the date or by using the arrows left and right of the date.</li>"
+                                      "<li>Whenever you have written everything about your expense press Submit Expense (or Enter on your keyboard). Whnever you are done declaring all expenses, press Declare Expenses for all your expenses to be saved in an excel file.</li>"
                                       "</ul>");
         break;
     case UIState::Scrolling:
@@ -170,7 +166,7 @@ void ExpenseWindow::_ProcessUIStateChange(void){
         ui->HowToUseExpenses->setText("<ul>"
                                       "<li>You are now in editing mode.</li>"
                                       "<li>Feel free to change the Expense, the Note, Date, or Type of Expense.</li>"
-                                      "<li>Whenever you are done, press the Declare Expenses to store all of your newly changed expenses.</li>"
+                                      "<li>Whenever you are done, press the Submit Expenses to store all of your newly changed expenses.</li>"
                                       "</ul>");
         break;
     case UIState::Delete:
@@ -436,13 +432,13 @@ void ExpenseWindow::on_DeleteExpense_clicked(){
         _SetUIState(UIState::Delete);
         _ProcessUIStateChange();
     }else{
-        _SetErrorLabel("You cannot delete this value. You must be scrolling through the already existing expenses for it to work. Please press the left arrow button to see expenses that can be deleted.");
+        _SetErrorLabel("You cannot delete expenses in this mode! Please check the How to Use above to see in which mode you are and what you need to do to exit it.");
     }
 }
 
 void ExpenseWindow::on_DeclareExpenses_clicked(){
     if(_expenseManager->GetExpenses()->size() < 1){
-        _SetErrorLabel("There are not expenses submitted to Declare. Please submit at least 1 expense to be able to declare it");
+        _SetErrorLabel("There are no expenses submitted to Declare. Please submit at least 1 expense to be able to declare it");
         return;
     }
     _submitExpensesConfirmBox = new QMessageBox(this);

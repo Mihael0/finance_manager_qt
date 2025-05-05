@@ -22,8 +22,13 @@ signals:
     void authenthicationSucceeded(void);
 
 private slots:
+    /*
+     * @brief triggered whenever the login in button is clicked and if password and username are correct, tells the MainWindow to show itself.
+     */
     void on_LogIn_clicked();
-
+    /*
+     * @brief toggles if the password is in plain-text or is hidden.
+     */
     void on_isShowPasswordToggled_toggled(bool checked);
 
 private:

@@ -1,3 +1,7 @@
+//TODO: Errors are not handled very well. They are a bit all over the place and the decision on how to handle them has been made on the spot,
+// rather than making a design decision, there has been a lot of in-place decisions which could (and might have already) result in different
+// implementations and mismatch in function returns.
+// For example: Centralize it, make it a signleton or something and pass it to the objects.
 #ifndef EXPENSEWINDOW_H
 #define EXPENSEWINDOW_H
 // QT includes
@@ -8,7 +12,6 @@
 #include <expensemanager.h>
 #include <apptime.h>
 #include <QMessageBox>
-
 namespace Ui {
 class ExpenseWindow;
 }
@@ -35,7 +38,6 @@ public slots:
      * @brief This slot is used by the MainWindow to notify the ExpenseWindow that it must show up.
      */
     void showExpenseWindow(void);
-
     /*
      * @brief This slot is used by the EventEater to notify the ExpenseWindow that it must show a calendar.
      */
@@ -146,6 +148,7 @@ private:
     void _EditExpense(void){
         if(_isExpenseValid() == false){
             _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
+            return;
         }
         _expenseManager->ReplaceExpense(_GetDailyExpenseAsFloat(),_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
         _SetUIState(UIState::Scrolling);
@@ -155,6 +158,7 @@ private:
     void _DeclareExpense(void){
         if(_isExpenseValid() == false){
             _SetErrorLabel("Invalid Expense! Please submit a decimal number!");
+            return;
         }
         _expenseManager->SetExpenses(_GetDailyExpenseAsFloat(),_appTime->GetLocalAppTime(), _GetExpenseType(), _GetExpenseNote());
         _ClearDailyExpenses();
@@ -168,38 +172,91 @@ private:
         _calendar->setWindowFlags(Qt::Popup);
         _calendar->move(QCursor::pos());
     }
-    void _ErrorHandler(void);
+    /*
+     * @brief remove any currently written values from the QLineEdit of the Daily Expense.
+     */
     void _ClearDailyExpenses(void);
+    /*
+     * @brief remove any currently written values from the QLineEdit of the Expense Note.
+     */
     void _ClearExpenseNote(void);
+    /*
+     * @return the expense type taken from the UI
+     */
     QString _GetExpenseType(void) const;
+    /*
+     * @return the expense note taken from the UI
+     */
     QString _GetExpenseNote(void) const;
+    /*
+     * @return the daily expense taken from the UI
+     */
     QString _GetDailyExpense(void) const;
-    // Only use this function after isExpenseValid() has been called.
+    /*
+     * @brief Should only be used after isExpenseValid() has been called. Otherwise might lead to strange return behaviour.
+     * @return the DailyExpense converted to a float.
+     */
     float _GetDailyExpenseAsFloat(void);
+    /*
+     * @brief Sets if the calendar should be shown or not based on the given boolean value.
+     */
     void _SetShowCalendar(bool val){
         _showCalendar = val;
     }
+    /*
+     * @brief Used to enable/disable the calendar widget.
+     * @return if the calendar should be showed or not.
+     */
     bool _GetShowCalendar(void) const{
         return _showCalendar;
     }
+    /*
+     * @brief Gets the current UI state and based on it, changes the states of all the UI elements to match that of the current state.
+     */
     void _ProcessUIStateChange(void);
+    /*
+     * @brief Uses the UI to dislpay whatever the current error is.
+     */
     void _DisplayCurrentErrorText(void);
+    /*
+     * @brief Sets the current Error text based on what is passed to it.
+     */
     void _SetErrorText(QString errorText){
         _currentErrorText = errorText;
     }
+    /*
+     * @return the currentErrorText that is being displayed to the user.
+     */
     const QString& _GetCurrentErrorText(void) const{
         return _currentErrorText;
     }
+    /*
+     * @brief Checks the the current state and acts upon it, based on what the current state is.
+     */
     void _UpdateUIBasedOnState(void);
-
+    /*
+     * @brief Sets the current state of the UI with whatever state has been passed to the function.
+     */
     void _SetUIState(UIState state){
         _currentUIState = state;
     }
+    /*
+     * @return the current state of the UI.
+     */
     const UIState& _GetCurrentUIState(void) const{
         return _currentUIState;
     }
+    /*
+     * @brief Uses the UI to display the QString passed to the function as an ExpenseNote.
+     */
     void _DisplayExpenseNote(QString noteToSet);
+    /*
+     * @brief Places a number of type of expenses that the user can select when submitting expenses.
+     */
     void _InitializeTypeOfExpenses(void);
+    /*
+     * @brief Takes in a message and then makes sure that the label text is changed to red and outputs that message as an error to the user.
+     */
     void _SetErrorLabel(const QString& message);
     /*
      * @brief Uses the ui to display the currently selected expense value and expense date to the user.

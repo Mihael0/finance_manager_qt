@@ -69,10 +69,17 @@ public:
     void ShowLogInWindow(void);
 
 private slots:
+    /*
+     * @brief Slot connected to the DeclareExpensesBtn. It emits a signal notifying the ExpenseWindow to show up to the user.
+     */
     void on_declareExpenseBtn_clicked();
-
+    /*
+     * @brief Slot connected to the RecurringExpenseBtn. It emits a signal notifying the RecurringExpenseWindow to show up to the user.
+     */
     void on_recurringExpenseBtn_clicked();
-
+    /*
+     * @brief Slot connected to the CreateSummaryBtn. It emits a signal notifying the CreateSummaryWindow to show up to the user.
+     */
     void on_createSummaryBtn_clicked();
 
 private:
@@ -84,14 +91,18 @@ private:
     CreateSummaryWindow *_createSummary = nullptr;
     LogInWindow *_logIn = nullptr;
     // Private member variables
-
+    /*
+     * @brief populates LogIn window.
+     */
     void _SetupLogInWindow(void){
         QObject::connect(_logIn,&LogInWindow::authenthicationSucceeded,this,&MainWindow::showMainWindow);
         // Tells QT that it should be treated as a Top-level Window.
         // Instead of treating it as a child widget.
         _logIn->setWindowFlags(Qt::Window);
     }
-
+    /*
+     * @brief populates the expense window object and makes any nesseccary signal slot connections required for that window to function.
+     */
     void _SetupExpenseWindow(void){
         _declareExpense = new ExpenseWindow(this);
         // Tells QT that it should be treated as a Top-level Window.
@@ -101,7 +112,9 @@ private:
         // Connection to reset DeclareExpense to nullptr
         QObject::connect(_declareExpense, &ExpenseWindow::closeExpenseWindowRequested,this,&MainWindow::expenseWindowRequestsBack);
     }
-
+    /*
+     * @brief populates the recurring expense window object and makes any nesseccary signal slot connections required for that window to function.
+     */
     void _SetupRecurringExpenseWindow(void){
         _recurringExpense = new RecurringExpenseWindow(this);
         // Tells QT that it should be treated as a Top-level Window.
@@ -111,7 +124,9 @@ private:
         // Connection to reset _recurringExpense to nullptr
         QObject::connect(_recurringExpense, &RecurringExpenseWindow::closeRecurringExpenseWindowRequested,this,&MainWindow::recurringExpenseWindowRequestsBack);
     }
-
+    /*
+     * @brief populates the create summary window object and makes any nesseccary signal slot connections required for that window to function.
+     */
     void _SetupCreateSummaryWindow(void){
         _createSummary = new CreateSummaryWindow(this);
         // Tells QT that it should be treated as a Top-level Window.
