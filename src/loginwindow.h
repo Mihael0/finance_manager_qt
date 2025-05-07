@@ -1,19 +1,13 @@
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
 class LogInWindow;
 }
 
-// TODO: Implement an actual authenthication. For now this is a placeholder.
-typedef struct{
-    const QString User1 = "Mihael";
-    const QString User2 = "Vanya";
-} CREDENTIALS;
-
-class LogInWindow : public QDialog
+class LogInWindow : public QWidget
 {
     Q_OBJECT
 
@@ -28,7 +22,14 @@ signals:
     void authenthicationSucceeded(void);
 
 private slots:
+    /*
+     * @brief triggered whenever the login in button is clicked and if password and username are correct, tells the MainWindow to show itself.
+     */
     void on_LogIn_clicked();
+    /*
+     * @brief toggles if the password is in plain-text or is hidden.
+     */
+    void on_isShowPasswordToggled_toggled(bool checked);
 
 private:
     Ui::LogInWindow *ui;

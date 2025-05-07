@@ -16,17 +16,23 @@ FORMS += \
     ui/mainwindow.ui \
 
 SOURCES += \
+    apptime.cpp \
     createsummarywindow.cpp \
+    eventeater.cpp \
+    expensemanager.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
-    excel.cpp \
     expensewindow.cpp \
+    networkmanager.cpp \
     recurringexpensewindow.cpp
 
 HEADERS += \
+    apptime.h \
     createsummarywindow.h \
+    eventeater.h \
+    expensemanager.h \
     loginwindow.h \
     mainwindow.h \
-    excel.h \
     expensewindow.h \
+    networkmanager.h \
     recurringexpensewindow.h
