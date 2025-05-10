@@ -1,0 +1,35 @@
+name: Host Image on Github pages
+
+
+on:
+  push:
+    branches: Mihael0-patch-1
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      contents: read    # to checkout the repository and fetch the /image files
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    
+    environment:
+      name: Uplaod contents of /image to github-pages
+      url: ${{ steps.deployment.outputs.pages_url }}
+
+    steps:
+      - name: Pull repo
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            image/app.html
+            image/app.js
+            image/app.wasm
+            image/app.worker.js
+            image/qtloader.js
+            image/qtlogo.svg     
+        
+      - name: Deploy to Github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
