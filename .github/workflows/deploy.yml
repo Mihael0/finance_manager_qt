@@ -22,7 +22,9 @@ jobs:
         with:
           ref: feature/webapp
       - name: Setup Pages
-        uses: actions/configure-pages@v5            
+        uses: actions/configure-pages@v5
+      - name: Rename app.html to index.html
+        run: mv image/app.html image/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
