@@ -22,6 +22,7 @@ jobs:
       - name: Pull repo
         uses: actions/checkout@v4
         with:
+          ref: feature/webapp
           sparse-checkout: |
             image/app.html
             image/app.js
