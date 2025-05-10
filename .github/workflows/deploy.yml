@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: image/*
+          path: image/
         
       - name: Deploy to Github pages
         id: deployment
