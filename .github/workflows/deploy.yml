@@ -1,5 +1,10 @@
 name: Host Image on Github pages
 
+# Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+permissions:
+  contents: read    # to checkout the repository and fetch the /image files
+  pages: write      # to deploy to Pages
+  id-token: write   # to verify the deployment originates from an appropriate source
 
 on:
   push:
@@ -7,19 +12,12 @@ on:
     
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      contents: read    # to checkout the repository and fetch the /image files
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-    
     environment:
-      name: Uplaod contents of /image to github-pages
+      name: github-pages
       url: ${{ steps.deployment.outputs.pages_url }}
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Pull repo
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: feature/webapp
@@ -37,7 +35,6 @@ jobs:
         with:
           name: github-pages
           path: image/
-        
       - name: Deploy to Github pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
