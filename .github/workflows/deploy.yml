@@ -28,7 +28,12 @@ jobs:
             image/app.wasm
             image/app.worker.js
             image/qtloader.js
-            image/qtlogo.svg        
+            image/qtlogo.svg
+            
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./image
         
       - name: Deploy to Github pages
         id: deployment
