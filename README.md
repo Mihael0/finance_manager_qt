@@ -1,29 +1,25 @@
 # Finance Manager (Demo)
 
-For a demonstration of the Finance Manager, please vist github pages. This is a demonstration of the most recent stable release. This does not mean that it contains the latest feature, but instead it hosts the most current working version of the software.
+For a demonstration of the Finance Manager, please vist github pages (LINK HERE NOT YET IMPLEMTENTED). This is a demonstration of the most recent stable release. This does not mean that it contains the latest feature, but instead it hosts the most current working version of the software.
 
-# How to Build & Debug
+# Building&Debugging Finance Manager
 
-Please checkout the docs/HowToBuild.md for more information in regards to that.
+Currently Finance Manager supports Ubuntu (or Linux based machines) with Qt. 
+
+These are the prerequisits for this project to be buildable/debuggable:
+1. Linux (In my case Ubuntu 24.04.2 LTS)
+    - Currently the paths in defaults.pri are hardcoded to use linux PWD command.
+    - For it to work on windows (for now) you will need to change those to your OS specific slashes.
+2. Download and install open source QT [Download] (https://www.qt.io/download-qt-installer)
+
+The steps to build are:
+
+1. Open QT Creator
+2. Open Existing Project
+3. Open the directory of the project and double click on finance_manager_qt.pro.
+4. You should be able to use F5 to build and debug the project.
 
 # Current Architecture
+Below you can see the architecture envisioned when designing the project based off the version 1 of the requirements. This is the architecture that guided the application to this point. There is a more detailed explanation of how much is implemented of each block and what it does in docs/CurrentArchitectureInfo.md. In regards to my thoughts on what requires improvements and what is planned for the future in this proejct. Please checkout docs/FutureArchitectureInfo. Everything in this ReadMe is general and not as detailed as in the docs.
 
-
-
-# Future Architecture
-
-Lots has been learned from working on this project. Most of which is in regards to how QT works and how QT applications (of the highest and best quality) are made. Unfortunately, the current architecture does not support those new learnings. It does not support the front-end design principles I learned along the way and it does not use QT's QAbstractModel or any of the modern front-end architectures (such as Model-View-Controller, which I am a fan of). But that's because, as engineers we have to be practical, and understand that not every creation is perfect, but instead should adhere to the deadlines we have set for ourselves.
-
-With all of those reasons in mind, it does not mean that the project does not work or that it's goals (of teaching me these concepts) is a failure. Quite the opposite, because of this project, I am now able to let you know what the next steps for it should be. 
-
-The project currently supports the UI for the user to submit/edit/delete/declare their expenses. Which is great, it is the core of the application. But with the new understanding that I have gained, it also requires a re-write in the new architecture I am about to share with you. This is what the goal for the next release will be. Same functionality, but different architecture. Also, who knows, this is a personal project, so I might end up adding some feature (if I find them more fun than whatever else needs to be done) in the new release. But a new release will only be made when the application has been fully transitioned into this new Future Architecture, from which the rest of the application will be built, and new and more advanced concepts can be learned.
-
-# Future Features
-
-If you would like to see the features I have planned for this project, then you can checkout the git issues of this project where I have a list of which functionalities I would like to be able to create for this proejct. I also created a requirements (like the first day I started this project) that you can find in the docs of this project. Please keep in mind that I created those requirements when I had no idea of the project and it was my starting point from which I then created an architecture and then immediately started writing code. This means that It might very well be rough around the edges. Thankfully I am my own client, so any changes to the requirements do not need to be immediately reflected in the document and then discussed for hours on end in meetings to narrow them down and only then for them to be officially included. Instead I argue with myself for hours on end and narrow them down in mental writing and only then accept them. As you can see, totally different and way more efficient.
-
-In terms of specifications, while absolutely amazing and without a doubt critical for any project to get off the ground and then land on said ground without crashing in a firey ball of death and destruction due to a shared misunderstanding of what the client/user expceted and what you the developer design and created. In this project given that the user will be me (and probably my mother) I can without a doubt tell you that, the "this feels good for me" is the best specification one can have. As, if we developers had the superpower of somewhow being able to fully understand the thoughts and feelings of all of our users and clients and immediately understand what "feels good to them" was, we as a society would have invented flying cars by now. Probably also would end privacy and security as we know it, but hey, at least we have flying cars. 
-
-# In Regards to the Server
-
-I will also be creating a server in C++ using the Boost library which will most likely run on a RaspberryPi which will handle all operations in regards to the storing of all the user submitted expenses and sending and receiving requests in terms of what summaries are available, and creating those summaries. For that please visit my finance_manager_server repository for more information.
+![The architecture envisioned when designing the project till this point](docs/diagrams/CurrentSystemArchitecture.svg)
