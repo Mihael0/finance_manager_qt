@@ -1,4 +1,4 @@
-# Finance Manager (Demo)
+# Finance Manager (Demo) v1
 
 For a demonstration of the Finance Manager, please visit this project's [github pages](https://mihael0.github.io/finance_manager_qt/). This is a demonstration of the most recent stable release. This does not mean that it contains the latest feature, but instead it hosts the most current working version of the software.
 
