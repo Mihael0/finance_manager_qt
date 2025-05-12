@@ -1,0 +1,34 @@
+name: Host Image on Github pages
+
+# Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+permissions:
+  contents: read    # to checkout the repository and fetch the /image files
+  pages: write      # to deploy to Pages
+  id-token: write   # to verify the deployment originates from an appropriate source
+
+on:
+  push:
+    branches: Mihael0-patch-1
+    
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.pages_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/webapp
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Rename app.html to index.html
+        run: mv image/app.html image/index.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./image
+      - name: Deploy to Github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
