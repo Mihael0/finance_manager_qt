@@ -1,6 +1,6 @@
 # Finance Manager (Demo)
 
-For a demonstration of the Finance Manager, please visit this project's [github pages] (https://mihael0.github.io/finance_manager_qt/). This is a demonstration of the most recent stable release. This does not mean that it contains the latest feature, but instead it hosts the most current working version of the software.
+For a demonstration of the Finance Manager, please visit this project's [github pages](https://mihael0.github.io/finance_manager_qt/). This is a demonstration of the most recent stable release. This does not mean that it contains the latest feature, but instead it hosts the most current working version of the software.
 
 # Building&Debugging Finance Manager
 
@@ -10,7 +10,7 @@ These are the prerequisits for this project to be buildable/debuggable:
 1. Linux (In my case Ubuntu 24.04.2 LTS)
     - Currently the paths in defaults.pri are hardcoded to use linux PWD command.
     - For it to work on windows (for now) you will need to change those to your OS specific slashes.
-2. Download and install open source QT [Download] (https://www.qt.io/download-qt-installer)
+2. Download and install open source QT [Download](https://www.qt.io/download-qt-installer)
 
 The steps to build are:
 
